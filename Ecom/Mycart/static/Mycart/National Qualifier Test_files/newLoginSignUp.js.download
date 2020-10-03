@@ -1,0 +1,2032 @@
+var isRecentLogins = false; recentLoginCount = 0, recentLogins = {}, recentLoginArrayId = 0, isRememberedLogins = false; rememberedLoginCount = 0, rememberedLogins = {}, isPaymentLink = false, recentExternal = "";
+orgID = $.trim($('#orgId').val());
+var seperationWidth = 991;
+var paramsObject = {};
+var searchParam = $.trim(window.location.search);
+if (searchParam != '') {
+	var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+		sURLVariables = sPageURL.split('&');
+	var action = '', id = '';
+	for (var i = 0; i < sURLVariables.length; i++) {
+		if (sURLVariables[i].split("=")[0] == 'action') {
+			action = sURLVariables[i].split("=")[1];
+		}
+		if (sURLVariables[i].split("=")[0] == 'id') {
+			id = sURLVariables[i].split("=")[1];
+		}
+	}
+	if ($.trim(id) != '') {
+		paramsObject = store.get(id) != '' ? JSON.parse(store.get(id)) : {};
+		if (!jQuery.isEmptyObject(paramsObject))
+			isPaymentLink = true;
+	}
+}
+$(document).ready(function () {
+	if (typeof fetchMultingualPathJson == 'function') {
+		getNewLoginSignUpValue();
+		fetchMultingualPathJson('32');
+	}
+	else if ($('script[src*="/iDH/dashboard/js/multilingual.js"]').length < 1) {/* micrositeCheck &&  */
+		console.log("Need to load multilingual.js from JS");
+		/* this is for microsite pages */
+		$.get('/iDH/dashboard/js/multilingual.js?version=' + $.trim(iDHversion))
+			.done(function (script, textStatus) {
+				getNewLoginSignUpValue();
+				fetchMultingualPathJson('32');
+				fetchMultingualPathJson('34');
+			})
+			.fail(function (jqxhr, settings, exception) {
+				console.log("exception : " + exception);
+			});
+	}
+
+});
+function getNewLoginSignUpValue() {
+	if (!checkIfHiddenFieldPresentNewLoginSignUp()) {
+		if (typeof getAllInstanceDetails == 'function') {
+			var tempAllInstanceDetails = getAllInstanceDetails();
+			(function rerunInstance2() {
+				if (typeof tempAllInstanceDetails == 'object') {
+					console.log("isNewLoginSignUp : json");
+					postIsNewLoginSignUp(tempAllInstanceDetails.isNewLoginSignUp);
+				}
+				else {
+					if (!checkIfHiddenFieldPresentNewLoginSignUp()) {
+						tempAllInstanceDetails = getAllInstanceDetails();
+						setTimeout(rerunInstance2, 200);
+					}
+				}
+			})();
+		}
+	}
+}
+function checkIfHiddenFieldPresentNewLoginSignUp() {
+	var returnValue = false;
+	var isNewLoginSignUpTemp = $.trim($('#isNewLoginSignUp').val());
+	if (isNewLoginSignUpTemp != '' && isNewLoginSignUpTemp != '!~isNewLoginSignUp~!') {
+		returnValue = true;
+		console.log("isNewLoginSignUp : hidden fields");
+		postIsNewLoginSignUp(isNewLoginSignUpTemp);
+	}
+	return returnValue;
+}
+function postIsNewLoginSignUp(isNewLoginSignUpTemp) {
+	isNewLoginSignUp = $.trim(isNewLoginSignUpTemp) == '1' ? true : false;
+	console.log('isNewLoginSignUp : ' + isNewLoginSignUp);
+	if (isNewLoginSignUp) {
+		$('.updatedHeader').addClass('newiDHHeader');
+		callNewLoginSignUpJS();
+	}
+}
+function callNewLoginSignUpJS() {
+	orgID = $.trim($('#orgId').val());
+	instanceId = $.trim($('#instanceId').val());
+	masterform_id = $.trim($('#userFormId').val());
+	if (isNewLoginSignUp) {
+		(function rerunGlobalMLjson() {
+			if (checkIfMultilingualAvailable('34') && checkIfMultilingualAvailable('32')) {
+				if ($('#app_seq_no').length > 0)
+					postLoginScreen();
+				else
+					getRecentLogins();
+			} else {
+				setTimeout(rerunGlobalMLjson, 200);
+			}
+		})();
+	}
+}
+function onClickNavToggle() {
+	if ($('#app_seq_no').length > 0)
+		openSlidePostLogin();
+	else if (!isPaymentLink)
+		openHamburger();
+}
+function getRecentLogins() {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=getrecentlogins&orgID=1016&txtInstanceId=1 */
+	if (isPaymentLink)
+		callPostRecentLogin();
+	else {
+		$.ajax({
+			type: "POST",
+			url: iHUB.url.iDH(),
+			data: {
+				orgID: orgID,
+				masterform_id: masterform_id,
+				txtInstanceId: instanceId,
+				subAction: "getrecentlogins"
+			},
+			dataType: "json",
+			success: function (result) {
+				var condn = iHUB.checkSessionOrTokeniDH(result);
+				if (eval(condn)) {
+					isRecentLogins = false;
+					recentLogins = {};
+					recentLoginCount = 0;
+					if (typeof result == 'object') {
+						if (!jQuery.isEmptyObject(result)) {
+							var isProperRecentLogins = true;
+							var tempRecentLogins = result.responseDetails;
+							$.each(tempRecentLogins, function (k, v) {
+								if (Object.keys(v).length < 5) {
+									isProperRecentLogins = false;
+									return false;
+								}
+							});
+							if (isProperRecentLogins) {
+								recentLogins = result.responseDetails;
+								isRecentLogins = true;
+								recentLoginCount = recentLogins.length;
+							}
+						}
+					}
+					callPostRecentLogin();
+				}
+			},
+			error: function (x, e) {
+				if (e == "parsererror" && x.responseText == "session is not avaliable") {
+					createIncorrectURLLoader();
+					fnLogoutICMP('1');
+					return false;
+				}
+			},
+			complete: function () {
+			}
+		});
+	}
+}
+function callPostRecentLogin() {
+	(function rerunGlobalMLjson() {
+		if (checkIfMultilingualAvailable('34')) {
+			forgotPassSlide();
+			buildPreLoginHamburgerMenu();
+			buildRightModals('signin,signinaddaccount');
+			addExternalLogins();
+		} else {
+			setTimeout(rerunGlobalMLjson, 200);
+		}
+	})();
+}
+function buildPreLoginHamburgerMenu() {
+	var str = '';
+	str += '<div class="hamburgerMenu">';
+	str += '	<div id="sidebar">';
+	str += '		<div class="signInPanel">';
+	str += '			<a class="cousorPointer" onclick="checkMyPage();checkCSC();closeHamburger();" data-a="1" data-b="Login">' + multilingualKeyValue("1", "32") + '</a>';
+	str += '			<span class="closeIco"></span>';
+	str += '			<div class="clearfix"></div>';
+	str += '		</div>';
+	str += '		<ul class="menu additionalHeaderHamburger">';
+	str += '			<li tabindex="1">';
+	str += '				<span class="menu1" data-a="2" data-b="Catalogue">' + multilingualKeyValue("2", "32") + ' <span class="fwdArrow"></span></span>';
+	str += '				<ul class="submenu">';
+	str += '				</ul>';
+	str += '			</li>';
+	str += '		</ul>';
+	str += '		<div class="header_language hidden">';
+	str += '		</div>';
+	str += '	</div>';
+	str += '</div>';
+	$('.hamburgerMenu').remove();
+	$('body').append(str);
+	addFirstLevelCatalogueInHamburger('additionalHeaderHamburger');
+	addAdditionalHeader('additionalHeaderHamburger');
+}
+function addFirstLevelCatalogueInHamburger(className) {
+	var str = '';
+	var levelDetails = $('#product_catlog').data('levelDetails');
+	(function rerunlevelDetails() {
+		if (typeof levelDetails == 'object') {
+			$.each(levelDetails, function (k, v) {
+				str += '<li><a data-level="txtLevel1" class="categorySearch cousorPointer enableEllipsis" title="' + v.levelName + '" value="' + v.levelId + '" onclick="lnk(this);">' + v.levelName + '</a></li>';
+			});
+			if ($.trim(str) != '') {
+				$('.' + className + ' ul').append('<li class="bckArrowli"><a class="cousorPointer" data-a="3" data-b="Menu"><span class="bckArrow"></span> ' + multilingualKeyValue("3", "32") + '</a></li>' + str);
+				checkEnableEllipsis();
+				$(document).on('click', '.' + className + ' ul>li:not(.bckArrowli)>a', function () {
+					closeAllSlide();
+					closeHamburger();
+				});
+			}
+		}
+		else {
+			levelDetails = $('#product_catlog').data('levelDetails');
+			setTimeout(rerunlevelDetails, 200);
+		}
+	})();
+}
+function buildRightModals(classNames) {
+	$.each(classNames.split(','), function (ki, vi) {
+		var className = $.trim(vi);
+		$('#slide-out-right-' + className + '').remove();
+		var str = '';
+		str += '<div id="slide-out-right-' + className + '" class="slide-nav-right hidden">';
+		str += '	<div class="slide-right-section">';
+		str += '		<div class="myLoginScrollSec">';
+		if (!isPaymentLink)
+			str += '			<a class="closeSlideNavRight cousorPointer" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+		str += '			<div class="slideRightContent">';
+		str += '				<div class="frmSectionSignin">';
+		if (className == "signin") {
+			if (recentLoginCount == 0)
+				str += '					<h3 class="withoutRecentLogin" data-a="5" data-b="Login to your account">' + multilingualKeyValue("5", "32") + '</h3>';
+			else if (recentLoginCount != 0) {
+				str += '					<h3 class="withRecentLogin" data-a="6" data-b="Hi" data-a="7" data-b="Welcome Back !"><b>' + multilingualKeyValue("6", "32") + ' <userName></userName>,</b> ' + multilingualKeyValue("7", "32") + '</h3>';
+			}
+		}
+		else if (className == "signinaddaccount") {
+			str += '					<a class="icon_addAccountBack cousorPointer"></a>';
+			str += '					<h3 class="addAccountHeader" data-a="8" data-b="Add Account">' + multilingualKeyValue("8", "32") + '</h3>';
+		}
+		str += '					<div class="verificationLink hidden"></div>';
+		str += '					<div class="errorWrong in loginWrong" id="errmsg" style="display: none;">';
+		str += '						<i class="far fa-frown"></i>';
+		str += '						<span class="fontsize12 semibold" data-a="9" data-b="Please check Login ID or Password and try again.">' + multilingualKeyValue("9", "32") + '</span>';
+		str += '					</div>';
+		str += '					<div class="row hideForExternalRecentLogins">';
+		var hiddenClass = '';
+		if (className == "signin" && recentLoginCount != 0) {/* if recent user don't show */
+			hiddenClass = 'hidden';
+		}
+		str += '						<div class="form-group posRel col-md-12 ' + hiddenClass + '">';
+		str += '							<input type="text" data-a="10" data-b="Email ID" placeholder="' + multilingualKeyValue("10", "32") + '" id="userid_temp" name="userid_temp" class="form-control selectOpt">';
+		str += '							<div class="selName" data-a="10" data-b="Email ID">' + multilingualKeyValue("10", "32") + '</div>';
+		str += '						</div>';
+		str += '						<div class="form-group posRel col-md-12 pwdShowHideContainer">';
+		str += '							<input type="password" data-a="11" data-b="Password" placeholder="' + multilingualKeyValue("11", "32") + '" id="confData" name="confData" class="form-control selectOpt">';
+		var visibilityAccess = $('#app_seq_no').length > 0 ? 'style="visibility:hidden"' : '';
+		str += '							<a class="float-right font12 forgotPwdLinkNew cousorPointer" ' + visibilityAccess + ' data-source="' + className + '" data-a="12" data-b="Forgot Password">' + multilingualKeyValue("12", "32") + '</a>';
+		str += '							<div class="selName" data-a="11" data-b="Password">' + multilingualKeyValue("11", "32") + '</div>';
+		str += '							<span id="ShowHidePasswordNew-' + ki + '" class="dvShowHidePassword" data-hint="Show" onclick="ShowHidePassword(this.id);">';
+		str += '								<i class="fa fa-eye-slash"></i>';
+		str += '							</span>';
+		str += '						</div>';
+		str += '						<div class="posRel col-md-12 col-sm-12">';
+		str += '							<label class="controlChk control-check blueChkbox margintop5 chkSignIn">';
+		str += '								<input type="checkbox" name="rememberMe" id="rememberMe">';
+		str += '								<span class="color333 fontsize12" data-a="13" data-b="Remember Me">' + multilingualKeyValue("13", "32") + '</span>';
+		str += '								<span class="controlIndicator"></span>';
+		str += '							</label>';
+		str += '						</div>';
+		str += '					</div>';
+		str += '					<div class="row hideForExternalRecentLogins">';
+		str += '						<div class="col-sm-12">';
+		str += '							<a class="hubBTn btn btn-green btn-lg semibold btnUserSignin cousorPointer" onclick="validateUser();" data-a="14" data-b="Login">' + multilingualKeyValue("14", "32") + '</a>';
+		str += '						</div>';
+		str += '					</div>';
+		/* if(className=="signinaddaccount" || (className=="signin" && !isPaymentLink)){ */
+		str += '					<div class="row externalLoginRow">';
+		str += '					</div>';
+		/* } */
+		if (className == "signin") {
+			if (recentLoginCount == 1) {
+				str += '					<div class="row">';
+				str += '						<div class="col-sm-12 signinNewUser" data-a="15" data-b="Login as">';
+				str += '							' + multilingualKeyValue("15", "32") + '';
+				str += '							<a class="cousorPointer" data-a="16" data-b="New User">' + multilingualKeyValue("16", "32") + '</a>';
+				str += '						</div>';
+				str += '					</div>';
+			}
+			else if (recentLoginCount > 1) {
+				str += '					<div class="row signInAsUserOptions margintop10">';
+				str += '					</div>';
+			}
+		}
+		if (!($('#app_seq_no').length > 0)) {
+			str += '					<div class="row newToHUB">';
+			str += '						<div class="col-sm-12 marginbottom40">';
+			str += '							<div class="newDigiLrnHubText">';
+			var portalTitle = "Digital Learning Hub";
+			var tempAllInstanceDetails = getAllInstanceDetails();
+			if (typeof tempAllInstanceDetails == 'object')
+				portalTitle = $.trim(tempAllInstanceDetails.portalTitle) != '' ? $.trim(tempAllInstanceDetails.portalTitle) : portalTitle;
+			str += '								<span data-a="17" data-b="New to">' + multilingualKeyValue("17", "32") + ' ' + portalTitle + '?</span>';
+			str += '							</div>';
+			str += '							<a class="hubBTn btn btn-green btn-lg semibold btnCreatAccountSign signUpURL" onclick="closeAllSlide();" data-a="18" data-b="Create Account">' + multilingualKeyValue("18", "32") + '</a>';
+			str += '						</div>';
+			str += '					</div>';
+		}
+		str += '				</div>';
+		str += '			</div>';
+		str += '		</div>';
+		str += '	</div>';
+		str += '</div>';
+		$('body').append(str);
+	});
+	if (recentLoginCount != 0)
+		appendRecentLogins(0);
+	modifyHREF();
+	if (isPaymentLink)
+		setDefaultValues();
+	enableTriggers();
+}
+function setSignUpURL() {
+	var signUpURL = "/iDH/" + $.trim($('#iHUBInstanceShortName').val()) + "/SignUp/";
+	var ref = '';
+	var searchParam = $.trim(window.location.search);
+	if (searchParam != '') {
+		var sPageURL = decodeURIComponent(searchParam.substring(1)),
+			sURLVariables = sPageURL.split('&');
+		for (var i = 0; i < sURLVariables.length; i++) {
+			if (sURLVariables[i].split("=")[0] == 'ref') {
+				ref = sURLVariables[i].split("=")[1];
+			}
+		}
+	}
+	console.log("ref : " + ref);
+	if (window.location.pathname.split('/').indexOf('SignUp') == -1 && ref == '')
+		signUpURL += decodeURIComponent(searchParam) + ($.trim(searchParam) != "" ? "&" : "?") + "ref=" + window.location.origin + window.location.pathname;
+	else
+		signUpURL += decodeURIComponent(searchParam);
+	if ($.trim(window.location.hash) != '')
+		signUpURL += $.trim(window.location.hash);
+	console.log("Final signUpURL : " + signUpURL);
+	$('.signUpURL').attr('href', signUpURL);
+}
+function setDefaultValues() {
+	var userExist = $.trim(paramsObject.userExist);
+	var email = $.trim(paramsObject.email);
+	var loginId = $.trim(paramsObject.loginId);
+
+	if (userExist == 'Y')
+		$('.newToHUB').remove();
+
+	var logValue = (loginId != '' && loginId != '_' + masterform_id + orgID + '_' + instanceId) ? loginId.replace('_' + masterform_id + orgID + '_' + instanceId, '') : (email != '' ? email : '');
+	if ($.trim(logValue) != '')
+		$('#slide-out-right-signin').find('#userid_temp').val(logValue).attr('disabled', 'disabled');
+}
+function addExternalLogins() {
+	if (typeof getAllInstanceDetails == 'function' && $('.externalLoginRow').length != 0) {
+		var tempAllInstanceDetails = getAllInstanceDetails();
+		(function rerunInstance1() {
+			if (typeof tempAllInstanceDetails == 'object') {
+				var externalLogins = $.trim(tempAllInstanceDetails.externalLogins);
+				if (externalLogins != "") {
+					$('.allExternalLoginsButton').remove();
+					var str = "", strAddAcc = "";
+					strAddAcc += '						<div class="col-sm-12 otherLoginOptSec allExternalLoginsButton" data-a="65" data-b="Continue with">';
+					strAddAcc += '							' + multilingualKeyValue("65", "32") + '';
+					str += '						<div class="col-sm-12 otherLoginOptSec allExternalLoginsButton" data-a="65" data-b="Continue with">';
+					str += '							' + multilingualKeyValue("65", "32") + '';
+					if (externalLogins.toLowerCase().split(',').indexOf('facebook') != -1) {
+						strAddAcc += '							<a onclick="parent.externalLogin(\'facebook\');" class="icon_facebook cousorPointer" data-a="19" data-b="Facebook" title="' + multilingualKeyValue("19", "32") + '"><i></i></a>';
+						if (recentExternal != "facebook")
+							str += '							<a onclick="parent.externalLogin(\'facebook\');" class="icon_facebook cousorPointer" data-a="19" data-b="Facebook" title="' + multilingualKeyValue("19", "32") + '"><i></i></a>';
+					}
+					if (externalLogins.toLowerCase().split(',').indexOf('google') != -1) {
+						strAddAcc += '							<a onclick="parent.externalLogin(\'google\');" class="icon_google cousorPointer" data-a="20" data-b="Google" title="' + multilingualKeyValue("20", "32") + '"><i></i></a>';
+						if (recentExternal != "google")
+							str += '							<a onclick="parent.externalLogin(\'google\');" class="icon_google cousorPointer" data-a="20" data-b="Google" title="' + multilingualKeyValue("20", "32") + '"><i></i></a>';
+					}
+					if (externalLogins.toLowerCase().split(',').indexOf('twitter') != -1) {
+						strAddAcc += '							<a onclick="parent.externalLogin(\'twitter\');" class="icon_twitter cousorPointer" data-a="21" data-b="Twitter" title="' + multilingualKeyValue("21", "32") + '"><i></i></a>';
+						if (recentExternal != "twitter")
+							str += '							<a onclick="parent.externalLogin(\'twitter\');" class="icon_twitter cousorPointer" data-a="21" data-b="Twitter" title="' + multilingualKeyValue("21", "32") + '"><i></i></a>';
+					}
+					if (externalLogins.toLowerCase().split(',').indexOf('linkedin') != -1) {
+						strAddAcc += '							<a onclick="parent.externalLogin(\'linkedin\');" class="icon_linkedin cousorPointer" data-a="" data-b="LinkedIn" title="LinkedIn"><i></i></a>';
+						if (recentExternal != "linkedin")
+							str += '							<a onclick="parent.externalLogin(\'linkedin\');" class="icon_linkedin cousorPointer" data-a="" data-b="LinkedIn" title="LinkedIn"><i></i></a>';
+					}
+					if (externalLogins.toLowerCase().split(',').indexOf('ion') != -1) {
+						strAddAcc += '							<a onclick="parent.ionLogin();" class="icon_tcsioin cousorPointer" data-a="22" data-b="TCS iON" title="' + multilingualKeyValue("22", "32") + '"><i></i></a>';
+						if (recentExternal != "ion")
+							str += '							<a onclick="parent.ionLogin();" class="icon_tcsioin cousorPointer" data-a="22" data-b="TCS iON" title="' + multilingualKeyValue("22", "32") + '"><i></i></a>';
+					}
+					strAddAcc += '						</div>';
+					str += '						</div>';
+					$('#slide-out-right-signin .externalLoginRow').append(str);
+					$('#slide-out-right-signinaddaccount .externalLoginRow').append(strAddAcc);
+				}
+			}
+			else {
+				tempAllInstanceDetails = getAllInstanceDetails();
+				setTimeout(rerunInstance1, 200);
+			}
+		})();
+	}
+}
+function appendRecentLogins(arrayId) {
+	recentLoginArrayId = arrayId;
+	$('.withRecentLogin b username').text(recentLogins[arrayId].txtDisplayName);
+	$('.withRecentLogin').removeClass('removeMargin');
+	$('#slide-out-right-signin input[id="userid_temp"]').val(recentLogins[arrayId].txtLoginId.replace('_' + masterform_id + orgID + '_' + instanceId, ''));
+	var loginType = recentLogins[arrayId].loginType;
+	recentExternal = "";
+	var loginTypeL = loginType.toLowerCase();
+	if (loginTypeL != "ihub") {
+		$('.withRecentLogin').addClass('removeMargin');
+		var onclickFn = 'parent.externalLogin(\'' + loginTypeL + '\')';
+		if (loginTypeL == "ionlogin" || loginTypeL == "smb") {
+			onclickFn = "parent.ionLogin()";
+			loginTypeL = "ion";
+		}
+		recentExternal = loginTypeL;
+		$('#slide-out-right-signin .hideForExternalRecentLogins').addClass('hidden');
+		var strn = '';
+		strn += '<div class="row loginOption externalRecentLogin ' + loginTypeL + '_socialLogin" style="display: block;">';
+		strn += '	<a class="userEmail">' + recentLogins[arrayId].txtEmail + '</a>';
+		strn += '		<button class="btn" style="width: 100%;" onclick="' + onclickFn + ';"><em></em>Continue with ' + changeCaseFirstLetter(loginTypeL) + '</button>';
+		strn += '</div>';
+		$('#slide-out-right-signin .hideForExternalRecentLogins:last').after(strn);
+	}
+	else {
+		$('#slide-out-right-signin .hideForExternalRecentLogins').removeClass('hidden');
+		$('#slide-out-right-signin .externalRecentLogin').addClass('hidden');
+	}
+	var str = '';
+	str += '<h4 data-a="23" data-b="Change Account"><span class="changeAccIco"></span> ' + multilingualKeyValue("23", "32") + '</h4>';
+	var displayBlock = '';
+	if ($('#slide-out-right-signin .signInAsUserOptions').hasClass('cardsActive'))
+		displayBlock = 'style="display: block;"';
+	str += '<div class="cardContainer" ' + displayBlock + '>';
+	$.each(recentLogins, function (k, v) {
+		if (k != arrayId) {
+			var displayName = $.trim(v.txtDisplayName);
+			var loginTypeL = $.trim(v.loginType).toLowerCase();
+			if (loginTypeL == "ionlogin" || loginTypeL == "smb")
+				loginTypeL = "ion";
+			str += '						<div class="col-sm-4 recentLogin' + k + '">';
+			str += '							<div class="userOptionCard" data-recentLoginId="' + k + '" data-loginType="' + loginTypeL + '">';
+			str += '								<a class="icon_closeuser" type="button" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+			var days = $.trim(v.lastLogin);
+			var user_Image = getFullUserImage($.trim(v.user_Image));
+			if (user_Image == "")
+				str += '								<div class="userNameCircle">' + getNamesFirstLetters(displayName) + '<span class="' + loginTypeL + 'Icon"></span></div>';
+			else
+				str += '								<div><img class="userNameCircle userFaceCircle" src="' + user_Image + '" onerror="this.src=\'/iDH/dashboard/images/default-user.png\'"><span class="' + loginTypeL + 'Icon"></span></div>';
+			str += '								<div class="userNameDetText">' + displayName + '</div>';
+			if (Number(days) <= 1)
+				str += '								<div class="userNameActiveText" data-a="24" data-b="Active" data-a="25" data-b="day ago">' + multilingualKeyValue("24", "32") + ' ' + days + ' ' + multilingualKeyValue("25", "32") + '</div>';
+			else
+				str += '								<div class="userNameActiveText" data-a="24" data-b="Active" data-a="26" data-b="days ago">' + multilingualKeyValue("24", "32") + ' ' + days + ' ' + multilingualKeyValue("26", "32") + '</div>';
+			str += '							</div>';
+			str += '						</div>';
+		}
+	});
+	str += '						<div class="col-sm-4">';
+	str += '							<div class="userOptionCard newUserCardPlus">';
+	str += '								<span class="icon-AddUser"></span>';
+	str += '								<span class="newUserCardText" data-a="16" data-b="New User">' + multilingualKeyValue("16", "32") + '</span>';
+	str += '							</div>';
+	str += '						</div>';
+
+	str += '</div>';
+	$('.signInAsUserOptions').empty().append(str);
+	enableTriggerForUserOptionCard();
+	addExternalLogins();
+}
+function enableTriggerForUserOptionCard() {
+	$('.userOptionCard:not(.newUserCardPlus)').on("click", function (evt) {
+		var arrayId = Number($(this).attr('data-recentLoginId'));
+		var loginType = $.trim($(this).attr('data-loginType'));
+		clearAllValidation();
+		if ($.trim(evt.target.className).indexOf('icon_closeuser') > -1)
+			removeRecentLogin(arrayId);
+		else {
+			if (loginType == "ihub")
+				appendRecentLogins(arrayId);
+			else if (loginType == "ionlogin" || loginType == "smb" || loginType == "ion")
+				ionLogin();
+			else
+				externalLogin(loginType);
+		}
+	});
+	$(".newUserCardPlus, .signinNewUser a").on("click", function () {
+		$('#slide-out-right-signinaddaccount .icon_addAccountBack').attr('data-source', 'signin');
+		openTargetSlide('#slide-out-right-signinaddaccount');
+	});
+}
+function removeRecentLogin(arrayId) {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=removefromrecentlogins&orgID=1016&txtInstanceId=1&appSeqNo= */
+	var appSeqNo = recentLogins[arrayId].app_seq_no;
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			appSeqNo: appSeqNo,
+			subAction: "removefromrecentlogins"
+		},
+		dataType: "json",
+		success: function (result) {
+			var condn = iHUB.checkSessionOrTokeniDH(result);
+			if (eval(condn)) {
+				if (result.responseDetails == "success") {
+					$('.recentLogin' + arrayId).remove();
+					recentLogins.splice(arrayId, 1);
+					if (!isNaN(recentLoginArrayId) && recentLogins[recentLoginArrayId] != undefined)
+						appendRecentLogins(recentLoginArrayId);
+				}
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+		}
+	});
+}
+function openNewLoginSlide() {
+	$('#loginmodal, #ForgotPassmodal').remove();
+	$('#otpPopupFP, #otpPopupLoginId, #changePasswordNewBL').remove();
+	(function rerunSlideoutSignin() {
+		if ($('#slide-out-right-signin').length > 0) {
+			setSignUpURL();
+			openTargetSlide('#slide-out-right-signin');
+			clearAllValidation();
+		} else {
+			setTimeout(rerunSlideoutSignin, 200);
+		}
+	})();
+}
+$(document).on('click', '.slide-nav-right input', function () {
+	if ($.trim($(this).val()) == "")
+		clearAllValidation();
+});
+function clearAllValidation() {
+	hideErrorMsgInLogin();
+	returnTrueSelector('#userid_temp').css("border-color", "#dadada");
+	returnTrueSelector('#confData').css("border-color", "#dadada");
+	$('.verificationLink').addClass('hidden');
+	$('.verificationLink').html('');
+}
+function openTargetSlide(targetSlide) {
+	/* resetting when any new slide opens */
+	hideErrorMsgInLogin();
+	iHUB.validation.resetValidationColourText();
+
+	if ($(targetSlide + ':visible').length == 0) {
+		$('.slide-right-section').css('margin-right', '-398px');
+		if ($(window).width() <= seperationWidth) {
+			$('.slide-right-section').css('margin-left', '-398px');
+		}
+		if ($('.slide-nav-right:visible').length > 0) {
+			setTimeout(function () {
+				$('.slide-nav-right:not(' + targetSlide + ')').addClass('hidden');
+			}, 100);
+		}
+
+		$(targetSlide).removeClass('hidden');
+		/* $(targetSlide).show(); */
+		setTimeout(function () {
+			$(targetSlide).find('.slide-right-section').css('margin-right', 0);
+			if ($(window).width() <= seperationWidth) {
+				$(targetSlide).find('.slide-right-section').css('margin-left', 0);
+			}
+		}, 100);
+		$('body').css('overflow', 'hidden');
+		if ($(window).width() <= seperationWidth)
+			$('.slide-nav-right').css('margin-top', '0');
+		else
+			$('.slide-nav-right').css('margin-top', headerOuterHeight());
+
+	}
+}
+function closeAllSlide() {
+	$('.slide-right-section').css('margin-right', '-398px');
+	if ($(window).width() <= seperationWidth) {
+		$('.slide-right-section').css('margin-left', '-398px');
+	}
+	// var _this = this;
+	setTimeout(function () {
+		$('.slide-nav-right').addClass('hidden');
+		/* $('.slide-nav-right').hide(); */
+	}, 500);
+	$('body').css('overflow', 'inherit');
+}
+function openHamburger() {
+	(function rerunOpenHamburger() {
+		if ($('.hamburgerMenu').length > 0) {
+			$(".hamburgerMenu").addClass("open-sidebar");
+			$("html, body").addClass("menuOpen");
+		} else {
+			setTimeout(rerunOpenHamburger, 200);
+		}
+	})();
+}
+function closeHamburger() {
+	$(".hamburgerMenu").removeClass("open-sidebar");
+	$("html, body").removeClass("menuOpen");
+}
+function enableTriggers() {
+	$(document).on("click", ".hamburgerMenu .closeIco", function () {
+		closeHamburger();
+	});
+
+	$(document).on("click", ".hamburgerMenu .menu1", function () {
+		$(this).parent().find(".submenu").addClass("active");
+	});
+
+	$(document).on("click", ".hamburgerMenu .submenu .bckArrow, .bckArrowli", function () {
+		$(this).parents(".submenu").removeClass("active");
+	});
+	//Hamburger Menu ends
+	$(document).on("click", ".signInAsUserOptions h4", function () {
+		$(this).parent().toggleClass("cardsActive");
+		$(".cardContainer").slideToggle();
+	});
+	$(document).on('click', '.otherLinks>ul>li>a', function () {
+		closeAllSlide();
+		closeHamburger();
+	});
+	$(document).on('click', '.openPostLoginCatalogue', function () {
+		openTargetSlide('#slide-out-right-postLoginCatalogue');
+	});
+	$(document).on('click', '#slide-out-right-postLoginCatalogue .bckArrow, .bckArrowli', function () {
+		openSlidePostLogin();
+	});
+
+	$('.slideRightSigninTrigger').on("click", function () {
+		var targetSlide = '#' + $(this).attr('data-target');
+		openTargetSlide(targetSlide);
+	});
+	$(document).on('click', '.slide-right-section .closeSlideNavRight', function () {
+		if (!isPaymentLink)
+			closeAllSlide();
+	});
+	$('.slide-nav-right').on("click", function (event) {
+		if (event.target == event.currentTarget && !isPaymentLink) {
+			closeAllSlide();
+		}
+	});
+	//back arrow
+	$(document).on("click", ".icon_addAccountBack", function () {
+		openTargetSlide('#slide-out-right-' + $(this).attr('data-source'));
+	});
+	//forgot password
+	$(document).on("click", ".forgotPwdLinkNew", function () {
+		$('.dnElem').hide();
+		var isOtpRequiredNew = "0";
+		if (typeof getAllInstanceDetails == 'function') {
+			var tempAllInstanceDetails = getAllInstanceDetails();
+			if (tempAllInstanceDetails != undefined && typeof tempAllInstanceDetails == 'object') {
+				isOtpRequiredNew = $.trim(tempAllInstanceDetails.isOtpRequired) != "" ? $.trim(tempAllInstanceDetails.isOtpRequired) : "0";
+			}
+		}
+		if (isOtpRequiredNew == "0") {
+			$('#useridForgotPwd').val('');
+			$('#useridForgotPwd').blur('');
+			initiHUB("captchaHolderFG");
+			$('.vrfyEmailOption').show();
+		}
+		else {
+			$("#OTPLoginID").val('');
+			$('.pwdResetOption').show();
+		}
+
+		$('.forgotPwdUserID,.otpConfirmSec').addClass('hidden');
+		var dataSource = $.trim($(this).attr('data-source'));
+		$('#slide-out-right-forgotpassword .icon_addAccountBack').attr('data-source', dataSource);
+		$('#OTPLoginID, #useridForgotPwd').val('');
+		if (dataSource == "signin" && !isNaN(recentLoginArrayId) && recentLogins[recentLoginArrayId] != undefined)
+			$('#OTPLoginID, #useridForgotPwd').val(recentLogins[recentLoginArrayId].txtLoginId.replace('_' + masterform_id + orgID + '_' + instanceId, ''));
+		openTargetSlide('#slide-out-right-forgotpassword');
+	});
+	$('.signInShowHidePwd').on("click", function () {
+		$(this).text().trim() == 'Show' ?
+			$(this).closest('.pwdShowHideContainer').find('input').attr('type', 'text') :
+			$(this).closest('.pwdShowHideContainer').find('input').attr('type', 'password');
+
+		$(this).text().trim() == 'Show' ? $(this).text('Hide') : $(this).text('Show');
+	});
+	$(window).scroll(function () {
+		$('.slide-nav-right').css('margin-top', headerOuterHeight());
+		/* var scrollerTop = $(window).scrollTop();
+		if (scrollerTop >= 200) {
+			$('.slide-nav-right').css('margin-top', 52);
+		} else {
+			$('.slide-nav-right').css('margin-top', 72);
+		} */
+	});
+	$(window).on("resize", function () {
+		setTimeout(function () {
+			$('.slide-nav-right').css('margin-top', headerOuterHeight());
+			$('.deviceSection').css('margin-top', headerOuterHeight());
+			$('.slide-right-section').css('margin-right', '0');
+			if ($(window).width() <= seperationWidth) {
+				$('.slide-nav-right').css('margin-top', '0');
+				$('.slide-right-section').css('margin-left', '0');
+			}
+		}, 500);
+	});
+	$('.forgotPwdSecTemp .pwdResetOption .btnSendOTP').on("click", function () {
+		$('#OTPLoginID').blur();
+		(function rerunInstanceDetails() {
+			if (typeof allInstanceDetails == 'object' && !$.isEmptyObject(allInstanceDetails)) {
+				var otpNotReqdThrough = $.trim(allInstanceDetails.OTPnotReqdThrough);
+				if ($.trim($('#OTPLoginID').val()) == "") {
+					$('.optConfirmButtonGrp a').addClass('disabled');
+				} else {
+					$('.optConfirmButtonGrp a').removeClass('disabled');
+				}
+				$('.forgotPwdUserID,.otpConfirmSec').removeClass('hidden');
+				if (otpNotReqdThrough.split(',').indexOf('0') > -1) {
+					$(".optConfirmButtonGrp #smsBtn").addClass('hidden');
+				} else if (otpNotReqdThrough.split(',').indexOf('1') > -1) {
+					$(".optConfirmButtonGrp #emailBtn").addClass('hidden');
+				}
+			} else {
+				setTimeout(rerunInstanceDetails, 200);
+			}
+		})();
+
+	});
+	$('.forgotPwdSecTemp .pwdResetOption .btnCreatAccountSign').on("click", function () {
+		/* $('.forgotPwdSecTemp .pwdResetOption').slideToggle(300);
+		$('.forgotPwdSecTemp .enterOtpOption').slideToggle(300);
+		setTimeout(function () {
+			$('.enterOTPSecTemp .digit-group input').first().focus();
+		}, 300); */
+	});
+	$('.forgotPwdSecTemp .pwdResetOption .btnSendLink').on("click", function () {
+		initiHUB("captchaHolderFG");
+		$('#useridForgotPwd').blur('');
+		$('.forgotPwdSecTemp .pwdResetOption').slideToggle(300);
+		$('.forgotPwdSecTemp .vrfyEmailOption').slideToggle(300);
+	});
+	$('.enterOtpOption .btnUpdateChangePwd').on("click", function () {
+		/* $('.forgotPwdSecTemp .enterOtpOption').slideToggle(300);
+		$('.forgotPwdSecTemp .pwdResetOption').slideToggle(300); */
+	});
+	$('.vrfyEmailOption .btnGetPwdByEmail').on("click", function () {
+		/* $('.forgotPwdSecTemp .vrfyEmailOption').slideToggle(300);
+		$('.forgotPwdSecTemp .pwdResetOption').slideToggle(300); */
+	});
+	$(".enterOTPSecTemp .digit-group input").on("keyup", function () {
+		if ($("#digit-1").val() != '' && $("#digit-2").val() != '' && $("#digit-3").val() != '' && $("#digit-4").val() != '') {
+			$(".stepTwo").removeClass("disabled");
+		} else {
+			$(".stepTwo").addClass("disabled");
+		}
+	});
+	//OTP Validator
+	$('.digit-group').find('input').each(function () {
+		$(this).attr('maxlength', 1);
+		$(this).on("keyup", function (e) {
+			var parent = $($(this).parent());
+
+			if (e.keyCode === 8 || e.keyCode === 37) {
+				var prev = parent.find('input#' + $(this).data('previous'));
+
+				if (prev.length) {
+					$(prev).select();
+				}
+			} else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+				var next = parent.find('input#' + $(this).data('next'));
+				if (next.length) {
+					$(next).select();
+				} else {
+					if (parent.data('autosubmit')) {
+						parent.submit();
+					}
+				}
+			}
+		});
+	});
+	$(".digit-group input").on("keypress", function (evt) {
+		if (evt.which != 8 && evt.which != 0 && (evt.which < 48 || evt.which > 57)) {
+			return false;
+		}
+	});
+	$(document).on('click', '.namesDesktop', function () {
+		if (isNewLoginSignUp && $('#app_seq_no').length > 0)
+			openSlidePostLogin();
+	});
+	enableSlimScroll('.slide-right-section .myLoginScrollSec', '100%', '#00abe1', 'false', 'true');
+}
+function openSlidePostLogin() {
+	(function rerunSlideoutPostSignin() {
+		if ($('#slide-out-right-postsignin').length > 0) {
+			hideShowBasedOnRole();
+			addAdditionalHeader('catalogueMob>ul');
+			openTargetSlide('#slide-out-right-postsignin');
+			setUserData();
+		} else {
+			setTimeout(rerunSlideoutPostSignin, 200);
+		}
+	})();
+}
+function forgotPassSlide() {
+	var str = '';
+	str += '<div id="slide-out-right-forgotpassword" class="slide-nav-right hidden">';
+	str += '	<div class="slide-right-section">';
+	str += '		<div class="myLoginScrollSec">';
+	if (!isPaymentLink)
+		str += '			<a class="closeSlideNavRight cousorPointer" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+	str += '			<div class="slideRightContent">';
+	str += '				<div class="frmSectionSignin forgotPass">';
+	str += '					<a class="icon_addAccountBack cousorPointer"></a>';
+	str += '					<h3 class="addAccountHeader" data-a="27" data-b="Forgot Password">' + multilingualKeyValue("27", "32") + '</h3>';
+	str += '					<div class="forgotPwdSecTemp">';
+	str += '						<div class="pwdResetOption dnElem">';
+	str += '							<h4 data-a="28" data-b="How you want to go...">' + multilingualKeyValue("28", "32") + '</h4>';
+	str += '							<p class="signInfoInst" data-a="29" data-b="Please select one of the below option to reset password">';
+	str += '								' + multilingualKeyValue("29", "32") + '';
+	str += '							</p>';
+	str += '							<div class="optButtonGrp">';
+	str += '								<a class="btnSendOTP cousorPointer" data-a="30" data-b="OTP">' + multilingualKeyValue("30", "32") + '</a>';
+	str += '								<a class="btnSendLink cousorPointer" data-a="31" data-b="Link">' + multilingualKeyValue("31", "32") + '</a>';
+	str += '							</div>';
+	str += '							<div class="forgotPwdUserID hidden">';
+	str += '								<div class="row">';
+	str += '									<div class="form-group posRel col-md-12">';
+	str += '										<input type="text" data-a="32" data-b="Login ID" placeholder="' + multilingualKeyValue("32", "32") + '" id="OTPLoginID" class="form-control selectOpt" onkeyup="OTP.OTPScreens.enableValidateLoginId(this.value.length)" maxlength="60">';
+	str += '										<div class="selName" data-a="33" data-b="Login ID">' + multilingualKeyValue("33", "32") + '</div>';
+	str += '									</div>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '							<div class="otpConfirmSec marginbottom20 hidden">';
+	str += '								<p class="signInfoInst" data-a="34" data-b="Identify yourself through OTP via">' + multilingualKeyValue("34", "32") + '</p>';
+	str += '								<div class="optConfirmButtonGrp">';
+	str += '									<a id="smsBtn" class="hubBTn btn btn-green btn-lg semibold btnCreatAccountSign cousorPointer OTPVerificationBtn otpPopupLoginId disabled" data-otpeventtype="resetPassword" data-otptypename="sms" data-a="35" data-b="SMS">' + multilingualKeyValue("35", "32") + '</a>';
+	str += '									<a id="emailBtn" class="hubBTn btn btn-green btn-lg semibold btnCreatAccountSign cousorPointer OTPVerificationBtn otpPopupLoginId disabled" data-otpeventtype="resetPassword" data-otptypename="email" data-a="36" data-b="Email">' + multilingualKeyValue("36", "32") + '</a>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '						</div>';
+	str += '						<div class="enterOtpOption dnElem">';
+	str += '							<h4 data-a="37" data-b="OTP Detail">' + multilingualKeyValue("37", "32") + '</h4>';
+	str += '							<p class="signInfoInst" data-a="38" data-b="A One-Time password has been sent to">';
+	str += '								' + multilingualKeyValue("38", "32") + ' <span class="OTPResetvalues" id="OTPSentTo"></span>';
+	str += '							</p>';
+	str += '							<div class="enterOTPSecTemp">';
+	str += '								<div class="otpValidator" style="display: block;">';
+	str += '									<form method="get" class="digit-group" data-group-name="digits" data-autosubmit="false" autocomplete="off">';
+	str += '										<input type="text" id="digit-1" name="digit-1" data-next="digit-2" maxlength="1" placeholder="">';
+	str += '										<input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1" maxlength="1" placeholder="">';
+	str += '										<input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2" maxlength="1" placeholder="">';
+	str += '										<input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3" maxlength="1" placeholder="">';
+	str += '										<span class="OTPwarning" data-a="39" data-b="OTP will expire in 10 Minutes">' + multilingualKeyValue("39", "32") + '</span>';
+	str += '									</form>';
+	str += '									<span class="refreshIco resendOTP" data-tooltip="tooltip" data-placement="top" data-a="40" data-b="Resend OTP" title="' + multilingualKeyValue("40", "32") + '"></span>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '							<div class="row">';
+	str += '								<div class="col-sm-12 margintop20">';
+	str += '									<p class="errorWrong in" id="customPasswordMessageBL-H" style="margin-bottom:0px;"></p>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '							<div class="enterNewCnfmPwd">';
+	str += '								<div class="row">';
+	str += '									<div class="form-group posRel col-md-12 pwdShowHideContainer">';
+	str += '										<input type="password" data-a="41" data-b="New Password" placeholder="' + multilingualKeyValue("41", "32") + '" id="new_passwordBL" class="form-control selectOpt" maxlength="15">';
+	str += '										<div class="selName" data-a="41" data-b="New Password">' + multilingualKeyValue("41", "32") + '</div>';
+	str += '									</div>';
+	str += '								</div>';
+	str += '								<div class="row">';
+	str += '									<div class="form-group posRel col-md-12 pwdShowHideContainer">';
+	str += '										<input type="password" data-a="42" data-b="Confirm Password" placeholder="' + multilingualKeyValue("42", "32") + '" id="confirm_passwordBL" class="form-control selectOpt" maxlength="15">';
+	str += '										<div class="selName" data-a="42" data-b="Confirm Password">' + multilingualKeyValue("42", "32") + '</div>';
+	str += '									</div>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '							<div class="row marginbottom20">';
+	str += '								<div class="col-sm-12">';
+	str += '									<a class="hubBTn btn btn-green btn-lg semibold btnUserSignin btnUpdateChangePwd cousorPointer OTPVerificationBtn stepTwo disabled" onclick="OTP.OTPScreens.validateChangePasswordBL();" data-otpeventtype="resetPassword" data-a="43" data-b="Update">' + multilingualKeyValue("43", "32") + '</a>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '						</div>';
+	str += '						<div class="vrfyEmailOption dnElem">';
+	str += '							<h4 data-a="44" data-b="Provide Details to Continue...">' + multilingualKeyValue("44", "32") + '</h4>';
+	str += '							<div class="provideDetEmail">';
+	str += '								<div class="errorWrong in loginWrong" id="errmsg" style="display: none;">';
+	str += '									<i class="far fa-frown"></i>';
+	str += '									<span class="fontsize12 semibold"></span>';
+	str += '								</div>';
+	str += '								<div class="row">';
+	str += '									<div class="form-group posRel col-md-12">';
+	str += '										<input type="text" data-a="10" data-b="Email ID" placeholder="' + multilingualKeyValue("10", "32") + '" id="useridForgotPwd" name="useridForgotPwd" class="form-control selectOpt">';
+	str += '										<div class="selName" data-a="10" data-b="Email ID">' + multilingualKeyValue("10", "32") + '</div>';
+	str += '									</div>';
+	str += '								</div>';
+	str += '								<div class="captchaImageTemp" id="captchaHolderFG">';
+	str += '								</div>';
+	str += '								<div class="row marginbottom20">';
+	str += '									<div class="col-sm-12">';
+	str += '										<a class="hubBTn btn btn-green btn-lg semibold btnUserSignin btnGetPwdByEmail cousorPointer" onclick="preValidationFGLink();" data-a="45" data-b="Get Reset Link">' + multilingualKeyValue("45", "32") + '</a>';
+	str += '									</div>';
+	str += '								</div>';
+	str += '							</div>';
+	str += '						</div>';
+	str += '					</div>';
+	str += '				</div>';
+	str += '			</div>';
+	str += '		</div>';
+	str += '	</div>';
+	str += '</div>';
+	$('#slide-out-right-forgotpassword').remove();
+	$('body').append(str);
+}
+function preValidationFGLink() {
+	if ($('#useridForgotPwd').val() == "") {
+		showErrorMsgInLogin(iHUB.multilingual.gmv('txt37'));
+		return false;
+	}
+	else {
+		iHUB.validation.resetValidationColourText();
+		if (validateCaptchaiHUBWS("captchaHolderFG")) {
+			forgetPasswordDataNew();
+		}
+	}
+}
+function buildNewAL(AL, moduleVisibility) {
+	(function rerunBuildNewAL() {
+		if ($('#slide-out-right-postsignin').length != 0) {
+			var alLength = Object.keys(AL).length;
+			if (alLength > 0) {
+				$('.selectProfileRow').removeClass('hidden');
+				var countDis = 0, countPub = 0, countCor = 0, countInter = 0, countCorpAdmin = 0, option = "", isAdminFound = false;
+				var txtUsrRoleN = $.trim($('#txtUsrRole').val()) != "" ? $.trim($('#txtUsrRole').val()) : $.trim(store.get('txtUsrRole'));
+				addUserProfileCard('learner', multilingualKeyValue("54", "34"));
+				$.each(AL, function (k, v) {
+					var orgStatus = $.trim(v.orgStatus).toLowerCase();
+					var txtOrgType = $.trim(v.txtOrgType).toLowerCase();
+					var txtOrgId = v.txtOrgId;
+					var txtOrganizationName = v.txtOrganizationName;
+					var txtOrganizationAddress = v.txtOrganizationAddress;
+					var IsAdmin = v.IsAdmin;
+					var orgImage = v.orgLogo;
+					var isAggregator = $.trim(v.isAggregator);
+					var ccmId = $.trim(v.CompanyId);
+					var premiumUser = $.trim(v.premiumUser);
+					if (orgImage == "" || orgImage == undefined || orgImage == "undefined") {
+						orgImage = "/iDH/dashboard/images/whiteBlank.jpg";
+					}
+					hideNewUIPart();
+					var activeClass = "";
+					if (orgStatus == "approved" || (orgStatus != "pending" && orgStatus != "on-hold")) {/* writing 2nd condition bcoz code not merged */
+						if (txtUsrRoleN.toLowerCase() == txtOrgType) {
+							if ($.trim(txtOrgId) == $.trim($('#txtCorporateId').val()) || $.trim(txtOrgId) == $.trim($('#txtDistributorId').val()) || $.trim(txtOrgId) == $.trim($('#txtPublisherId').val())) {
+								if ($.trim(txtOrgId) == $.trim($('#txtCorporateId').val())) {
+									store.set('isAggregator', isAggregator);
+									store.set('ccmId', ccmId);
+									store.set('premiumUser', premiumUser);
+								}
+								store.set('disPubDetails', txtOrgId + "~~" + txtOrganizationName);
+								activeClass = "active";
+							}
+						}
+						if (txtOrgType == "distributor") {
+							if (countDis == 0)
+								buildOrgDetails(txtOrgType, multilingualKeyValue("39", "34"));
+							$('#slide-out-right-' + txtOrgType).find('.userProfileItemsList ul').append('<li class="getMyProductLists enableEllipsis clearfix" data-type="distributor" data-value="' + $.trim(txtOrgId) + '" data-isDistributorAggregator="' + $.trim(isAggregator) + '" data-distributorName="' + $.trim(txtOrganizationName) + '" title="' + $.trim(txtOrganizationName) + '"><span>' + $.trim(txtOrganizationName) + '</span></li>');
+							countDis++;
+						}
+						else if (txtOrgType == "publisher") {
+							if (countPub == 0)
+								buildOrgDetails(txtOrgType, multilingualKeyValue("40", "34"));
+							$('#slide-out-right-' + txtOrgType).find('.userProfileItemsList ul').append('<li class="getMyProductLists enableEllipsis clearfix" data-type="publisher" data-value="' + $.trim(txtOrgId) + '" data-publisherName="' + $.trim(txtOrganizationName) + '" title="' + $.trim(txtOrganizationName) + '"><span>' + $.trim(txtOrganizationName) + '</span></li>');
+
+							if (IsAdmin.toLowerCase() == "y") {
+								option += "<option value=" + $.trim(txtOrgId) + ">" + $.trim(txtOrganizationName) + "</option>";
+								if (!isAdminFound) {
+									isAdminFound = true;
+									$("#whereForPrdcts").val($.trim(txtOrgId));
+									if (moduleVisibility.indexOf('6') > -1)
+										appendModules('239', 'Manage Products', '/iDH/Dashboard/ManageProducts', 'showManageProducts', 'PM');
+								}
+							}
+							countPub++;
+						}
+						else if (txtOrgType == "corporate") {
+							var isJobVisible = $.trim($('#isJobVisible').val()) != "" ? $.trim($('#isJobVisible').val()) : $.trim(store.get('isJobVisible'));
+							if ($.trim(isJobVisible) == "1") {
+								if (countCor == 0)
+									buildOrgDetails(txtOrgType, multilingualKeyValue("317", "34"));
+								$('#slide-out-right-' + txtOrgType).find('.userProfileItemsList ul').append('<li class="getMyProductLists enableEllipsis clearfix" data-type="corporate" data-value="' + $.trim(txtOrgId) + '" data-corporateName="' + $.trim(txtOrganizationName) + '" title="' + $.trim(txtOrganizationName) + '" data-isAggregator="' + isAggregator + '" data-ccmId="' + ccmId + '" data-premiumUser="' + premiumUser + '"><span>' + $.trim(txtOrganizationName) + '</span></li>');
+								countCor++;
+							}
+						}
+						else if (txtOrgType == "interviewer") {
+							var isJobVisible = $.trim($('#isJobVisible').val()) != "" ? $.trim($('#isJobVisible').val()) : $.trim(store.get('isJobVisible'));
+							if ($.trim(isJobVisible) == "1") {
+								if (countInter == 0)
+									buildOrgDetails(txtOrgType, 'Interviewer');
+								$('#slide-out-right-' + txtOrgType).find('.userProfileItemsList ul').append('<li class="getMyProductLists enableEllipsis clearfix" data-type="interviewer" data-value="' + $.trim(txtOrgId) + '" data-corporateName="' + $.trim(txtOrganizationName) + '" title="' + $.trim(txtOrganizationName) + '" data-isAggregator="' + isAggregator + '" data-ccmId="' + ccmId + '" data-premiumUser="' + premiumUser + '"><span>' + $.trim(txtOrganizationName) + '</span></li>');
+								countInter++;
+							}
+						}
+						else if (txtOrgType == "corporateadmin") {
+							var isJobVisible = $.trim($('#isJobVisible').val()) != "" ? $.trim($('#isJobVisible').val()) : $.trim(store.get('isJobVisible'));
+							if ($.trim(isJobVisible) == "1") {
+								if (countCorpAdmin == 0)
+									buildOrgDetails(txtOrgType, 'Admin');
+								$('#slide-out-right-' + txtOrgType).find('.userProfileItemsList ul').append('<li class="getMyProductLists enableEllipsis clearfix" data-type="corporateadmin" data-value="' + $.trim(txtOrgId) + '" data-corporateName="' + $.trim(txtOrganizationName) + '" title="' + $.trim(txtOrganizationName) + '" data-isAggregator="' + isAggregator + '" data-ccmId="' + ccmId + '" data-premiumUser="' + premiumUser + '"><span>' + $.trim(txtOrganizationName) + '</span></li>');
+								countCorpAdmin++;
+							}
+						}
+					}
+				});
+				enableSlimScroll('.slide-right-section .myLoginScrollSec', '100%', '#00abe1', 'false', 'true');
+				$("#orgForprdct").val($.trim(option));
+				enableTriggerForUserProfileCard();
+				afterModeChange();
+			}
+			else
+				$('.selectProfileRow').addClass('hidden');
+		} else {
+			setTimeout(rerunBuildNewAL, 200);
+		}
+	})();
+}
+function enableTriggerForUserProfileCard() {
+	$(document).on("click", '.userProfileCardTrigger', function () {
+		var dataType = $.trim($(this).parent().attr('data-type'));
+		if (dataType == "learner") {
+			learnerView();
+			clickRespectiveDashboard();
+		}
+		else
+			openTargetSlide('#slide-out-right-' + dataType);
+	});
+}
+function buildPostLoginCatalogue() {
+	var str = '';
+	str += '<div id="slide-out-right-postLoginCatalogue" class="slide-nav-right hidden">';
+	str += '	<div class="slide-right-section">';
+	str += '		<div class="myLoginScrollSec">';
+	str += '			<div class="slideRightContent postLoginCatalogue">';
+	str += '				<ul class="postLoginMenu">';
+	str += '				</ul>';
+	str += '			</div>';
+	str += '		</div>';
+	str += '	</div>';
+	str += '</div>';
+	$('#slide-out-right-postLoginCatalogue').remove();
+	$('body').append(str);
+	addFirstLevelCatalogueInHamburger('postLoginCatalogue');
+}
+function postLoginScreen() {
+	if (isNewLoginSignUp)
+		$('.subdropdown_menu.learner, .subdropdown_menu.distributor').remove();
+	var str = '';
+	str += '<div id="slide-out-right-postsignin" class="slide-nav-right hidden">';
+	str += '	<div class="slide-right-section">';
+	str += '		<div class="myLoginScrollSec">';
+	str += '			<a class="closeSlideNavRight cousorPointer" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+	str += '			<div class="slideRightContent">';
+	str += '				<div class="frmSectionSignin">';
+	str += '					<div class="signinUserDet">';
+	str += '						<div class=""><img class="signinUserFace" src="' + getFullUserImage($.trim($('#user_Image').val())) + '" onerror="this.src=\'/iDH/dashboard/images/default-user.png\'"></div>';
+	str += '						<div class="signinUserDetails">';
+	str += '							<span class="signinUserNameHead enableEllipsis" title="' + $.trim($('#txtDisplayName').val()) + '">' + $.trim($('#txtDisplayName').val()) + '</span>';
+	str += '							<span class="signinUserProfText">' + $.trim($('#txtUsrRole').val()) + '</span>';
+	str += '							<div class="dropdown companyName enableEllipsis hidden"></div>';
+	str += '							<span class="rtArrow userProfileCardTrigger hidden" data-tooltip="tooltip" data-placement="left" data-a="46" data-b="Edit" title="' + multilingualKeyValue("46", "32") + '"></span>';
+	str += '						</div>';
+	str += '						<div class="clearfix"></div>';
+	str += '					</div>';
+	str += '					<div class="row selectProfileRow hidden">';
+	str += '						<div class="col-sm-12">';
+	str += '							<div class="signinAsText selectProfAsTextPos">';
+	str += '								<span data-a="47" data-b="Select Profile As">' + multilingualKeyValue("47", "32") + '</span>';
+	str += '							</div>';
+	str += '						</div>';
+	str += '					</div>';
+	str += '					<div class="row signInAsUserProfile selectProfileRow hidden">';
+	str += '					</div>';
+	str += '					<div class="otherLinks row">';
+	str += '						<ul>';
+	str += '						</ul>';
+	str += '					</div>';
+	str += '					<div class="catalogueListMob row">';
+	str += '						<div class="catalogueMob">';
+	str += '							<ul>';
+	str += '								<li class="AM LM DM openPostLoginCatalogue">';
+	str += '									<span class="menu1" data-a="2" data-b="Catalogue">' + multilingualKeyValue("2", "32") + ' <span class="fwdArrow"></span></span>';
+	str += '								</li>';
+	str += '							</ul>';
+	str += '						</div>';
+	str += '						<div class="header_language hidden">';
+	str += '						</div>';
+	str += '					</div>';
+	str += '					<div class="row signInAsUserOptions selectRememberedRow hidden">';
+	str += '					</div>';
+	str += '					<div class="row">';
+	str += '						<div class="col-sm-12 marginbottom40">';
+	str += '							<a class="hubBTn btn btn-green btn-lg semibold btnCreatAccountSign btnSignOutUser cousorPointer" onclick="fnLogoutICMP();" data-a="48" data-b="Logout">' + multilingualKeyValue("48", "32") + '</a>';
+	str += '						</div>';
+	str += '					</div>';
+	str += '					<div class="row privacyPolicy">';
+	str += '						<a class="cousorPointer lnkTrance" onclick="closeAllSlide();showPolicyDetails();" data-a="49" data-b="Privacy Policy">' + multilingualKeyValue("49", "32") + '</a>';
+	str += '					</div>';
+	str += '				</div>';
+	str += '			</div>';
+	str += '		</div>';
+	str += '	</div>';
+	str += '</div>';
+	$('#slide-out-right-postsignin').remove();
+	$('body').append(str);
+	buildRightModals('signinaddaccount');
+	buildPostLoginCatalogue();
+	getRememberedLogins();
+	rememberedDevices();
+	checkVisibilityForSetAsDefault();
+}
+function buildLanguages() {
+	var str = '';
+	str += '<div>';
+	str += '	<div class="hdr_lan">';
+	str += '		<i class="globeimg" role="img"></i>';
+	str += '		<span class="lang_name"> English</span>';
+	str += '		<i class="langarrow"></i>';
+	str += '	</div>';
+	str += '</div>';
+	str += '<div class="langdropdown">';
+	str += '	<ul class="dropdown" role="listbox">';
+	str += '		<li class="langselected">';
+	str += '			<a class="eng_lang" href="javascript:void(0)">English</a>';
+	str += '			<a class="org_lang"> &nbsp; </a>';
+	str += '		</li>';
+	str += '		<li>';
+	str += '			<a class="eng_lang" href="javascript:void(0)">Hindi</a>';
+	str += '			<a href="javascript:void(0)" class="org_lang">à¤¹à¤¿à¤‚à¤¦à¥€ </a>';
+	str += '		</li>';
+	str += '		<li>';
+	str += '			<a class="eng_lang" href="javascript:void(0)">Bengali</a>';
+	str += '			<a href="javascript:void(0)" class="org_lang">à¦¬à¦¾à¦™à¦¾à¦²à¦¿</a>';
+	str += '		</li>';
+	str += '		<li>';
+	str += '			<a class="eng_lang" href="javascript:void(0)">Marathi</a>';
+	str += '			<a href="javascript:void(0)" class="org_lang">à¤®à¤°à¤¾à¤ à¥€</a>';
+	str += '		</li>';
+	str += '	</ul>';
+	str += '</div>';
+}
+function getRememberedLogins() {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=getrecentlogins&orgID=1016&txtInstanceId=1 */
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			subAction: "getallrememberedlogins"
+		},
+		dataType: "json",
+		success: function (result) {
+			var condn = iHUB.checkSessionOrTokeniDH(result);
+			if (eval(condn)) {
+				isRememberedLogins = false;
+				rememberedLogins = {};
+				rememberedLoginCount = 0;
+				if (typeof result == 'object') {
+					if (!jQuery.isEmptyObject(result)) {
+						isRememberedLogins = true;
+						rememberedLogins = result.responseDetails;
+						rememberedLoginCount = rememberedLogins.length;
+					}
+				}
+				buildRememberedLogins();
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+		}
+	});
+}
+function buildRememberedLogins() {
+	var str = "";
+	$('.selectRememberedRow').removeClass('hidden');
+	str += '<h4 data-a="23" data-b="Change Account"><span class="changeAccIco"></span> ' + multilingualKeyValue("23", "32") + '</h4>';
+	var displayBlock = '';
+	if ($('#slide-out-right-postsignin .signInAsUserOptions').hasClass('cardsActive'))
+		displayBlock = 'style="display: block;"';
+	str += '<div class="cardContainer" ' + displayBlock + '>';
+	if (rememberedLoginCount != 0) {
+		$.each(rememberedLogins, function (k, v) {
+			if ($.trim(v.app_seq_no) != $.trim($('#app_seq_no').val())) {
+				var displayName = $.trim(v.txtDisplayName);
+				var loginTypeL = $.trim(v.loginType).toLowerCase();
+				if (loginTypeL == "ionlogin" || loginTypeL == "smb")
+					loginTypeL = "ion";
+				str += '						<div class="col-sm-4 rememberedLogin' + k + '">';
+				str += '							<div class="userOptionCard" data-rememberedLoginId="' + k + '">';
+				str += '								<a class="icon_closeuser" type="button" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+				var days = $.trim(v.lastLogin);
+				var user_Image = getFullUserImage($.trim(v.user_Image));
+				if (user_Image == "")
+					str += '								<div class="userNameCircle">' + getNamesFirstLetters(displayName) + '<span class="' + loginTypeL + 'Icon"></span></div>';
+				else
+					str += '								<div><img class="userNameCircle userFaceCircle" src="' + user_Image + '" onerror="this.src=\'/iDH/dashboard/images/default-user.png\'"><span class="' + loginTypeL + 'Icon"></span></div>';
+				str += '								<div class="userNameDetText">' + displayName + '</div>';
+				if (Number(days) <= 1)
+					str += '								<div class="userNameActiveText" data-a="24" data-b="Active" data-a="25" data-b="day ago">' + multilingualKeyValue("24", "32") + ' ' + days + ' ' + multilingualKeyValue("25", "32") + '</div>';
+				else
+					str += '								<div class="userNameActiveText" data-a="24" data-b="Active" data-a="26" data-b="days ago">' + multilingualKeyValue("24", "32") + ' ' + days + ' ' + multilingualKeyValue("26", "32") + '</div>';
+				str += '							</div>';
+				str += '						</div>';
+			}
+		});
+	}
+	str += '						<div class="col-sm-4">';
+	str += '							<div class="userOptionCard newUserCardPlus">';
+	str += '								<span class="icon-AddUser"></span>';
+	str += '								<span class="newUserCardText" data-a="16" data-b="New User">' + multilingualKeyValue("16", "32") + '</span>';
+	str += '							</div>';
+	str += '						</div>';
+
+	str += '</div>';
+	$('.signInAsUserOptions').empty().append(str);
+	enableTriggerForUserOptionCardPostLogin();
+}
+function getFullUserImage(user_Image) {
+	var newPath = "", groupId = "";
+	groupId = $.trim($('#group_id').val());
+	if (groupId == "") {
+		groupId = $.trim($('#multilingualJsonPath').val()) == "" ? "g01" : ($.trim($('#multilingualJsonPath').val()).indexOf('/per/') == 0 ? $.trim($('#multilingualJsonPath').val()).split('/')[2] : "g01");
+	}
+	if (user_Image != "") {
+		newPath = user_Image.indexOf('EForms/image/ImageDocUpload') > -1 ? user_Image : (user_Image.indexOf('ImageDocUpload') > -1 ? $.trim("/per/" + groupId + "/pub/" + $('#orgId').val() + "/EForms/image/" + user_Image) : user_Image);
+	}
+	return newPath;
+}
+function getNamesFirstLetters(displayName) {
+	return (displayName[0] + $.trim($.trim(displayName.split(' ')[1])[0])).toUpperCase();
+}
+function enableTriggerForUserOptionCardPostLogin() {
+	$('.userOptionCard:not(.newUserCardPlus)').on("click", function (evt) {
+		var arrayId = Number($(this).attr('data-rememberedLoginId'));
+		if ($.trim(evt.target.className).indexOf('icon_closeuser') > -1)
+			removeRememberedLogin(arrayId);
+		else
+			loginWithRememberedLogins(arrayId);
+	});
+	$(".newUserCardPlus").on("click", function () {
+		addExternalLogins();
+		$('#slide-out-right-signinaddaccount .icon_addAccountBack').attr('data-source', 'postsignin');
+		openTargetSlide('#slide-out-right-signinaddaccount');
+	});
+}
+function removeRememberedLogin(arrayId) {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=removeremembereduser&orgID=1016&txtInstanceId=1&appSeqNo= */
+	var appSeqNo = rememberedLogins[arrayId].app_seq_no;
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			appSeqNo: appSeqNo,
+			subAction: "removeremembereduser"
+		},
+		dataType: "json",
+		success: function (result) {
+			var condn = iHUB.checkSessionOrTokeniDH(result);
+			if (eval(condn)) {
+				if (result.responseDetails == "success") {
+					$('.rememberedLogin' + arrayId).remove();
+					rememberedLogins.splice(arrayId, 1);
+					buildRememberedLogins();
+				}
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+		}
+	});
+}
+function loginWithRememberedLogins(arrayId) {
+	store.set('externalLoginsFirstTime', 'true');
+	var form = document.createElement("form");
+	form.className = "hidden";
+	var element1 = document.createElement("input");
+	var element2 = document.createElement("input");
+
+	form.method = "POST";
+	form.action = iHUB.url.iDH();
+
+	var appSeqNo = rememberedLogins[arrayId].app_seq_no;
+	element1.value = appSeqNo;
+	element1.name = "appSeqNo";
+	form.appendChild(element1);
+
+	element2.value = "switchaccount";
+	element2.name = "subAction";
+	form.appendChild(element2);
+
+	document.body.appendChild(form);
+
+	form.submit();
+}
+function buildOrgDetails(usrType, actualName) {
+	var str = "";
+	str += '<div id="slide-out-right-' + usrType + '" class="slide-nav-right hidden">';
+	str += '	<div class="slide-right-section">';
+	str += '		<div class="myLoginScrollSec">';
+	str += '			<a class="closeSlideNavRight cousorPointer" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+	str += '			<div class="slideRightContent">';
+	str += '				<div class="frmSectionSignin UserProfileHeadNavText">';
+	str += '					<a data-source="postsignin" class="icon_addAccountBack cousorPointer"></a>';
+	str += '					<h3 class="addAccountHeader">' + changeCaseFirstLetter(actualName) + '</h3>';
+	str += '					<div class="userProfileItemsList">';
+	str += '						<ul>';
+	str += '						</ul>';
+	str += '					</div>';
+	str += '				</div>';
+	str += '			</div>';
+	str += '		</div>';
+	str += '	</div>';
+	str += '</div>';
+	$('#slide-out-right-' + usrType).remove();
+	$('body').append(str);
+	addUserProfileCard(usrType, actualName);
+}
+function addAdditionalHeader(className) {
+	var str = "";
+	$('.mobileAdditionalHeader').remove();
+	$('.additionalbar_header ul li').each(function () {
+		if (!$(this).hasClass('hidden'))
+			str += $(($(this)[0].outerHTML).replace('post_login', '')).addClass('mobileAdditionalHeader')[0].outerHTML;
+	});
+	$('.' + className).append(str);
+	$(document).on('click', '.' + className + '>li>a', function () {
+		closeAllSlide();
+		closeHamburger();
+	});
+}
+function addUserProfileCard(usrType, actualName) {
+	var str = "";
+	str += '						<div class="col-sm-4" data-type="' + usrType + '">';
+	str += '							<div class="userProfileCard userProfileCardTrigger">';
+	str += '								<div class="icon_userProfile' + changeCaseFirstLetter(usrType) + '"></div>';
+	str += '								<div class="userNameDetText">' + actualName + '</div>';
+	str += '							</div>';
+	str += '						</div>';
+	$('.signInAsUserProfile [data-type="' + usrType + '"]').remove();
+	$('.signInAsUserProfile').append(str);
+}
+function responseValidateForFP(result, subAction, OTPEventType, OTPType, isResend, otpid) {
+	console.log('subAction : ' + subAction);
+	$('#digit-1, #digit-2, #digit-3, #digit-4').val('');
+	$('#new_passwordBL, #confirm_passwordBL').val('');
+	$('#new_passwordBL, #confirm_passwordBL').blur();
+	$('.btnUpdateChangePwd').addClass('disabled');
+	if ($.trim(isResend) == "") {
+		$('.forgotPwdSecTemp .pwdResetOption').slideToggle(300);
+		$('.forgotPwdSecTemp .enterOtpOption').slideToggle(300);
+		setTimeout(function () {
+			$('.enterOTPSecTemp .digit-group input').first().focus();
+		}, 300);
+	}
+}
+function afterModeChange() {
+	hideShowBasedOnRole();
+	closeAllSlide();
+}
+function hideShowBasedOnRole() {
+	var currId = "", currName = "";
+	var txtUsrRole = $.trim($('#txtUsrRole').val());
+	var smallRole = $.trim(txtUsrRole).toLowerCase();
+	$('.otherLinks ul li.AM, .catalogueListMob ul li.AM').addClass('hidden');
+	if (smallRole == "publisher") {
+		currId = $.trim($('#txtPublisherId').val());
+		currName = $.trim($('#txtPublisherName').val());
+		$('.otherLinks ul li.PM, .catalogueListMob ul li.PM').removeClass('hidden');
+	}
+	else if (smallRole == "distributor") {
+		currId = $.trim($('#txtDistributorId').val());
+		currName = $.trim($('#txtDistributorName').val());
+		$('.otherLinks ul li.DM, .catalogueListMob ul li.DM').removeClass('hidden');
+	}
+	else if (smallRole == "corporate") {
+		currId = $.trim($('#txtCorporateId').val());
+		currName = $.trim($('#txtCorporateName').val());
+		$('.otherLinks ul li.CM, .catalogueListMob ul li.CM').removeClass('hidden');
+	}
+	else if (smallRole == "interviewer") {
+		currId = $.trim($('#txtCorporateId').val());
+		currName = $.trim($('#txtCorporateName').val());
+		$('.otherLinks ul li.CM, .catalogueListMob ul li.CM').removeClass('hidden');
+	}
+	else if (smallRole == "corporateadmin") {
+		currId = $.trim($('#txtCorporateId').val());
+		currName = $.trim($('#txtCorporateName').val());
+		$('.otherLinks ul li.CM, .catalogueListMob ul li.CM').removeClass('hidden');
+	}
+	else if (smallRole == "learner") {
+		$('.otherLinks ul li.LM, .catalogueListMob ul li.LM').removeClass('hidden');
+	}
+
+	$('.signInAsUserProfile .col-sm-4').removeClass('hidden');
+	$('.signInAsUserProfile [data-type="' + smallRole + '"]').addClass('hidden');
+	$('.signinUserDet .signinUserDetails').attr('data-type', smallRole);
+	$('.signinUserDet .companyName').text(currName).attr('title', currName);
+	var modifiedRole = txtUsrRole;
+	if (smallRole == "corporateadmin")
+		modifiedRole = txtUsrRole.replace('Corporate', '');
+	$('.signinUserDet .signinUserProfText').text(findMultilingualValueOfRole(modifiedRole));
+
+	if (smallRole != "learner")
+		$('.signinUserDet .companyName, .signinUserDet .rtArrow.userProfileCardTrigger').removeClass('hidden');
+	else
+		$('.signinUserDet .companyName, .signinUserDet .rtArrow.userProfileCardTrigger').addClass('hidden');
+	checkEnableEllipsis();
+}
+function setUserData() {
+	$('#slide-out-right-postsignin .signinUserFace').attr('src', getFullUserImage($.trim($('#user_Image').val())));
+	$('#slide-out-right-postsignin .signinUserNameHead').val($.trim($('#txtDisplayName').val())).attr('title', $.trim($('#txtDisplayName').val()));
+}
+function getRememberedLoginsBrowser() {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=getrememberedlogins */
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			subAction: "getrememberedlogins"
+		},
+		dataType: "json",
+		success: function (result) {
+			var condn = iHUB.checkSessionOrTokeniDH(result);
+			if (eval(condn)) {
+				if (typeof result.responseDetails == 'object') {
+					appendRememberedDevicesData(result.responseDetails);
+				}
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+			openDeviceSection();
+		}
+	});
+}
+function logoutFromAdevice(cookieId) {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=logoutfromadevice&cookieId=14 */
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			cookieId: cookieId,
+			subAction: "logoutfromadevice"
+		},
+		dataType: "json",
+		success: function (result) {
+			var condn = iHUB.checkSessionOrTokeniDH(result);
+			if (eval(condn)) {
+				if (result.responseDetails == "success") {
+					$('.deviceId' + cookieId).remove();
+				}
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+			if ($.trim($('.deviceSection_content').html()) == "")
+				noRememberedDevices();
+		}
+	});
+}
+function logoutFromAllDevices() {
+	/* https://qaact.tcsion.com/iDH/Hub?subAction=logoutfromalldevices */
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			subAction: "logoutfromalldevices"
+		},
+		dataType: "json",
+		success: function (result) {
+			var condn = iHUB.checkSessionOrTokeniDH(result);
+			if (eval(condn)) {
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+			closeDeviceSection();
+		}
+	});
+}
+function rememberedDevices() {
+	var str = "";
+	str += '<div class="deviceSection">';
+	str += '	<div class="deviceSection_title" data-a="50" data-b="Devices">';
+	str += '		' + multilingualKeyValue("50", "32") + '';
+	str += '		<a class="closeDeviceSection cousorPointer" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+	str += '	</div>';
+	str += '	<div class="deviceSection_patch hidden">';
+	str += '		<a class="cousorPointer" onclick="logoutFromAllDevices();" data-a="51" data-b="Logout from all devices">' + multilingualKeyValue("51", "32") + '</a>';
+	str += '	</div>';
+	str += '	<div class="deviceSection_content">';
+	str += '	</div>';
+	str += '</div>';
+	$('.deviceSection').remove();
+	$('body').append(str);
+	postActionDeviceSection();
+	if (isNewLoginSignUp)
+		$('.devicesListDiv').removeClass('hidden');
+}
+function appendRememberedDevicesData(rememberedDevicesData) {
+	var currentDevice = [], normalDevice = [];
+	$.each(rememberedDevicesData, function (k, v) {
+		var isCurrentDevice = false;
+		if ($.trim(v.currentDevice) == 'yes')
+			isCurrentDevice = true;
+		var str = "";
+		str += '		<div class="deviceDetails deviceId' + v.rm_cookieId + '">';
+		str += '			<a class="cousorPointer" onclick="logoutFromAdevice(\'' + v.rm_cookieId + '\');" data-a="52" data-b="Logout">' + multilingualKeyValue("52", "32") + ' </a>';
+		var current = isCurrentDevice ? ' (' + multilingualKeyValue("53", "32") + ')' : '';/* data-a="52" data-b="Current" */
+		str += '			<p>' + v.device + current + '</p>';
+		str += '			<div class="details_col">';
+		str += '				<span data-a="54" data-b="Operating System">' + multilingualKeyValue("54", "32") + '</span>';
+		str += '				<span>' + v.os + '</span>';
+		str += '			</div>';
+		str += '			<div class="details_col">';
+		str += '				<span data-a="55" data-b="IP Address">' + multilingualKeyValue("55", "32") + '</span>';
+		str += '				<span>' + v.rm_ipAddress + '</span>';
+		str += '			</div>';
+		str += '			<div class="details_col">';
+		str += '				<span data-a="56" data-b="Remembered Date">' + multilingualKeyValue("56", "32") + '</span>';
+		str += '				<span>' + v.rm_loggedDateFormat + '</span>';
+		str += '			</div>';
+		str += '			<div class="details_col">';
+		str += '				<span data-a="57" data-b="Browser Details">' + multilingualKeyValue("57", "32") + '</span>';
+		str += '				<span>' + $.trim(v.browser).split('-')[0] + '</span>';
+		str += '			</div>';
+		str += '		</div>';
+		if (isCurrentDevice)
+			currentDevice.push(str);
+		else
+			normalDevice.push(str);
+	});
+	var strNew = $.trim(currentDevice.join('')) + $.trim(normalDevice.join(''));
+	if ($.trim(strNew) != '') {
+		$('.deviceSection_content').empty().append(strNew);
+		$('.deviceSection_patch').removeClass('hidden');
+	}
+	else
+		noRememberedDevices();
+	enableSlimScroll('.deviceSection .deviceSection_content', 'calc(100% - 70px)', '#00abe1', 'false', 'true');
+}
+function noRememberedDevices() {
+	$('.deviceSection_patch').addClass('hidden');
+	$('.deviceSection_content').empty().append('<span data-a="58" data-b="No remembered devices">' + multilingualKeyValue("58", "32") + '</span>');
+}
+function postActionDeviceSection() {
+	$('.deviceSection').css('margin-top', headerOuterHeight());
+
+	$(document).on('click', '.devicesList', function () {
+		getRememberedLoginsBrowser();
+	});
+
+	$(document).on('click', '.closeDeviceSection', function () {
+		closeDeviceSection();
+	});
+
+	$(document).on("mouseup", function (e) {
+		var container = $(".deviceSection");
+		if (!container.is(e.target) && container.has(e.target).length === 0) {
+			container.css({ "right": "-105%" });
+			$("body,html").removeClass("fixed_body");
+		}
+	});
+}
+function openDeviceSection() {
+	closeAllSlide();
+	$('.deviceSection').css('margin-top', headerOuterHeight());
+	$(".deviceSection").css({ "right": "0" });
+	$("body,html").addClass("fixed_body");
+}
+function closeDeviceSection() {
+	$(".deviceSection").css({ "right": "-105%" });
+	$("body,html").removeClass("fixed_body");
+}
+function appendModules(mlID, moduleName, routelink, className, moduleVisibleMode) {
+	var mdName = $.trim(mlID) == "" ? moduleName : multilingualKeyValue(mlID, "34");
+	var str = '<li class="AM ' + moduleVisibleMode + ' ' + className + '_li"><a data-a="' + mlID + '" data-b="' + moduleName + '" data-routelink="' + routelink + '" class="' + className + ' routelink">' + mdName + '</a></li>';
+	$('.otherLinks ul').append(str);
+	$('.catalogueListMob ul li:first').after(str);
+}
+function buildModulesNewAL(response) {
+	console.log("buildModulesNewAL called");
+	var newResponse = JSON.stringify(response);
+	var obj = JSON.parse(newResponse);
+	var val1, val2;
+	var moduleVisibility = obj.moduleVisibility == undefined ? "" : obj.moduleVisibility;
+	globalModuleVisibility = moduleVisibility;
+
+	//setting txtUsrRole to store since now coming directly from backend in iDH
+	if ($.trim($('#txtUsrRole').val()) != "")
+		store.set('txtUsrRole', $.trim($('#txtUsrRole').val()));
+
+	(function rerunOtherLinks() {
+		console.log("otherLinks length : " + $('.otherLinks').length);
+		if ($('.otherLinks').length > 0) {
+			/* 1:My Subscriptions, 2:My Transaction History, 3:Partner Management, 4:My Organizations, 5:My Account, 6:Manage Products, 7:Manage Users, 8:My Announcements, 9:My Wishlist */
+			$('.otherLinks ul').empty();
+			if (moduleVisibility.indexOf('9') > -1 && $.trim(externalId) == "")
+				appendModules('65', 'My Wishlist', '/iDH/Wishlist', 'generateWishlist', 'LM ');
+			if (moduleVisibility.indexOf('2') > -1)
+				appendModules('236', 'My Transaction History', '/iDH/Dashboard/TransactionHistory', 'myTransactionHistory', 'LM PM DM');
+			if (moduleVisibility.indexOf('5') > -1 && $.trim(externalId) == "") {
+				var isRichProfile = $.trim($('#isRichProfile').val()) == "" ? $.trim(store.get('isRichProfile')) : $.trim($('#isRichProfile').val());
+				var routeLinkMA = '/iDH/MyAccount';
+				if (isRichProfile == "1")
+					routeLinkMA = '/iDH/Dashboard/EditProfile';
+				appendModules('225', 'My Account', routeLinkMA, 'showMyAccount', 'LM ');
+			}
+			if (moduleVisibility.indexOf('15') > -1 && $.trim(externalId) == "")
+				appendModules('316', 'Manage Notification', '/iDH/NotificationManagement', 'showNotificationManagement', 'LM PM DM CM');
+			if (moduleVisibility.indexOf('10') > -1)/* && $('.additionalbar_header #showDashboardHeader').length==0 */
+				appendModules('240', 'My Dashboard', '', 'showDashboard newDashboardHref', 'LM PM DM CM');
+			if (moduleVisibility.indexOf('4') > -1)
+				appendModules('238', 'My Organizations', '/iDH/Dashboard/MyOrganization', 'showMyOrganization', 'LM PM DM CM');
+
+			for (label in obj) {
+				if (label == "responseDetails") {
+					var val = obj[label];
+					if (val.token != null && val.token != undefined) {
+						iHUB.token.set(val.token);/* $('#tokenId').val(val.token); */
+					}
+				}
+				if (label == "AL") {
+					/* log('myPublisherAndDistributorDetails'); */
+					val2 = obj.AL;
+					globalDisPubList = obj.AL;
+					if (typeof checkVisibilityForSetAsDefault == 'function')
+						checkVisibilityForSetAsDefault();
+					buildNewAL(val2, moduleVisibility);
+					var val2Length = $.map(val2, function (n, i) { return i; }).length;
+					if ($.trim(externalId) == "") {
+						if (val2Length > 0 && moduleVisibility.indexOf('3') > -1)
+							appendModules('237', 'Partner Management', '/iDH/Dashboard/PartnerManagement', 'showAsDistributors', 'PM DM');
+					}
+				}
+			}
+			modifyHREF();
+
+		} else {
+			setTimeout(rerunOtherLinks, 200);
+		}
+	})();
+}
+function checkEnableEllipsis() {
+	$('.enableEllipsis').each(function (i) {
+		if (isEllipsisActive(this)) { }
+		else {
+			$(this).removeAttr('data-original-title');
+			$(this).removeAttr('data-title');
+			$(this).removeAttr('title');
+		}
+	});
+}
+function isEllipsisActive(e) {
+	return (e.offsetWidth < e.scrollWidth);
+}
+function headerOuterHeight() {
+	var height = $('header').outerHeight();
+	if (typeof customSetModalHeight == 'function')
+		height = customSetModalHeight();
+	return height;
+}
+function showResendLinkMsg(encryptString) {
+	$('.verificationLink').html('<p data-a="70" data-b="Your account is already registered." data-a71="71" data-b71="Please click on the validation link shared via email or">' + multilingualKeyValue("70", "32") + '</p>' + multilingualKeyValue("71", "32") + ' <a class="cousorPointer" onclick="resendVerificationLink(\'' + encryptString + '\');" data-a="72" data-b="resend the verification link.">' + multilingualKeyValue("72", "32") + '</a>');
+	$('.verificationLink').removeClass('hidden');
+	setTimeout(function () {
+		$('.verificationLink').addClass('hidden');
+		$('.verificationLink').html('');
+	}, 4.8 * 60 * 1000);
+}
+function resendVerificationLink(encryptString) {
+	$('.verificationLink').addClass('hidden');
+	if ($.trim(encryptString) != "") {
+		$.ajax({
+			type: "POST",
+			url: "/iDH/iHUBWS",
+			data: {
+				orgID: orgID,
+				masterform_id: masterform_id,
+				txtInstanceId: instanceId,
+				reVerificationtriggerKey: encryptString,
+				subAction: "reverificationmail"
+			},
+			dataType: "json",
+			success: function (result) {
+				var response = $.trim(result.responseDetails).toLowerCase();
+				if (response == "mail sent")
+					resendVerificationLinkPost();
+				else
+					alert("Invalid request");
+
+			},
+			error: function (x, e) {
+				if (e == "parsererror" && x.responseText == "session is not avaliable") {
+					createIncorrectURLLoader();
+					fnLogoutICMP('1');
+					return false;
+				}
+			},
+			complete: function () {
+			}
+		});
+	}
+}
+function resendVerificationLinkPost() {
+	$('#slide-out-right-emailActivation').remove();
+	var source = $.trim($('.slide-nav-right:visible').attr('id')).replace('slide-out-right-', '');
+	var str = "";
+	str += '<div id="slide-out-right-emailActivation" class="slide-nav-right hidden">';
+	str += '	<div class="slide-right-section">';
+	str += '		<div class="myLoginScrollSec">';
+	str += '			<a class="closeSlideNavRight cousorPointer" data-tooltip="tooltip" data-placement="left" data-a="4" data-b="Close" title="' + multilingualKeyValue("4", "32") + '"></a>';
+	str += '			<div class="slideRightContent">';
+	str += '				<div class="frmSectionSignin forgotPass">';
+	str += '					<a class="icon_addAccountBack cousorPointer" data-source="' + source + '"></a>';
+	str += '					<h3 class="addAccountHeader" data-a="67" data-b="Email Verification">' + multilingualKeyValue("67", "32") + '</h3>';
+	str += '					<div class="sentEmail">';
+	str += '						<span></span>';
+	str += '						<p data-a="68" data-b="We have sent a validation mail to you registered Email ID.">' + multilingualKeyValue("68", "32") + '</p>';
+	str += '						<a class="cousorPointer" onclick="checkMyPage();" data-a="69" data-b="Sign In Now">' + multilingualKeyValue("69", "32") + '</a>';
+	str += '					</div>';
+	str += '				</div>';
+	str += '			</div>';
+	str += '		</div>';
+	str += '	</div>';
+	str += '</div>';
+	$('body').append(str);
+	openTargetSlide('#slide-out-right-emailActivation');
+}
+function checkVisibilityForSetAsDefault() {
+	$('.setAsDefault-li').addClass('hidden');
+	$('.setAsDefault-li .setAsDefault').removeClass('active noAnchorAction');
+	$('.setAsDefault-li .setAsDefault').removeAttr('onclick');
+
+	var default_role_screen_orgId = $.trim($('#default_role_screen_orgId').val());
+	var app_seq_no = $.trim($('#app_seq_no').val());
+	var txtUsrRole = $.trim($('#txtUsrRole').val());
+	var defaultType = "", defaultOrgNameId = "", currentOrgId = app_seq_no, dontIncludeOnclickAttr = false;
+
+	if (txtUsrRole.toLowerCase() == "publisher")
+		currentOrgId = $.trim($('#txtPublisherId').val());
+	else if (txtUsrRole.toLowerCase() == "distributor")
+		currentOrgId = $.trim($('#txtDistributorId').val());
+	else if (txtUsrRole.toLowerCase() == "corporate")
+		currentOrgId = $.trim($('#txtCorporateId').val());
+	else if (txtUsrRole.toLowerCase() == "interviewer")
+		currentOrgId = $.trim($('#txtCorporateId').val());
+	else if (txtUsrRole.toLowerCase() == "corporateadmin")
+		currentOrgId = $.trim($('#txtCorporateId').val());
+
+	if (default_role_screen_orgId != "" && default_role_screen_orgId == app_seq_no) {
+		if (txtUsrRole.toLowerCase() == "learner") {
+			$('.setAsDefault-li .setAsDefault').addClass('active noAnchorAction');
+			$('.setAsDefault-li .setAsDefault').removeAttr('onclick');
+			dontIncludeOnclickAttr = true;
+		}
+		$('.setAsDefault-li').removeClass('hidden');
+		defaultType = multilingualKeyValue("54", "34"); /* "Learner" */
+	}
+	else if (typeof globalDisPubList == "object") {
+		var val2Length = Object.keys(globalDisPubList).length;
+		if (val2Length > 0) {
+			$.each(globalDisPubList, function (k, v) {
+				var txtOrgType = $.trim(v.txtOrgType);
+				var txtOrganizationName = $.trim(v.txtOrganizationName);
+				var txtOrgId = $.trim(v.txtOrgId);
+
+				if ($.trim(v.orgStatus).toLowerCase() == "approved") {
+					$('.setAsDefault-li').removeClass('hidden');
+					if (default_role_screen_orgId != "" && txtOrgId == default_role_screen_orgId) {
+						defaultType = findMultilingualValueOfRole(txtOrgType);
+						defaultOrgNameId = txtOrganizationName + " (" + txtOrgId + ")";
+					}
+					if (currentOrgId == default_role_screen_orgId) {
+						$('.setAsDefault-li .setAsDefault').addClass('active noAnchorAction');
+						$('.setAsDefault-li .setAsDefault').removeAttr('onclick');
+						dontIncludeOnclickAttr = true;
+					}
+				}
+			});
+		}
+	}
+	if (!dontIncludeOnclickAttr)
+		$('.setAsDefault-li .setAsDefault').attr("onclick", "openSetAsDefaultModal('" + defaultType + "','" + defaultOrgNameId + "','" + currentOrgId + "')");
+}
+function openSetAsDefaultModal(defaultType, defaultOrgNameId, currentOrgId) {
+	$('#setAsModal').remove();
+	var str = "";
+	str += '<div id="setAsModal" class="modalWrappr hidden">';
+	str += '    <div class="pp_modal_content">';
+	str += '        <div class="pp_modal_body">';
+	str += '            <span class="errorIcon"></span>';
+	str += '            <div class="popupDetails">';
+	str += '                <p>Are you sure you want to make this as default role?</p>';
+	if ($.trim($('#default_role_screen_orgId').val()) != "") {
+		str += '                <div class="widthLeft">Your Selection</div>';
+		str += '                <div class="widthRight">';
+		str += '                    <span class="semibold">' + defaultType + '</span>';
+		if (defaultType.toLowerCase() != "learner")
+			str += '                    <span>' + defaultOrgNameId + '</span>';
+		str += '                </div>';
+	}
+	str += '            </div>';
+	str += '            <div class="pp_button_wrapper">';
+	str += '                <a onclick="setAsDefault(\'' + currentOrgId + '\')" class="popup_okBtn setAsButton">Yes</a>';
+	str += '                <a onclick="closeModalWrapprModal()" class="popup_cancelBtn">No</a>';
+	str += '            </div>';
+	str += '        </div>';
+	str += '    </div>';
+	str += '</div>';
+	$('body').append(str);
+	$('#setAsModal').removeClass('hidden');
+}
+function closeModalWrapprModal() {
+	$('.modalWrappr').addClass('hidden');
+}
+function setAsDefault(defaultOrgId) {
+	if (defaultOrgId != "") {
+		$.ajax({
+			type: "POST",
+			url: iHUB.url.iDH(),
+			data: {
+				orgID: orgID,
+				masterform_id: masterform_id,
+				txtInstanceId: instanceId,
+				defaultOrgId: $.trim(defaultOrgId),
+				subAction: "updateDefaultRoleScreen"
+			},
+			dataType: "json",
+			success: function (result) {
+				closeModalWrapprModal();
+				var updateStatus = Number($.trim(result.updateStatus));
+				if (updateStatus > 0) {
+					$('.setAsDefault-li .setAsDefault').addClass('active noAnchorAction');
+					$('.setAsDefault-li .setAsDefault').removeAttr('onclick');
+					$('#default_role_screen_orgId').val(defaultOrgId);
+				}
+				else
+					alert("There has been some error");
+			},
+			error: function (x, e) {
+				if (e == "parsererror" && x.responseText == "session is not avaliable") {
+					createIncorrectURLLoader();
+					fnLogoutICMP('1');
+					return false;
+				}
+			},
+			complete: function () {
+			}
+		});
+	}
+}
+function openExternalLoginsRememberModal(openForcefully) {
+	var showExternalLoginsRememberModal = false;
+	var loginTypeL = $.trim($('#loginType').val()).toLowerCase();
+	if (loginTypeL == "ionlogin" || loginTypeL == "smb")
+		loginTypeL = "ion";
+	if ($.trim(store.get('externalLoginsFirstTime')) == "true" && loginTypeL != 'ihub') {
+		var alert_actions_json = $.trim($('#alert_actions_json').val());
+		var alertActionsJSON = {}, dontAsk_rememberMe_external = "";
+		try {
+			alertActionsJSON = JSON.parse(alert_actions_json);
+		}
+		catch (err) {
+			console.log("error in parsing : " + err);
+		}
+		if (!jQuery.isEmptyObject(alertActionsJSON))
+			dontAsk_rememberMe_external = $.trim(alertActionsJSON["dontAsk_rememberMe_external"]);
+
+		if (dontAsk_rememberMe_external == "1")
+			return false;
+
+		showExternalLoginsRememberModal = true;
+	}
+	if ($.trim(openForcefully) == "1")
+		showExternalLoginsRememberModal = true;
+	if (showExternalLoginsRememberModal && "ion,facebook,google,twitter".split(',').indexOf(loginTypeL) > -1) {
+		$('#externalLoginsRememberModal').remove();
+		var str = "";
+		str += '<div id="externalLoginsRememberModal" class="modalWrappr">';
+		str += '    <div class="pp_modal_content">';
+		str += '        <div class="popup_modal_head ' + loginTypeL + '_head"></div>';
+		str += '        <div class="pp_modal_body">';
+		str += '            <div class="' + loginTypeL + '_popup_icon"></div>';
+		str += '            <h2 class="greet_name">Hi, ' + $('#txtDisplayName').val() + '</h2>';
+		str += '            <p class="pp_msg">You have logged in with ' + changeCaseFirstLetter(loginTypeL) + ' Account</p>';
+		str += '            <p class="pp_msg">Do you want to remember this account for future use?</p>';
+		str += '            <div class="pp_checkbox_container">';
+		str += '                <label class="checkbox_msg">';
+		str += '                    Do not show me again';
+		str += '                    <input type="checkbox" name="dontShowAgain"/>';
+		str += '                    <span class="checkmark"></span>';
+		str += '                </label>';
+		str += '            </div>';
+		str += '            <div class="pp_button_wrapper">';
+		str += '                <a onclick="externalLoginsRememberActions();" class="popup_okBtn">OK</a>';
+		str += '                <a onclick="closeModalWrapprModal();" class="popup_cancelBtn">Cancel</a>';
+		str += '            </div>';
+		str += '        </div>';
+		str += '    </div>';
+		str += '</div>';
+		$('body').append(str);
+		$('#externalLoginsRememberModal').removeClass('hidden');
+		store.set('externalLoginsFirstTime', 'false');
+	}
+}
+function externalLoginsRememberActions() {
+	var subAction = "addToRememberedLogins";
+	var alert_actions_json = {};
+	if ($('[name="dontShowAgain"]:checked').length > 0) {
+		subAction = "updateUserAlertActions";
+		var obj = new Object();
+		obj["dontAsk_rememberMe_external"] = "1";
+		alert_actions_json = JSON.stringify(obj);
+	}
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			orgID: orgID,
+			masterform_id: masterform_id,
+			txtInstanceId: instanceId,
+			alert_actions_json: alert_actions_json,
+			subAction: subAction
+		},
+		dataType: "json",
+		success: function (result) {
+			closeModalWrapprModal();
+			var responseDetails = $.trim(result.responseDetails);
+			if (subAction == "addToRememberedLogins") {
+				console.log($.trim(result.responseDetails));
+				if (responseDetails == "added")
+					console.log(responseDetails);
+			}
+			else {
+				if (responseDetails != "")
+					$('#alert_actions_json').val(JSON.stringify(responseDetails));
+				else
+					alert("There has been some error");
+			}
+		},
+		error: function (x, e) {
+			if (e == "parsererror" && x.responseText == "session is not avaliable") {
+				createIncorrectURLLoader();
+				fnLogoutICMP('1');
+				return false;
+			}
+		},
+		complete: function () {
+		}
+	});
+}
+function findMultilingualValueOfRole(txtOrgType) {
+	var txtOrgType = txtOrgType.toLowerCase();
+	var returnRole = "";
+	if (txtOrgType == "learner")
+		returnRole = multilingualKeyValue("54", "34");
+	else if (txtOrgType == "distributor")
+		returnRole = multilingualKeyValue("39", "34");
+	else if (txtOrgType == "publisher")
+		returnRole = multilingualKeyValue("40", "34");
+	else if (txtOrgType == "corporate")
+		returnRole = multilingualKeyValue("317", "34");
+	else if (txtOrgType == "interviewer")
+		returnRole = 'Interviewer';
+	else if (txtOrgType == "corporateadmin")
+		returnRole = 'Admin';
+	return returnRole;
+}

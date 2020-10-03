@@ -1,0 +1,202 @@
+var jsondata={},globalMasterJSON={};
+var groupID="",pageID="",defaultPageId="34";
+var multilingualPathJson,multilingualPath,masterJson,keyUrl;
+
+function setBasicValuesMultilingual(){
+	groupID = $.trim(window.parent.$('#group_id').val())=="" ? ($.trim(window.parent.$('#groupId').val())=="" ? "g01" : $.trim(window.parent.$('#groupId').val())) : $.trim(window.parent.$('#group_id').val());
+	orgID = $.trim(window.parent.$('#orgId').val())=="" ? "1016" : $.trim(window.parent.$('#orgId').val());
+	instanceID = $.trim(window.parent.$('#instanceId').val())=="" ? "1" : $.trim(window.parent.$('#instanceId').val());
+	pageID = $.trim($('#page_id').text());
+	languageID = $('#languageId_div').text();
+	languageID = $.trim(languageID)=="" ? '1' : $.trim(languageID);
+}
+
+function multilingualReplace(data,pageid){	
+	setBasicValuesMultilingual();
+	if(!jQuery.isEmptyObject(globalMasterJSON) && Object.keys(globalMasterJSON).length != 0 && globalMasterJSON.hasOwnProperty('m'+pageid)){
+		var pageJSON=globalMasterJSON['m'+pageid];
+		if(!jQuery.isEmptyObject(pageJSON) && Object.keys(pageJSON).length != 0){
+			var requiredJSON = pageJSON['0'];
+			if(pageJSON.hasOwnProperty(languageID))
+				requiredJSON = pageJSON[languageID];
+			replaceHtmlValuesMultilingual(requiredJSON,pageid);
+		}
+	}
+}
+
+function replaceHtmlValuesMultilingual(keyValueJson,pageid){
+	for (var key in keyValueJson) {
+		var value = keyValueJson[key];
+		var pageKeyPair = $('[data-m'+pageid+'="'+key+'"]');
+		/* console.log("Length of pair : "+pageKeyPair.length); */
+		if(pageKeyPair.length > 0){
+			pageKeyPair.each(function(){
+				/* console.log("For Page id : "+pageid+" => Replacing value : "+value+" for key : "+key); */
+				var showAttr=$.trim($(this).attr('data-multilingualDisplayType'))=="" ? $(this).attr('data-m-DisplayType') : $(this).attr('data-multilingualDisplayType');
+				var findString=$('[data-m'+pageid+'="'+key+'"][data-m-DisplayType="'+showAttr+'"]');
+				
+				if(showAttr=="html")
+					findString.html(value);
+				if(showAttr=="input")
+					findString.val(value);
+				if(showAttr!="input" && showAttr!="html")
+					findString.attr(showAttr,value);
+			});
+		}
+	}
+}
+
+function multilingualKeyValue(key,pageid){
+	setBasicValuesMultilingual();
+	var value1="";
+	if(!jQuery.isEmptyObject(globalMasterJSON) && Object.keys(globalMasterJSON).length != 0 && globalMasterJSON.hasOwnProperty('m'+pageid)){
+		var pageJSON=globalMasterJSON['m'+pageid];
+		if(!jQuery.isEmptyObject(pageJSON) && Object.keys(pageJSON).length != 0){
+			if(pageJSON.hasOwnProperty(languageID)){
+				var keyValueJson=pageJSON[languageID];
+				if(!jQuery.isEmptyObject(keyValueJson) && Object.keys(keyValueJson).length != 0 && keyValueJson.hasOwnProperty($.trim(key))){
+					value1 = keyValueJson[$.trim(key)];
+				}
+				else if(pageJSON.hasOwnProperty('0')){
+					var keyValueJsonDefault=pageJSON['0'];
+					if(!jQuery.isEmptyObject(keyValueJsonDefault) && Object.keys(keyValueJsonDefault).length != 0 && keyValueJsonDefault.hasOwnProperty($.trim(key))){
+						value1 = keyValueJsonDefault[$.trim(key)];
+					}
+				}
+			}
+			else if(pageJSON.hasOwnProperty('0')){
+				var keyValueJsonDefault=pageJSON['0'];
+				if(!jQuery.isEmptyObject(keyValueJsonDefault) && Object.keys(keyValueJsonDefault).length != 0 && keyValueJsonDefault.hasOwnProperty($.trim(key))){
+					value1 = keyValueJsonDefault[$.trim(key)];
+				}
+			}
+		}
+		value1 = value1.replace(/@~@lt@~@/gi,'<').replace(/@~@gt@~@/gi,'>').replace(/@~@and@~@/gi,'&');
+		/* console.log("In new approach => Pageid : "+pageid+" @@ key : "+key+" @@ value : "+value1); */
+	}
+	return value1;
+}
+
+function fetchMultingualPathJson(pageid){
+	jsondata={};
+	setBasicValuesMultilingual();
+	
+	if(!jQuery.isEmptyObject(multilingualPathJson)){
+		if($.trim(pageid)=="")
+			callDefaultPageMultilingual();
+		callMultilingalPathPageSpecificJson(pageid);
+	}
+	else{
+		var url="/per/"+groupID+"/pub/"+orgID+"/iDH/instance/"+instanceID+"/multilingualJSON/MultilingualData.json?version="+$.trim(iHUB.version.get());	
+		$.ajax({
+			method: "GET",
+			url: url,
+			cache:true,
+			dataType: "json", 
+			success: function(data){
+				multilingualPathJson=data;
+				if($.trim(pageid)=="")
+					callDefaultPageMultilingual();
+				callMultilingalPathPageSpecificJson(pageid);
+			}
+		});
+	}
+}
+
+function callMultilingalPathPageSpecificJson(givenPageID){
+	pageID=$.trim($('#page_id').text());
+	var calPageId = pageID;
+	if($.trim(givenPageID)!="")
+		calPageId = givenPageID;
+	if(calPageId!=""){
+		if(!jQuery.isEmptyObject(multilingualPathJson) && Object.keys(multilingualPathJson).length != 0 && multilingualPathJson.hasOwnProperty(calPageId)){
+			multilingualPath=multilingualPathJson[calPageId];
+			
+			if($.trim(multilingualPath)!=""){
+				path=multilingualPath.replace('/ionstore','');
+				$.ajax({
+					method: "GET",
+					url: path,
+					cache:true,
+					dataType: "json", 
+					success: function(data){
+						/* console.log("MultilingualData received for page id : "+calPageId); */
+						if(typeof globalMasterJSON != "object")
+							globalMasterJSON={};
+						globalMasterJSON["m"+calPageId]=data;
+						if($.trim(givenPageID)=="")
+							jsondata=data; 
+						multilingualReplace(data,calPageId);
+					}
+				});
+			}
+		}
+		else
+			console.log("No multilingual found for pageid : "+calPageId);
+	}
+	
+}
+var masterJsonForKeyId={};
+function fetchMasterJson(keyId,funcName){	
+	setBasicValuesMultilingual();
+	
+	if(!jQuery.isEmptyObject(masterJson)){
+		afterMasterJson(keyId,funcName);
+	}
+	else{
+		var url="/per/"+groupID+"/pub/"+orgID+"/iDH/instance/"+instanceID+"/MasterJSON/Master.json?version="+$.trim(iHUB.version.get());	
+		$.ajax({
+			method: "GET",
+			url: url,
+			cache:true,
+			dataType: "json", 
+			success: function(data){
+				masterJson=data;
+				afterMasterJson(keyId,funcName);
+			}
+		});
+	}
+}
+
+function afterMasterJson(keyId,funcName){
+	if(!jQuery.isEmptyObject(masterJson) && Object.keys(masterJson).length != 0 && masterJson.hasOwnProperty(keyId)){
+		keyUrl=masterJson[keyId];
+		
+		if($.trim(keyUrl)!=""){
+			keyUrl=keyUrl.replace('/ionstore','');
+			$.ajax({
+				method: "GET",
+				url: keyUrl,
+				cache:true,
+				dataType: "json", 
+				success: function(response){
+					masterJsonForKeyId=response;
+					eval(funcName+"("+JSON.stringify(masterJsonForKeyId)+")");
+				}
+			});
+		}
+	}
+}
+function callDefaultPageMultilingual(){
+	if($.trim(defaultPageId)!=""){
+		if(!jQuery.isEmptyObject(globalMasterJSON) && Object.keys(globalMasterJSON).length != 0 && globalMasterJSON.hasOwnProperty('m'+defaultPageId))
+			multilingualReplace(globalMasterJSON['m'+defaultPageId],defaultPageId);
+		else
+			callMultilingalPathPageSpecificJson(defaultPageId);
+	}
+}
+function checkIfMultilingualAvailable(pageid){
+	if($.trim(pageid)=="")
+		pageid=$.trim($('#page_id').text());
+	if(!jQuery.isEmptyObject(globalMasterJSON) && Object.keys(globalMasterJSON).length != 0 && globalMasterJSON.hasOwnProperty('m'+pageid)){
+		var pageJSON=globalMasterJSON['m'+pageid];
+		if(!jQuery.isEmptyObject(pageJSON) && Object.keys(pageJSON).length != 0){
+			var requiredJSON = pageJSON['0'];
+			if(pageJSON.hasOwnProperty(languageID))
+				requiredJSON = pageJSON[languageID];
+			if(!jQuery.isEmptyObject(requiredJSON))
+				return true;
+		}
+	}
+	return false;	
+}

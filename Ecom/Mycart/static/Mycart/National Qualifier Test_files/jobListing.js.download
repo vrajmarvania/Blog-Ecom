@@ -1,0 +1,907 @@
+var jobsCounter = 0,defaultCountry_iDH;
+
+function createJobCatalogue(noOfRecords,action,pageNo,whereCondition)
+{
+
+	$('#homelink').attr('href',returnRouteLink('/home'));
+	if($('#pagetype').text()=='joblisting'){
+		$('.additionalbar_header').find('.new_active').removeClass('new_active');
+		$('.additionalbar_header').find('.JobsClass').addClass('new_active');
+	}
+	$('.mainblueSubtab a').css("font-family","OpenSans-Semibold, arial");
+	$('#conditiondiv').attr("whereCondition",whereCondition);
+	$('#conditiondiv').attr("action",action);
+	$('#conditiondiv').attr("noOfRecords",noOfRecords);
+	var micrositeJobId='';
+	if($.trim($('#jobid').val())!=""){
+		micrositeJobId=$.trim($('#jobid').val());
+	}
+	if($('#app_seq_no').val()==undefined){
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.iDH(),
+			data: {
+				orgID:$('#orgId').val(),
+				noOfRecords:noOfRecords,
+				pageNo:pageNo,
+				action:action,
+				micrositeJobId:micrositeJobId,
+				whereCondition:whereCondition,
+				txtInstanceId:$('#instanceId').val(),
+				subAction:"selectjobdatafilterprelogin"
+			},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					JobCataloguePage(response,pageNo,whereCondition,action);
+				}	
+			},
+			error: function(x, e){
+
+			}
+		});
+	}
+	else{
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.job(),
+			data: {			
+				noOfRecords:noOfRecords,
+				pageNo:pageNo,
+				action:action,
+				micrositeJobId:micrositeJobId,
+				whereCondition:whereCondition,
+				subAction:"selectjobdatafilter"
+			},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					JobCataloguePage(response,pageNo,whereCondition,action);
+				}
+			},
+			error: function(x, e){
+
+			}
+		});
+		checkResume();
+	}
+
+
+}
+
+function allJobs(pageNo,whereCondition){
+			$('#listtxt').html(''+multilingualKeyValue('69','15')+'');
+			$('#conditiondiv').attr('wherecondition','');
+			$('.desktopinpt .form-control').val('')
+	$('#jobcontainer').html('');
+	removeAllFilter();
+	$('#conditiondiv').attr("action","allJobs");
+	if($('#app_seq_no').val()==undefined){
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.iDH(),
+			data: {
+				orgID:$('#orgId').val(),
+				noOfRecords:"12",
+				pageNo:pageNo,
+				action:"allJobs",
+				whereCondition:whereCondition,
+				txtInstanceId:$('#instanceId').val(),
+				subAction:"selectjobdatafilterprelogin"
+			},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					if(pageNo=="1"){
+						$('#alljobsId').addClass('active');
+						$('#trendId').removeClass('active');
+					}
+					JobCataloguePage(response,pageNo,whereCondition,"allJobs");	
+				}
+			},
+			error: function(x, e){
+
+			}
+		});
+	}
+	else{
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.job(),
+			data: {			
+				noOfRecords:"12",
+				pageNo:pageNo,
+				action:"allJobs",
+				whereCondition:whereCondition,
+				subAction:"selectjobdatafilter"
+			},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					if(pageNo=="1"){
+						$('#alljobsId').addClass('active');
+						$('#trendId').removeClass('active');
+					}
+					JobCataloguePage(response,pageNo,whereCondition,"allJobs");
+				}
+			},
+			error: function(x, e){
+
+			}
+		});
+	}
+
+}
+function trendJobs(pageNo,whereCondition){
+	$('#listtxt').html(''+multilingualKeyValue('70','15')+'');
+	$('#jobcontainer').html('');
+	$('#conditiondiv').attr('wherecondition','');
+	$('.desktopinpt .form-control').val('')
+	removeAllFilter();
+	$('#conditiondiv').attr("action","HotJobs");
+
+	if($('#app_seq_no').val()==undefined){
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.iDH(),
+			data: {
+				orgID:$('#orgId').val(),			
+				noOfRecords:"12",
+				pageNo:pageNo,
+				action:"HotJobs",
+				whereCondition:whereCondition,
+				txtInstanceId:$('#instanceId').val(),
+				subAction:"selectjobdatafilterprelogin"
+			},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					if(pageNo=="1"){
+						$('#trendId').addClass('active');
+						$('#alljobsId').removeClass('active');
+					}
+					JobCataloguePage(response,pageNo,whereCondition,"HotJobs");
+				}			
+			},
+			error: function(x, e){
+
+			}
+		});
+
+
+	}
+	else{
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.job(),
+			data: {	
+				orgID:$('#orgId').val(),			
+				noOfRecords:"12",
+				pageNo:pageNo,
+				action:"HotJobs",
+				whereCondition:whereCondition,
+				subAction:"selectjobdatafilter"
+			},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					if(pageNo=="1"){
+						$('#trendId').addClass('active');
+						$('#alljobsId').removeClass('active');
+					}
+					JobCataloguePage(response,pageNo,whereCondition,"HotJobs");
+				}
+			},
+			error: function(x, e){
+			}
+		});
+	}
+
+}
+
+function removeAllFilter(){
+	$.each($("input[name='workFil']:checked"), function(){            
+		$(this). prop("checked", false);
+
+	});
+	$.each($("input[name='salFil']:checked"), function(){   
+			$(this). prop("checked", false);
+	});
+	
+	$.each($("input[name='dateFil']:checked"), function(){
+		$(this). prop("checked", false);
+	});
+	$.each($("input[name='compFil']:checked"), function(){            
+		$(this). prop("checked", false);
+	});
+	 $('#industrySelect').val(''+multilingualKeyValue('12','15')+'')
+	 $('select[id="industrySelect"]').selectpicker('refresh');
+
+
+	 $('#locationData').val('')
+	 $('#locationData').selectpicker('refresh')
+
+	
+	$('#jobData').val(''+multilingualKeyValue('10','15')+'')
+	$('select[id="jobData"]').selectpicker('refresh');
+}
+function JobCataloguePage(response,pageNo,whereCondition,action){
+
+	/*loadJobMicrositeJs();*/
+	if(whereCondition.trim()==""){
+		$('.yourSearch').find('span').remove();
+		if($('#alljobsId').hasClass('active'))
+			$('.yourSearch').append('<span >'+multilingualKeyValue('464','34')+'</span>');
+		else
+			$('.yourSearch').append('<span >'+multilingualKeyValue('465','34')+'</span>');
+	}
+	else{
+		buildFilterLables(whereCondition);
+	}
+	var action=$('#conditiondiv').attr("action");
+	var newResponse=JSON.stringify(response);
+	var responseDetails1 = JSON.parse(newResponse);
+	var job_data =responseDetails1.Response;
+	var resultcount =responseDetails1.Response.resultCount.resultCount;
+	if(resultcount=="0"){
+		$('#jobcontainer').html(''+multilingualKeyValue('466','34')+'');
+	}
+	else{
+			if(resultcount>5){
+				$('#viewAllRecommendedJobs').show();
+				$('#viewAllRecommendedJobs').attr('href',returnRouteLink('/jobs/'+$.trim($('#micrositextxt').html())+''));
+			}
+	}
+	var jobstamp='';
+	
+	var arry = new Array;
+	var temp = responseDetails1.Response;
+	delete temp.resultCount;
+	for(label in temp){
+		arry.push(temp[label]);
+	}
+	arry= arry.sort(function(a,b){
+	return (parseInt(a.Sequence)-parseInt(b.Sequence));
+	});
+
+	for(x in arry){
+		if(x!="resultCount"){
+			var JobcompanyId = arry[x].JobcompanyId;
+			var JobId = arry[x].JobId;
+			var SavedJob = arry[x].SavedJob;
+			var ccm_id=arry[x].ccm_id;
+			var applylink = arry[x].apply_job_link;
+			var PositionName = arry[x].PositionName;
+			var JobIcon= arry[x].JobIcon;
+			var JobCompanyName=arry[x].JobCompanyName;
+			var JobLocation=arry[x].JobLocation;
+			var JobLocationMultipletrack=arry[x].JobLocation;
+			var JobPosted=arry[x].JobStartDate;
+			var postedby=arry[x].postedby
+			var Corporate_image_visible=arry[x].orgLogo;
+			var jpm_certificate_id=arry[x].jpm_certificate_id;
+			var OrganizationName=arry[x].OrganizationName
+			var resumeRequire=arry[x].resumeRequire;
+			var locationIds=arry[x].locationIds;
+			var DurationType=arry[x].DurationType;
+			if(JobId==$('#jobid').val()){
+				continue;
+			}
+			else{
+				$('.recommendation').show()
+			}
+		if(JobLocation.indexOf(',')>-1){
+			if(JobLocation.indexOf('@@')>-1){
+				JobLocation=JobLocation.replace(/,/g ,'<br>').trim();
+				JobLocation=JobLocation.replace(/@@ /g ,', ').trim();
+			}
+		}
+		else{
+			JobLocation=JobLocation.replace(/@@ /g,', ').trim();
+		}
+			jobstamp+='<div class="jobs" style="display:inline-block">'
+				jobstamp+='<div class="jobBorder"></div>'
+					jobstamp+='<div class="hotJob" data-tooltip="tooltip" data-original-title="'+multilingualKeyValue('467','34')+'" data-trigger="hover"></div>'
+						jobstamp+='<div class="jobIco">'				
+							if(JobIcon=="" || JobIcon==undefined)
+								JobIcon="/iDH/dashboard/images/whiteBlank.jpg";
+							jobstamp+='<img src="'+JobIcon+'" style="width: 60px;" onerror="this.src=\'/iDH/dashboard/images/whiteBlank.jpg\'">'
+							if(($.trim($('#txtUsrRole').val())=="") || ($.trim($('#txtUsrRole').val())!="" && $.trim($('#txtUsrRole').val()).toLowerCase()=="learner")){
+							
+								var savetext='';
+								if(DurationType!='Internship')
+									savetext=multilingualKeyValue('468','34');
+								else
+									savetext=multilingualKeyValue('469','34');
+								
+								if(SavedJob!=undefined && SavedJob=="Yes")
+									jobstamp+='<a SavedJob="yes" jobid="'+JobId+'" ccm_id="'+ccm_id+'" companyId="'+JobcompanyId+'" onclick="saveJobFromMicrosite(this)"><span class="tickMark active" data-tooltip="tooltip" data-original-title="'+savetext+'" data-trigger="hover"></span></a>'
+								else
+									jobstamp+='<a SavedJob="no" jobid="'+JobId+'" ccm_id="'+ccm_id+'" companyId="'+JobcompanyId+'" onclick="saveJobFromMicrosite(this)"><span class="tickMark" data-tooltip="tooltip" DurationType="'+DurationType+'" data-original-title="'+multilingualKeyValue('470','34')+'" data-trigger="hover"></span></a>'
+								
+							}
+								jobstamp+='</div>'
+								jobstamp+='<div class="jobDesc">'
+									jobstamp+='<h5><span class="ellip ellip-line" title="'+PositionName+'">'+PositionName+'</span></h5>'
+									jobstamp+='<p class="company"><span class="ellip ellip-line">'+JobCompanyName+'</span></p>'
+
+									if(JobLocationMultipletrack.indexOf(',')>0){
+										jobstamp+='<div class="multicity">Openings : '
+											jobstamp+='<span class="cities">'+multilingualKeyValue('471','34')+''
+												jobstamp+='<span class="popOver"><span>'+JobLocation+'</span></span>'
+												jobstamp+='</span>'
+									}
+									else{
+										jobstamp+='<div title="'+JobLocation.replace(/@@ /g,', ').trim()+'" class="multicity ellip ellip-line">'+multilingualKeyValue('472','34')+' '+JobLocation.replace(/@@ /g,', ').trim()+''
+									}
+			jobstamp+='</div>'
+			var ts = new Date(JobPosted.replace(/-/g,'/').replace('.0',''));
+			var dateTs=ts.toDateString().substring(8,10)+' '+ts.toDateString().substring(4,7)+ts.toDateString().substring(10);		
+			jobstamp+='<div class="period">Posted By<div  class="poster"><p class="posterComp semibold" title="'+OrganizationName+'"><span class="ellip ellip-line">'+OrganizationName+'</span></p><div>on ('+dateTs+')</div><span class="postedby_popup"><div class="img_Div"><img style="width: 70px; height: 17px;"src="'+Corporate_image_visible+'" onerror="this.src=\'/iDH/dashboard/images/whiteBlank.jpg\'"></div><span class="semibold"><span style="text-align: center;">'+OrganizationName+'</span></span><span>'+multilingualKeyValue('473','34')+' ('+dateTs+')</span></span></div></div>'
+					jobstamp+='</div>'
+						jobstamp+='<div class="applyFooter" id="applyFooter'+JobId+'">'
+						if(micrositeCheck || $.trim($('#jobid').val())!="" || $('#txtUsrRole').val()==undefined || ($('#txtUsrRole').val()!=undefined && $('#txtUsrRole').val()!="" && $('#txtUsrRole').val().toLowerCase()=="learner"))	
+							jobstamp+='<button class="applyNowBtn btn btn-sm btn-info-outline" DurationType="'+DurationType+'" applylink="'+applylink+'" certificateId="'+jpm_certificate_id+'" data-locationid="'+locationIds+'" data-location="'+JobLocation+'" data-resume="'+resumeRequire+'" data-toggle="modal" onclick="checkforCertificates(this,'+JobId+','+JobcompanyId+','+ccm_id+');">'+multilingualKeyValue('474','34')+'</button>'
+							jobstamp+='<span class="added">'
+								jobstamp+='<span class="fa fa-check"></span>'
+									if(DurationType!='Internship')
+										jobstamp+='<span>'+multilingualKeyValue('475','34')+'!</span>'
+									else
+										jobstamp+='<span>'+multilingualKeyValue('476','34')+'!</span>'
+										jobstamp+='</span>'
+											var jobdetails=getJobMicrositeLink(JobId,PositionName);
+											if(DurationType!='Internship')
+												jobstamp+='<a class="saveIt" href="'+jobdetails+'">'+multilingualKeyValue('477','34')+'</a>'
+											else
+												jobstamp+='<a class="saveIt" href="'+jobdetails+'">'+multilingualKeyValue('478','34')+'</a>'
+											jobstamp+='</div>'
+												jobstamp+='</div>'
+
+		}
+	}
+	
+	
+	$('#loadmorejoblistingdiv').remove();
+	var number=pageNo*$('#conditiondiv').attr("noOfRecords");
+	if(number<resultcount && $.trim($('#jobid').val())=="")
+		jobstamp+='<div id="loadmorejoblistingdiv" pageNo="'+pageNo+'" action="'+action+'" whereCondition="'+whereCondition+'"  onclick="loadmorejoblisting()" class="lb_loadMoreJobListings">'+multilingualKeyValue('479','34')+'</div>'
+	
+	$('#jobcontainer').append(jobstamp);
+	
+	$('[data-tooltip="tooltip"]').tooltip()  
+	$(".tickMark").on("click", function () {	
+		if($.trim($('#app_seq_no').val())!=""){	
+			$(this).addClass("active");	
+			if($(this).attr('DurationType')!='Internship')
+				$(this).attr('title', multilingualKeyValue('468','34')).tooltip('fixTitle').tooltip('show');
+			else
+				$(this).attr('title', multilingualKeyValue('469','34'))
+			.tooltip('fixTitle')	
+			.tooltip('show');	
+			}	
+		});
+}
+
+
+function loadmorejoblisting(){
+	var pageNo=$('#loadmorejoblistingdiv').attr("pageNo");//whereCondition
+	var whereCondition=$('#loadmorejoblistingdiv').attr("whereCondition");
+	var action=$('#loadmorejoblistingdiv').attr("action");
+	createJobCatalogue($('#conditiondiv').attr("noOfRecords"),action,parseInt(pageNo)+1,whereCondition);
+}
+
+function buildFilterLables(condition){
+	var splitWhereCondition=condition.split('-@@job@@-');
+	var stamp='';
+			for(var i=0;i<splitWhereCondition.length;i++){
+				var splitCondition=splitWhereCondition[i].split(':');
+				if(splitCondition[0]=="jpm_job_duration_type"){
+					var durationTypeArray=splitCondition[1].split(',');
+					for(var j=0;j<durationTypeArray.length;j++){
+					stamp+='<span data-filter-type="jpm_job_duration_type"  data-filtered="'+durationTypeArray[j]+'">'+durationTypeArray[j]+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+					}
+		
+				}
+				if(splitCondition[0]=="jobRecommendations"){
+					stamp+='<span data-filter-type="jobRecommendations"  data-filtered="jobRecommendations">Recommendations<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+				}
+				if(splitCondition[0]=="skillJobRecommendations"){
+					stamp+='<span data-filter-type="skillJobRecommendations"  data-filtered="skillJobRecommendations">Recommendations<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+				}
+				if(splitCondition[0].indexOf("jobtoJobRecommendations")>-1){
+					stamp+='<span data-filter-type="jobtojobrecommendations"  data-filtered="jobtojobrecommendations">Recommendations<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+				}
+				if(splitCondition[0].indexOf("jobSearch")>-1){
+					stamp+='<span data-filter-type="jobSearch"  data-filtered="jobSearch">'+$('.desktopinpt .form-control').val()+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+				}
+				if(splitCondition[0]=="jpm_tentative_package"){
+				var range='';
+				var rangeValue='';
+					$.each($("input[name='salFil']:checked"), function(){   
+					if($(this).val()=="range1"){
+						range="range1";
+						rangeValue="0,10000";
+					}
+					else if($(this).val()=="range2"){
+						range="range2";
+						rangeValue="10000,20000";
+					}
+					else if($(this).val()=="range3"){
+						range="range3";
+						rangeValue="20000,40000";
+					}
+					else if($(this).val()=="range4"){
+						range="range4";
+						rangeValue="40000,80000";
+					}
+					else if($(this).val()=="range5"){
+						range="range5";
+						rangeValue="Greater than 80000";
+					}
+		
+				});
+					stamp+='<span data-filter-type="jpm_tentative_package"  data-filtered="'+range+'">'+rangeValue+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+		
+				}
+				if(splitCondition[0]=="jpm_company_id"){
+					var companyArray=splitCondition[1].split(',');
+					var companyName='';
+					for(var j=0;j<companyArray.length;j++){
+					$.each($("input[name='compFil']:checked"), function(){            
+					if($(this).val()==companyArray[j]){
+					companyName=$(this).next().text()}
+					});
+					if(companyName==''){
+						$.each($("input[name='compFil']"), function(){
+							if($(this).val()==companyArray[j]){
+							companyName=$(this).next().text();
+							$(this).attr('checked', true);
+							}
+							
+							});
+						stamp+='<span data-filter-type="jpm_company_id"  data-filtered="'+companyArray[j]+'">'+companyName+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+					}
+					else
+					stamp+='<span data-filter-type="jpm_company_id"  data-filtered="'+companyArray[j]+'">'+companyName+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+					}
+		
+				}
+				if(splitCondition[0]=="jpm_position_start_date"){
+					var filterValue='';
+					var displayValue='';
+					$.each($("input[name='dateFil']:checked"), function(){
+					if($(this).val()=="pasthour"){
+						filterValue='pasthour';
+						displayValue='Past 24 hours'
+					}
+					else if($(this).val()=="pastweek"){
+						filterValue='pastweek';
+						displayValue='Past Week'
+					}
+					else if($(this).val()=="pastmonth"){
+						filterValue='pastmonth';
+						displayValue='Past Month'
+					}
+					else if($(this).val()=="anytime"){
+						filterValue='anytime';
+						displayValue='Anytime'
+		
+					}
+				});
+					stamp+='<span data-filter-type="jpm_position_start_date"  data-filtered="'+filterValue+'">'+displayValue+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+		
+				
+				}
+				if(splitCondition[0]=="jpm_industryid"){
+					stamp+='<span data-filter-type="jpm_industryid"  data-filtered="'+$('#industrySelect').find("option:selected").val()+'">'+$('#industrySelect').find("option:selected").text()+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+				
+				}
+				if(splitCondition[0]=="jpm_job_role_id"){
+					stamp+='<span data-filter-type="jpm_job_role_id"  data-filtered="'+$('#jobData').find("option:selected").val()+'">'+$('#jobData').find("option:selected").text()+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+				
+				}
+				if(splitCondition[0]=="jpm_position_location"){
+					var locArray=splitCondition[1].split(',');
+					for(var j=0;j<locArray.length;j++){
+						JobLocation=locArray[j].replace(/@@ /g ,', ').trim();
+						stamp+='<span data-filter-type="jpm_position_location"  data-filtered="'+locArray[j]+'">'+JobLocation+'<i class="delete_crs marginleftrht5 dMF"></i> </span>';
+					}
+				}
+				
+			}
+			$('.yourSearch').find('span').remove()
+			$('.yourSearch').append(stamp);
+			deleteJobFilter();
+}
+
+
+
+function createFilterPage(){
+	$('#industrySelect').change(function(){
+		filterjob();
+	});
+	$('#jobData').change(function(){
+		filterjob();
+	});
+	$('#locationData').change(function(){
+		filterjob();
+	});
+	
+	var keyId ='IndustryMaster';
+	var a=eval('fetchMasterJson(\''+keyId+'\',\'industryFilter\')');
+	
+	 keyId ='JobRoleMaster';
+	 a=eval('fetchMasterJson(\''+keyId+'\',\'RoleFilter\')');
+	 
+	/* keyId ='CompanyMaster';
+	 a=eval('fetchMasterJson(\''+keyId+'\',\'companyFilter\')');*/
+	 $.ajax({
+	        type: "POST",
+	        url: iHUB.url.iDH(),
+	        data: {
+	        	orgID:$('#orgId').val(),
+				txtInstanceId:$('#instanceId').val(),
+	            subAction:"selectcompanyforalljobs"
+	        },
+	        dataType: "json",
+	        success: function(result){
+	        	companyFilter(result);
+	        },
+	        error: function(x, e){
+	           
+	        }
+	    });
+	 
+	 var tempInstanceDetails = getAllInstanceDetails();
+	 if(typeof tempInstanceDetails == 'object'){
+	 	defaultCountry_iDH = tempInstanceDetails.defaultCountry;
+	 }
+	 defaultCountry_iDH = $.trim(defaultCountry_iDH)=="" ? "India" : defaultCountry_iDH;
+	 
+	  keyId =defaultCountry_iDH;
+	  a=eval('fetchMasterJson(\''+keyId+'\',\'locationFilter\')');
+		
+	  (function currencyDetailsLogo(){
+		  		if(!jQuery.isEmptyObject(currencyDetails)){
+		  			for(cnt in currencyDetails){
+		  			    currencysymbol= currencyDetails[cnt].crnsymbol;
+		  			     $('[id="CurrencyLogo"]').html(currencysymbol)
+
+		  			}
+		  		}else{
+		  			setTimeout(currencyDetailsLogo, 200);
+		  		}
+		  	})();
+}
+function industryFilter(result){
+	var newResponse=JSON.stringify(result);
+	var responseDetails1 = JSON.parse(newResponse);
+	for(x in responseDetails1)
+	{
+		if(x!="resultCount" && responseDetails1[x].im_rowstate>0){
+			var im_industry_name = responseDetails1[x].im_industry_name;
+			var im_id = responseDetails1[x].im_id;
+			$('select[id="industrySelect"]').append('<option value="'+im_id+'">'+im_industry_name+'</option>');
+		}
+	}
+	$('select[id="industrySelect"]').selectpicker('refresh');
+}
+
+function locationFilter(result){
+	var newResponse=JSON.stringify(result);
+	var responseDetails1 = JSON.parse(newResponse);
+	var allData=responseDetails1;
+	$('select[id="locationData"]').append('<option data-tokens="Other@@ Work From Home" value="Other@@ Work From Home">Other, Work From Home</option>');
+	for(label in allData){
+		var countryData=allData[label];
+		for(label in countryData){
+		var cityStateLabel=countryData[label].split(':')[1]+", "+countryData[label].split(':')[0];			
+		var CityStatevalue=cityStateLabel.replace(',','@@');
+		$('select[id="locationData"]').append('<option data-tokens="'+CityStatevalue.toLowerCase()+'" value="'+CityStatevalue+'">'+cityStateLabel+'</option>');	
+		}
+	}
+	$('select[id="locationData"]').selectpicker('refresh');
+
+}
+
+
+function RoleFilter(result){
+	var newResponse=JSON.stringify(result);
+	var responseDetails1 = JSON.parse(newResponse);
+	for(x in responseDetails1)
+	{
+		if(x!="resultCount" && responseDetails1[x].jrm_rowstate>0){
+			var jrm_job_role_name = responseDetails1[x].jrm_job_role_name;
+			var jrm_id = responseDetails1[x].jrm_id;
+			$('select[id="jobData"]').append('<option value="'+jrm_id+'">'+jrm_job_role_name+'</option>');
+		}
+	}
+	$('select[id="jobData"]').selectpicker('refresh');
+
+	
+}
+function companyFilter(result){
+	var newResponse=JSON.stringify(result);
+	var responseDetails = JSON.parse(newResponse);
+	var responseDetails1=responseDetails.responseDetails;
+	var companyTab='';
+	for(x in responseDetails1 )
+	{
+		if(x!="resultCount"){
+			var companyName = responseDetails1[x].cm_company_name;
+			var companyId = responseDetails1[x].cm_id;
+			companyTab+=' <div class="checkbox"><label class="controlChk control-check blueChkbox marginleft15 ed"><input type="checkbox" name="compFil" onclick="filterjob();" value="'+companyId+'"  unchecked=""><span class="fontsize13 RegularFont">'+companyName+'</span><div class="controlIndicator"></div> </label></div>';
+		}
+	}
+	$('#collapse7').find('.searchboxnew-fil').append("<div id=\"searchCompanyDemo\" class=\"jQuerySearch\" data-searchClass=\"searchCompany\" data-style=\"marginbottom10\" data-selector=\"$('#companydataTab').find('.checkbox')\"  data-VMappendClass=\"companyTab\" data-viewmore=\"false\" data-maxcount=\"6\"></div>");
+	$('#companydataTab').append(companyTab);
+	iHUB.search.createjQuerySearchFromId("searchCompanyDemo");
+	$('.searchCompany').css("width","100%");
+	$('.searchCompanyViewMore').css("top","8px");
+	$('.searchCompanyViewLess').css("top","8px");
+}
+
+
+function filterjob(){
+	$('#jobcontainer').html('');
+	var workFilter = [];
+	var jpm_job_duration_type="";
+	$.each($("input[name='workFil']:checked"), function(){            
+		workFilter.push($(this).val());
+	});
+	if(workFilter.join(",")==""){
+		jpm_job_duration_type="";
+	}
+	else{
+		jpm_job_duration_type='jpm_job_duration_type:'+workFilter.join(",");
+	}
+
+	var jpm_tentative_package="";
+	var salFilter = [];
+	$.each($("input[name='salFil']:checked"), function(){   
+		if($(this).val()=="range1"){
+			salFilter.push("0,10000");
+		}
+		else if($(this).val()=="range2"){
+			salFilter.push("10000,20000");
+		}
+		else if($(this).val()=="range3"){
+			salFilter.push("20000,40000");
+		}
+		else if($(this).val()=="range4"){
+			salFilter.push("40000,80000");
+		}
+		else if($(this).val()=="range5"){
+			salFilter.push("80000,10000000");
+		}
+	});
+	if(salFilter.join(",")==""){
+		jpm_tentative_package="";
+	}
+	else{
+		jpm_tentative_package='jpm_tentative_package:'+salFilter.join(",");
+
+	}
+	var dateFilter = [];
+	$.each($("input[name='dateFil']:checked"), function(){
+		if($(this).val()=="pasthour"){
+			var today=new Date();
+			today.setDate(today.getDate());
+			var dd=String(today.getDate()).padStart(2,'0');
+			var mm=String(today.getMonth()+1).padStart(2,'0');
+			var yy=today.getFullYear();
+			today=yy+'-'+mm+'-'+dd;
+
+			var newDay=new Date();
+			newDay.setDate(newDay.getDate()-1);
+			var newDaydd=String(newDay.getDate()).padStart(2,'0');
+			var newDaymm=String(newDay.getMonth()+1).padStart(2,'0');
+			var newDayyy=newDay.getFullYear();
+			newDay=newDayyy+'-'+newDaymm+'-'+newDaydd;
+			dateFilter.push(newDay+','+today);//today
+		}
+		else if($(this).val()=="pastweek"){
+			var today=new Date();
+			today.setDate(today.getDate());
+			var dd=String(today.getDate()).padStart(2,'0');
+			var mm=String(today.getMonth()+1).padStart(2,'0');
+			var yy=today.getFullYear();
+			today=yy+'-'+mm+'-'+dd;
+
+			var newDay=new Date();
+			newDay.setDate(newDay.getDate()-7);
+			var newDaydd=String(newDay.getDate()).padStart(2,'0');
+			var newDaymm=String(newDay.getMonth()+1).padStart(2,'0');
+			var newDayyy=newDay.getFullYear();
+			newDay=newDayyy+'-'+newDaymm+'-'+newDaydd;
+			dateFilter.push(newDay+','+today);
+		}
+		else if($(this).val()=="pastmonth"){
+			var today=new Date();
+			today.setDate(today.getDate());
+			var dd=String(today.getDate()).padStart(2,'0');
+			var mm=String(today.getMonth()+1).padStart(2,'0');
+			var yy=today.getFullYear();
+			today=yy+'-'+mm+'-'+dd;
+
+			var newDay=new Date();
+			newDay.setMonth(newDay.getMonth()-1);
+			var newDaydd=String(newDay.getDate()).padStart(2,'0');
+			var newDaymm=String(newDay.getMonth()+1).padStart(2,'0');
+			var newDayyy=newDay.getFullYear();
+			newDay=newDayyy+'-'+newDaymm+'-'+newDaydd;
+			dateFilter.push(newDay+','+today);
+		}
+		else if($(this).val()=="anytime"){
+
+		}
+	});
+	var jpm_position_start_date="";
+	if(dateFilter.join(",")==""){
+		jpm_position_start_date="";
+	}
+	else{
+		jpm_position_start_date='jpm_position_start_date:'+dateFilter.join(",");
+	}
+
+
+	var jpm_industryid="";
+	var IndustryId = $('#industrySelect').find("option:selected").val();    
+	if(IndustryId!="Industry" && IndustryId!=""){
+		jpm_industryid='jpm_industryid:'+IndustryId;
+	}
+	else{
+		jpm_industryid="";
+	}
+	var jobname = $('#jobData').find("option:selected").val();
+
+	var locName=$('#locationData').val();
+	var jpm_position_location="";
+	if(locName!=null && locName.length!=0){
+		jpm_position_location='jpm_position_location:'+locName.join(',');
+	}
+	else{
+		jpm_position_location="";
+	}
+
+	var jobrolename = $('#jobData').find("option:selected").val();
+	var jpm_job_role_id="";
+	  if(jobname!="Job/Internship Role" && jobname!=""){
+		jpm_job_role_id='jpm_job_role_id:'+jobrolename;
+	}
+	else{
+		jpm_job_role_id="";
+	}
+
+	var companyFilter = [];
+	var jpm_company_id="";
+	$.each($("input[name='compFil']:checked"), function(){            
+		companyFilter.push($(this).val());
+	});
+	if(companyFilter.join(",")==""){
+		jpm_company_id="";
+	}
+	else{
+		jpm_company_id='jpm_company_id:'+companyFilter.join(",");
+	}
+
+	var whereCond=[];
+	if(jpm_job_duration_type!=""){
+		whereCond.push(jpm_job_duration_type);
+	}
+	if(jpm_tentative_package!=""){
+		whereCond.push(jpm_tentative_package);
+	}
+	if(jpm_company_id!=""){
+		whereCond.push(jpm_company_id);
+	}
+	if(jpm_position_start_date!=""){
+		whereCond.push(jpm_position_start_date);
+	}
+	if(jpm_industryid!=""){
+		whereCond.push(jpm_industryid);
+	}
+	if(jpm_position_location!=""){
+		whereCond.push(jpm_position_location);
+	}
+	if(jpm_job_role_id!="")
+		whereCond.push(jpm_job_role_id);
+	if($('#conditiondiv').attr("wherecondition").indexOf("jobRecommendations")>-1){
+		var a="jobRecommendations:0";
+		whereCond.push(a);
+	}
+	if($('#conditiondiv').attr("wherecondition").indexOf("skillJobRecommendations")>-1){
+		var a="skillJobRecommendations:0";
+		whereCond.push(a);
+	}
+	if($('#conditiondiv').attr("wherecondition").indexOf("jobtoJobRecommendations")>-1){
+		var a=$('#conditiondiv').attr("jobtojobrecommendations");
+		whereCond.push(a);
+	}
+	if($('#conditiondiv').attr("wherecondition").indexOf("jobSearch")>-1){
+		var a='jobSearch:'+$('.desktopinpt .form-control').val()+'';
+		whereCond.push(a);
+	}
+	var condition=whereCond.join("-@@job@@-");
+	createJobCatalogue($('#conditiondiv').attr("noOfRecords"),'allJobs',"1",condition);	
+
+}
+
+function deleteJobFilter(){
+$('.dMF').on('click',function(){
+	var newval=$(this).parent().attr('data-filtered');
+	var filterType=$(this).parent().attr('data-filter-type');
+	
+	if(filterType=="jpm_job_duration_type"){
+		$.each($("input[name='workFil']:checked"), function(){            
+			if($(this).val()==newval){
+			$(this).prop("checked", false);
+			}
+		});
+	}
+	if(filterType=="jobRecommendations"){
+		var b=$('#conditiondiv').attr("whereCondition");
+		var a=b.replace('jobRecommendations:0','');
+		$('#conditiondiv').attr("whereCondition",a);
+	}
+	if(filterType=="skillJobRecommendations"){
+		var b=$('#conditiondiv').attr("whereCondition");
+		var a=b.replace('skillJobRecommendations:0','');
+		$('#conditiondiv').attr("whereCondition",a);
+	}
+	if(filterType=="jobtojobrecommendations"){
+		$('#conditiondiv').attr("jobtoJobRecommendations","");
+	}
+	if(filterType=="jobSearch"){
+		var b=$('#conditiondiv').attr("whereCondition");
+		var a=b.replace('jobSearch:'+$('.desktopinpt .form-control').val()+'','');
+		$('.desktopinpt .form-control').val('')
+		$('#conditiondiv').attr("whereCondition",a);
+	}
+	if(filterType=="jpm_tentative_package"){
+		$.each($("input[name='salFil']:checked"), function(){            
+			if($(this).val()==newval){
+			$(this).prop("checked", false);
+			}
+		});
+	}
+	if(filterType=="jpm_company_id"){
+		$.each($("input[name='compFil']:checked"), function(){            
+			if($(this).val()==newval){
+			$(this).prop("checked", false);
+			}
+
+		});
+	}
+	if(filterType=="jpm_position_start_date"){
+		$.each($("input[name='dateFil']:checked"), function(){            
+			if($(this).val()==newval){
+			$(this).prop("checked", false);
+			}
+
+		});
+	}
+	if(filterType=="jpm_industryid"){
+			$('#industrySelect').val("Industry")
+			$('select[id="industrySelect"]').selectpicker('refresh');
+
+	}
+	if(filterType=="jpm_position_location"){
+		var arr = $('#locationData').val();
+		arr.splice($.inArray(newval, arr),1);
+		$('#locationData').selectpicker('val',arr);
+	}
+	if(filterType=="jpm_job_role_id"){
+		$('#jobData').val("Job/Internship Role")
+		$('select[id="jobData"]').selectpicker('refresh');
+	}
+	filterjob();
+})
+}
+

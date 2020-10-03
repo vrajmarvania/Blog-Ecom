@@ -1,0 +1,212 @@
+/* US_48417 : Pawan- Create multicolour captcha text and reduce the height of captcha image. */
+/* Created new css file */
+
+/* body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+    padding: 15px;
+} */
+
+/* Vertical Captcha CSS starts here */
+
+/* #captchaHolder {
+    
+} */
+
+/* #captchaHolder.wtop .captcha_vertical {
+	width: 245px; 
+	margin-left: -9px; 
+} */
+
+.captcha_vertical {
+    width: 225px;
+    min-height: 87px;
+    border-radius: 3px;
+    background: #e6edf1;
+    padding: 10px;
+    text-align: left;
+    box-sizing: content-box;
+}
+
+.captcha_vertical .captcha_txt img {
+    display: inline-block;
+    vertical-align: middle;
+    /* margin-right: 4px; */
+}
+
+.captcha_vertical .captcha_field input {
+    width: 200px;
+    height: 30px !important;
+    background-color: #fff;
+    border: 1px solid #c4cbcf;
+    font: Arial;
+    font-size: 14px;
+    color: #333333;
+   /*  margin: 0 4px 0 0; */
+    padding: 0 5px !important;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.captcha_vertical .captcha_field input::placeholder {
+    font-size: 11px;
+    color: #999999;
+}
+
+.captcha_vertical .captcha_field input::-moz-placeholder {
+    font-size: 11px;
+    color: #999999;
+}
+
+.captcha_vertical .captcha_field input::-webkit-placeholder {
+    font-size: 11px;
+    color: #999999;
+}
+
+/* .captcha_vertical .captcha_field input::-ms-placeholder {
+    font-size: 11px;
+    color: #999999;
+} */
+
+
+.captcha_vertical .captcha_field input:-ms-input-placeholder {
+    font-size: 11px !important;
+    color: #999999 !important;
+}
+
+.captcha_vertical .captcha_field input::-ms-input-placeholder {
+    font-size: 11px;
+    color: #999999;
+}
+
+.captcha_vertical .captcha_field input::-webkit-input-placeholder {
+    font-size: 11px;
+    color: #999999;
+}
+
+.captcha_vertical .captcha_field input:-moz-placeholder {
+    font-size: 11px;
+    color: #999999;
+}
+
+.captcha_vertical .captcha_field input::-ms-input-placeholder {
+  transform: scale(0.8) translateX(-25px);
+}
+
+.captcha_vertical .captcha_field {
+    margin-top: 10px;
+}
+
+.captcha_vertical a {
+    width: 19px;
+    height: 18px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 2px 0px 2px 2px;
+}
+
+.captcha_vertical a.captcha_refresh {
+    background: url('../images/refresh.png') no-repeat 50% 50%;
+}
+
+.captcha_vertical a.captcha_help {
+    background: url('../images/help.png') no-repeat 50% 50%;
+    position: relative;
+}
+
+.captcha_vertical a.captcha_refresh:hover {
+    opacity: .6;
+}
+
+.captcha_vertical a.captcha_help:hover {
+    opacity: .6;
+}
+
+.captcha_vertical a.captcha_help.opacity {
+    opacity: 1;
+}
+
+.captcha_vertical .help_pophover {
+    background: #ffffff;
+    border: 1px solid #d5d4d3;
+    padding: 5px 10px 10px;
+    bottom: 28px;
+    left: -122px;
+    position: absolute;
+    width: 240px;
+    cursor: default;
+    display: none;
+    z-index:9;
+    box-sizing: content-box;
+}
+
+.captcha_vertical .help_pophover ol {
+    margin: 0;
+    padding: 0;
+}
+
+.captcha_vertical .help_pophover li {
+    font-size: 11px;
+    color: #333;
+    margin: 15px 5px 5px 15px;
+}
+
+.captcha_vertical .help_pophover:after,
+.captcha_vertical .help_pophover:before {
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.captcha_vertical .help_pophover:before {
+    border-color: rgba(173, 173, 173, 0);
+    border-top-color: #d5d4d3;
+    border-width: 9px;
+    margin-left: -9px;
+}
+
+.captcha_vertical .help_pophover:after {
+    border-color: rgba(255, 255, 255, 0);
+    border-top-color: #ffffff;
+    border-width: 8px;
+    margin-left: -8px;
+}
+
+.captcha_vertical .closeCaptcha {
+    position: absolute;
+    right: 5px;
+    top: 1px;
+    cursor: pointer;
+    background-color: #fff;
+    padding: 0;
+    font-size: 20px;
+    line-height: 23px;
+    text-align: right;
+    color: #999;
+    position: absolute;
+}
+
+.captcha_vertical .closeCaptcha:hover {
+    color: #333;
+}
+
+/* Vertical Captcha CSS ends here */
+ 
+
+@media only screen and (max-width: 580px) {
+ #captchaHolder .captcha_vertical .help_pophover {
+ left: inherit;
+ right: -20px;
+ }
+ #captchaHolder .captcha_vertical .help_pophover:after, #captchaHolder .captcha_vertical .help_pophover:before {
+ left: 89%;
+ }
+ }

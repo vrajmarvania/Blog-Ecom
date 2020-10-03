@@ -1,0 +1,538 @@
+/**Common js file to be included by all solution teams**/
+/**Avoid writing consent management specific scripts here**/
+var allPolicyArr;
+var policyCounter;
+var metadataNameArr;
+function openPolicyUIMashup()
+{
+	var ifrm;	
+	jQuery("#frame1").css("display","block");
+	ifrm = document.getElementById("frame1");
+	
+	var url = "/ConsentManagement/jsp/PolicyMashUp.jsp?orgId=13&appId=400&attrCode=GN&attrValue=Male";
+	ifrm.src = url;
+	iFrame_setHeight();
+
+}
+function callFromSolnTeam(){
+	var arr = new Array();
+	var obj= new Object();
+	var obj1= new Object();
+	obj["attrCode"]="GN";
+	obj["attrValue"]="Male";
+	arr.push(obj);
+	obj1["attrCode"]="CY";
+	obj1["attrValue"]="Chennai";
+	arr.push(obj1);
+	getPolicyDetailsForUser(13,400,419551,arr);
+}
+
+function callCMJSONAjax(urlString,urlParam)
+{
+	var lAJAXInteraction = new CMAJAXInteractionforJSON(urlString, null, true);
+	var lRequest = lAJAXInteraction.doPost(""+JSON.stringify(urlParam));
+	var responseText = lRequest.responseText;
+	return responseText;
+}
+function callCMAjax(urlString,urlParam)
+{
+	var responseText = AjaxCall(urlString,urlParam);
+	return responseText;
+}
+/**
+ * @param orgId
+ * @param appId
+ * @param userId
+ * @param isInsideSolution - If policy is shown inside a solution, no need to show I agree btn in mashup.Close btn is enough
+ * @param isLink - If policy is opened through a link,then mashup should be shown always irrespective of already shown or not.
+ * @param applArr - non mandatory input.
+ */
+function getPolicyDetailsForUser(orgId,appId,isInsideSolution,isLink,userId,isRedirect,applArr,solutionSpecificConsentDB)
+{
+	var responseText=null;
+	if(applArr==""){
+		applArr = new Array();;
+	}
+	if(isRedirect==null || isRedirect==undefined)
+		{
+		isRedirect ="";
+		}
+	else if(isRedirect==true)
+	{
+		isRedirect ="true";
+	}
+	else if(isRedirect==false)
+	{
+		isRedirect ="false";
+	}else{
+		isRedirect ="";
+	}
+	if(solutionSpecificConsentDB==null || solutionSpecificConsentDB==undefined || solutionSpecificConsentDB=="")
+	{
+		solutionSpecificConsentDB ="0";
+	}
+	var urlString="/ConsentManagement/getPolicyDetails.do?";    
+	var reqParamObj = {"paramOrgId" : orgId,"paramAppId":appId,"paramUserId":userId,"isLink":isLink,"isInsideSolution":isInsideSolution,"isRedirect":isRedirect,"applicabilityArr" : applArr,"solutionSpecificConsentDB" : solutionSpecificConsentDB}; //,"urn" : gURN
+
+	var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+	var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+	var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+	if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+		jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+				{
+			jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+					{
+				jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+						{
+					responseText = callCMJSONAjax(urlString,reqParamObj);
+					if(responseText  && responseText!="No Policy Defined" && responseText!="Consent_Already_Given"){
+						var policyXML = solnStringtoXML(responseText);
+						var policyArr = setDropdownValuesinArr(policyXML,"POLICY","POLICYLIST",false,false);  
+						var length = policyArr.length; //&& responseText!="Consent_Already_Given"
+						if(length>0){
+							//allPolicyArr = policyArr;
+							//policyCounter = i;
+							var policyObj = policyArr[0];
+							var policyId = policyObj.policyid;
+							var responded = policyObj.respondedToPolicy;
+							if(responded!="Consent_Already_Given" || isLink==1)
+							{
+								//policyCounter++;
+								var consentAlreadyProvided = "No";
+								var url = "/ConsentManagement/jsp/PolicyMashUp.jsp?";
+								var sDiv1="<iframe id='policyFrame"+policyId+"' class=\"policy_iframe\" style=\"width:100%;height:100%;left:0px;top:0px;z-index:1000;position:fixed;border:none;\" src='"+url+"'/>";
+								jQuery("body").append(sDiv1); 
+							}else{
+								if(isRedirect=="true") 	//Written for redirect to other landing solutions.
+								{
+									getPrivacyPolicyCaptureResponse();
+								}
+							}
+						}
+
+					}else{
+						if(isRedirect=="true") 	//Written for Webtop redirect to other landing solutions.
+						{
+
+							getPrivacyPolicyCaptureResponse();
+						}
+					}
+						});
+					}); 
+				});
+	}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1 && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+	{
+		responseText = callCMJSONAjax(urlString,reqParamObj);
+		if(responseText && responseText!="No Policy Defined"  && responseText!="Consent_Already_Given"){
+
+			var policyXML = solnStringtoXML(responseText);
+			var policyArr = setDropdownValuesinArr(policyXML,"POLICY","POLICYLIST",false,false);  
+			var length = policyArr.length; //&& responseText!="Consent_Already_Given"
+			if(length>0){
+				var policyObj = policyArr[0];
+				var policyId = policyObj.policyid;
+				var responded = policyObj.respondedToPolicy;
+				if(responded!="Consent_Already_Given" || isLink==1)
+				{
+					//policyCounter++;
+					var consentAlreadyProvided = "No";
+					var url = "/ConsentManagement/jsp/PolicyMashUp.jsp?";
+					var sDiv1="<iframe id='policyFrame"+policyId+"' class=\"policy_iframe\" style=\"width:100%;height:100%;left:0px;top:0px;z-index:1000;position:fixed;border:none;\" src='"+url+"'/>";
+					jQuery("body").append(sDiv1); 
+				}else{
+					if(isRedirect=="true") 	//Written for Webtop redirect to other landing solutions.
+					{
+
+						getPrivacyPolicyCaptureResponse();
+					}
+				}
+			}
+		}else{
+			if(isRedirect=="true") 	//Written for Webtop redirect to other landing solutions.
+			{
+				getPrivacyPolicyCaptureResponse();
+			}
+		}
+	}
+}
+function getPolicyURL(orgId,appId,isInsideSolution,isLink,userId,applArr)
+{
+	var responseText=null;
+	if(applArr==""){
+		applArr = new Array();;
+	}
+	var urlString="/ConsentManagement/formPolicyURL.do?";    
+	var reqParamObj = {"paramOrgId" : orgId,"paramAppId":appId,"paramUserId":userId,"isLink" : isLink,"isInsideSolution":isInsideSolution,"applicabilityArr" : applArr}; //,"urn" : gURN
+
+	var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+	var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+	var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+	if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+		jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+				{
+
+			jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+					{
+				jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+						{
+					responseText = callCMJSONAjax(urlString,reqParamObj);
+					if(responseText){
+						return responseText;
+
+					}
+						});
+					}); 
+				});
+	}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1 && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+	{
+		responseText = callCMJSONAjax(urlString,reqParamObj);
+		if(responseText){
+			return responseText;
+		}
+	}
+}
+function insertAuditTrailForPD(orgId,appId,userId,pdId,pdName,pdOldValue,pdNewValue)
+{
+	var urlString="/ConsentManagement/insertPDAuditTrail.do?";    
+	var parameters="&orgId="+orgId+"&appId="+appId+"&userId="+userId+"&pdId="+pdId+"&pdName="+pdName+"&oldValue="+pdOldValue+"&newValue="+pdNewValue;
+	var responseText = null;
+	var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+	var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+	var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+	if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+		jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+				{
+			jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+					{
+				jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+						{
+					responseText = callCMJSONAjax(urlString,reqParamObj);
+						});
+					}); 
+				});
+	}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1  && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+	{
+		responseText = callCMAjax(urlString,parameters);
+	}
+
+		 return responseText;			
+}
+
+function callOpenUserDashBoard()
+{
+	showUserDashboard(13,400,419551);
+}
+function showUserDashboard(orgId,userId,appId,isRedirect,solutionSpecificConsentDB)
+{
+	if(isRedirect==null || isRedirect==undefined || isRedirect=="")
+	{
+		isRedirect = "";
+	}
+	if(solutionSpecificConsentDB==null || solutionSpecificConsentDB==undefined || solutionSpecificConsentDB=="")
+	{
+		solutionSpecificConsentDB = "0";
+	}
+	var url = "/ConsentManagement/jsp/UserDashBoard_iFrame.jsp?orgId="+orgId+"&appId="+appId+"&userId="+userId+"&isRedirect="+isRedirect+"&solutionSpecificConsentDB="+solutionSpecificConsentDB;
+	var sDiv1 = "";
+	if (isRedirect=="")
+	{
+		sDiv1+="<iframe id=\"userDBFrame\" style=\"width:100%;height:94%;display:block;z-index:1000;top:0px;position:absolute;border:none;\" src='"+url+"'/>";
+	}
+	else{
+		sDiv1+="<iframe id=\"userDBFrame\" style=\"width:100%;height:100%;display:block;z-index:1000;top:0px;position:absolute;border:none;\" src='"+url+"'/>";	
+	}
+	jQuery("body").append(sDiv1); 
+}
+
+function showFieldLevelPurpose(orgId,appId,userId,pdCode,usecaseCode,isOrgSpecific){
+	if(usecaseCode==undefined){
+		usecaseCode="";
+	}
+	if(userId==undefined || userId==null)
+	{
+		userId="";
+	}
+	if(isOrgSpecific==undefined || isOrgSpecific==null)
+	{
+		isOrgSpecific="";
+	}
+	var urlString="/ConsentManagement/setValuesInSession.do?";    
+	var parameters={"paramOrgId":orgId,"paramAppId":appId,"paramUserId":userId,"pdCode":pdCode,"usecaseCode":usecaseCode,"isOrgSpecific":isOrgSpecific}; //,"urnFlag":"false"
+	var responseText = null;
+	var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+	var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+	var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+	if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+		jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+				{
+			jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+					{
+				jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+						{
+					responseText = callCMJSONAjax(urlString,parameters);
+					if(responseText=="SUCCESS")
+						{
+					var url = "/ConsentManagement/jsp/PurposeMashUp.jsp?";
+					var sDiv1="<iframe id=\"purposeFrame\" style=\"width:100%;min-height:100%;left:0px;top:0px;z-index:10;position:fixed;border:none;\" src='"+url+"'/>"; //height:319px;width:307px;
+					jQuery("body").append(sDiv1);
+						}
+						});
+					}); 
+				});
+	}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1  && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+	{
+		responseText = callCMJSONAjax(urlString,parameters);
+		if(responseText=="SUCCESS")
+		{
+		var url = "/ConsentManagement/jsp/PurposeMashUp.jsp?";
+		var sDiv1="<iframe id=\"purposeFrame\" style=\"width:100%;min-height:100%;left:0px;top:0px;z-index:10;position:fixed;border:none;\" src='"+url+"'/>"; //height:319px;width:307px;
+		jQuery("body").append(sDiv1);
+		}
+	}
+}
+function showPurposeForMultiplePDs(orgId,appId,userId,pdCodeArr){
+	if(pdCodeArr==undefined || pdCodeArr==null || pdCodeArr.length==0){
+		
+	}else{
+		var pdCode="";
+		jQuery(pdCodeArr).each(function(i){
+			pdCode += pdCodeArr[i];
+			if(i<(pdCodeArr.length)-1)
+				{
+				pdCode +="@##@";
+				}
+			
+		});
+		if(userId==undefined || userId==null)
+		{
+			userId="";
+		}
+		var usecaseCode="";
+		var urlString="/ConsentManagement/setValuesInSession.do?";    
+		var parameters={"paramOrgId":orgId,"paramAppId":appId,"paramUserId":userId,"pdCode":pdCode,"usecaseCode":usecaseCode}; 
+		var responseText = null;
+		var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+		var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+		var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+		if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+			jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+					{
+				jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+						{
+					jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+							{
+						responseText = callCMJSONAjax(urlString,parameters);
+						if(responseText=="SUCCESS")
+							{
+								var url = "/ConsentManagement/jsp/PurposeMashUp.jsp?";
+								var sDiv1="<iframe id=\"purposeFrame\" style=\"width:100%;min-height:100%;left:0px;top:0px;z-index:10;position:fixed;border:none;\" src='"+url+"'/>"; //height:319px;width:307px;
+								jQuery("body").append(sDiv1);
+							}
+
+							});
+						}); 
+					});
+		}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1  && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+		{  
+			responseText = callCMJSONAjax(urlString,parameters);
+			if(responseText=="SUCCESS")
+				{
+					var url = "/ConsentManagement/jsp/PurposeMashUp.jsp?";
+					var sDiv1="<iframe id=\"purposeFrame\" style=\"width:100%;min-height:100%;left:0px;top:0px;z-index:10;position:fixed;border:none;\" src='"+url+"'/>"; //height:319px;width:307px;
+					jQuery("body").append(sDiv1);
+				}
+		}
+	}
+}
+
+function showUsecaseLevelPurpose(orgId,appId,userId,usecaseCodeArr){
+	var usecaseCode ="";
+	if(usecaseCodeArr==undefined){
+		usecaseCodeArr=new Array();
+		usecaseCode = "";
+	}else{
+		
+		jQuery(usecaseCodeArr).each(function(i){
+			usecaseCode += usecaseCodeArr[i];
+			if(i<(usecaseCodeArr.length)-1)
+				{
+				usecaseCode +="@##@";
+				}
+			
+		});
+	}
+	if(userId==undefined || userId==null)
+	{
+		userId="";
+	}
+	var urlString="/ConsentManagement/setValuesInSession.do?";    
+	var parameters={"paramOrgId":orgId,"paramAppId":appId,"paramUserId":userId,"usecaseCode":usecaseCode};
+	var responseText = null;
+	var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+	var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+	var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+	if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+		jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+				{
+			jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+					{
+				jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+						{ 
+					responseText = callCMJSONAjax(urlString,parameters);
+					if(responseText=="SUCCESS")
+						{
+							var url = "/ConsentManagement/jsp/PurposeMashUp.jsp?";
+							var sDiv1="<iframe id=\"purposeFrame\" style=\"width:100%;min-height:100%;left:0px;top:0px;z-index:10;position:fixed;border:none;\" src='"+url+"'/>"; //height:319px;width:307px;
+							jQuery("body").append(sDiv1);
+						}
+						});
+					}); 
+				});
+	}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1  && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+	{  
+		responseText = callCMJSONAjax(urlString,parameters);
+		if(responseText=="SUCCESS")
+			{
+				var url = "/ConsentManagement/jsp/PurposeMashUp.jsp?";
+				var sDiv1="<iframe id=\"purposeFrame\" style=\"width:100%;min-height:100%;left:0px;top:0px;z-index:10;position:fixed;border:none;\" src='"+url+"'/>"; //height:319px;width:307px;
+				jQuery("body").append(sDiv1);
+			}
+	}
+}
+function getPurposesForPD(orgId,appId,userId,pdCode,callback){
+	
+	var	usecaseCode="";
+	if(userId==undefined || userId==null)
+	{
+		userId="";
+	}
+	var urlString="/ConsentManagement/getFieldLevelPurposes.do?";    
+	var parameters={"paramOrgId":orgId,"paramAppId":appId,"paramUserId":userId,"pdCode":pdCode,"usecaseCode":usecaseCode};
+	var responseText = null;
+	var cf1 = jQuery("#cm_ajax_scriptfile").attr("src"); //document.getElementById("cm_ajax_scriptfile");
+	var cf2 = jQuery("#cm_common_scriptfile").attr("src");
+	var cf3 = jQuery("#cm_blockUI_scriptfile").attr("src");
+	if(cf1==undefined && cf2==undefined  && cf3==undefined) {
+		jQuery.get('/iONjsLib/js/jquery.blockUI.js',function() 
+				{
+			jQuery.get('/ConsentManagement/js/CMAjaxInteraction.js',function()
+					{
+				jQuery.get('/ConsentManagement/js/CMCommon.js',function()
+						{
+					responseText = callCMJSONAjax(urlString,parameters);
+					if(responseText){
+						var resultArr=JSON.parse(responseText);
+						var listObj=resultArr.lresult;
+						var listtArr = JSON.parse(listObj.replace(/"/g,'\"'));
+						metadataNameArr=listtArr.metadataNameList;
+						var metadataIdList=listtArr.metadataIdList;
+						var purposeArr = new Array();
+						var purposeObj ;
+						jQuery(metadataIdList).each(function(n)
+								{
+							var appid = this.appid;
+							var purposeid =this.purposeid;
+							var usecaseid = this.usecaseid;
+							var personaldataid = this.personaldataid;			
+							var consentrequired = this.consentrequired;	
+							var consentgiven = this.consentgiven;			
+							var iscompliant = this.iscompliant;
+							var usecasename= getmetadataname(usecaseid,2,1);
+							var purposedesc = getmetadataname(purposeid,1,1);
+							var personaldataname = getmetadataname(personaldataid,3,1);
+							purposeObj = new Object();
+							purposeObj["appid"] = appid;
+							purposeObj["purposeid"] = purposeid;
+							purposeObj["usecaseid"] = usecaseid;
+							purposeObj["personaldataid"] = personaldataid;
+							purposeObj["consentrequired"] = consentrequired;
+							purposeObj["consentgiven"] = consentgiven;
+							purposeObj["iscompliant"] = iscompliant;
+							purposeObj["usecasename"] = usecasename;
+							purposeObj["purposedesc"] = purposedesc;
+							purposeObj["personaldataname"] = personaldataname;	
+							purposeArr.push(purposeObj);
+								});
+						
+						/*var purposeXML = solnStringtoXML(responseText);
+						var purposeArr = setDropdownValuesinArr(purposeXML,"PURPOSE","PURPOSELIST",false,false);*/ 
+						
+						var length = purposeArr.length;
+						if(typeof callback == "function")
+							{
+							callback(purposeArr);
+							}
+					}
+						});
+					}); 
+				});
+	}else if(cf1.indexOf("ConsentManagement/js/CMAjaxInteraction.js")!=-1 && cf2.indexOf("ConsentManagement/js/CMCommon.js")!=-1  && cf3.indexOf("iONjsLib/js/jquery.blockUI.js")!=-1)
+	{
+		responseText = callCMJSONAjax(urlString,parameters);
+		if(responseText){
+			var resultArr=JSON.parse(responseText);
+			var listObj=resultArr.lresult;
+			var listtArr = JSON.parse(listObj.replace(/"/g,'\"'));
+			metadataNameArr=listtArr.metadataNameList;
+			var metadataIdList=listtArr.metadataIdList;
+			var purposeArr = new Array();
+			var purposeObj ;
+			jQuery(metadataIdList).each(function(n)
+					{
+				var appid = this.appid;
+				var purposeid =this.purposeid;
+				var usecaseid = this.usecaseid;
+				var personaldataid = this.personaldataid;			
+				var consentrequired = this.consentrequired;	
+				var consentgiven = this.consentgiven;			
+				var iscompliant = this.iscompliant;
+				var usecasename= getmetadataname(usecaseid,2,1);
+				var purposedesc = getmetadataname(purposeid,1,1);
+				var personaldataname = getmetadataname(personaldataid,3,1);
+				purposeObj = new Object();
+				purposeObj["appid"] = appid;
+				purposeObj["purposeid"] = purposeid;
+				purposeObj["usecaseid"] = usecaseid;
+				purposeObj["personaldataid"] = personaldataid;
+				purposeObj["consentrequired"] = consentrequired;
+				purposeObj["consentgiven"] = consentgiven;
+				purposeObj["iscompliant"] = iscompliant;
+				purposeObj["usecasename"] = usecasename;
+				purposeObj["purposedesc"] = purposedesc;
+				purposeObj["personaldataname"] = personaldataname;	
+				purposeArr.push(purposeObj);
+					});
+			/*var purposeXML = solnStringtoXML(responseText);
+			var purposeArr = setDropdownValuesinArr(purposeXML,"PURPOSE","PURPOSELIST",false,false);*/  
+			var length = purposeArr.length;
+			if(typeof callback == "function")
+			{
+			callback(purposeArr);
+			}
+			//return purposeArr;
+		}
+	}
+}
+
+function getmetadataname(masterId,masterType,langId)
+{	
+	var metadataname = metadataNameArr[masterId+"_"+masterType+"_"+langId];	
+	if(metadataname=="" || metadataname==undefined)
+	{
+		metadataname = metadataNameArr[masterId+"_"+masterType+"_"+1];
+		if(metadataname=="" || metadataname==undefined)
+		{
+			var lanId;
+			jQuery(languageArray).each(function(n)
+						{
+					lanId = this.lanid;	
+					metadataname = metadataNameArr[masterId+"_"+masterType+"_"+lanId];	
+					if(metadataname!=null)
+					{
+						return false;
+					}
+						});
+		}
+	}	
+	return metadataname;
+}

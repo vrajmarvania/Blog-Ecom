@@ -1,0 +1,3146 @@
+var keysArray=["iHUB1","iHUB2","iHUB3","iHUB4","iHUB5","iHUB6","iHUB7","iHUB8","iHUB9"];
+var valuesArray=["to","of","Entries","Back","Next","Select Filters","Select","Search","Cancel Filter"];
+var app_seq_no,masterform_id,txtInstanceId,sessChk,orgId,tokenId,languageId,globalMLjson,phoneMinLength,phoneMaxLength;
+var fragmentid,pgNo,page,recordCount,totalPagenumber,total,tabConfigAjax=true,logmeiHUB=false;
+var iDHversion="5.11";
+var passwordRegex = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*~+_()!-])(?!.*[`=\[\]{};:'<>,.?\/|\\\s\"]).{6,15})$/;
+!function(){"function"!=typeof Array.prototype.indexOf&&(Array.prototype.indexOf=function(t,e){for(var s=e||0,o=this.length;o>s;s+=1)if(void 0===t||null===t){if(this[s]===t)return s}else if(this[s]===t)return s;return-1})}(),function(t,e){var s={gettoaster:function(){var e=t("#"+i.toaster.id);return e.length<1&&(e=t(i.toaster.template).attr("id",i.toaster.id).css(i.toaster.css).addClass(i.toaster["class"]),i.stylesheet&&!t("link[href="+i.stylesheet+"]").length&&t("head").appendTo('<link rel="stylesheet" href="'+i.stylesheet+'">'),t(i.toaster.container).append(e)),e},notify:function(e,s,o){var a=this.gettoaster(),n=t(i.toast.template.replace("%priority%",o)).hide().css(i.toast.css).addClass(i.toast["class"]);if(t(".title",n).css(i.toast.csst).html(e),t(".message",n).css(i.toast.cssm).html(s),i.debug&&window.console&&log(toast),a.append(i.toast.display(n)),-1===i.donotdismiss.indexOf(o)){var r="number"==typeof i.timeout?i.timeout:"object"==typeof i.timeout&&o in i.timeout?i.timeout[o]:1500;setTimeout(function(){i.toast.remove(n,function(){n.remove()})},r)}}},o={toaster:{id:"toaster",container:"body",template:"<div></div>","class":"toaster",css:{position:"fixed",bottom:"200px",right:"0px",left:"0px",width:"300px",zIndex:"50000",margin:"auto"}},toast:{template:'<div class="alert alert-%priority% alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><span class="title"></span> <span class="message"></span></div>',css:{},cssm:{},csst:{fontWeight:"bold"},fade:"slow",display:function(t){return t.fadeIn(i.toast.fade)},remove:function(t,e){return t.animate({opacity:"0",padding:"0px",margin:"0px",height:"0px"},{duration:i.toast.fade,complete:e})}},debug:!1,timeout:5e3,stylesheet:null,donotdismiss:[]},i={};t.extend(i,o),t.toaster=function(e){if("object"==typeof e){"settings"in e&&(i=t.extend(i,e.settings));var o="title"in e?e.title:"Notice",a="message"in e?e.message:null,n="priority"in e?e.priority:"success";null!==a&&s.notify(o,a,n)}},t.toaster.reset=function(){i={},t.extend(i,o)}}(jQuery);
+$(document).ready(function(){
+	if(OTP!=undefined){
+		OTP.OTPScreens.init();
+	}
+	setTimeout(function(){
+		if (typeof getAllInstanceDetails == 'function'){
+			var allInstanceDetails=getAllInstanceDetails();
+			(function rerunInstance(){
+				if(typeof allInstanceDetails == 'object'){
+					phoneMinLength=$.trim(allInstanceDetails.phoneMinLength);
+					phoneMaxLength=$.trim(allInstanceDetails.phoneMaxLength);
+					if($.trim(allInstanceDetails.cookieConsentReqd)!="1" && $.trim($('#showNewCookieNotice').val()).toLowerCase()=="yes" && self==top)
+						loadNewConsent();
+				}
+				else{
+					allInstanceDetails=getAllInstanceDetails();
+					setTimeout(rerunInstance, 200);
+				}
+			})();
+		}
+	},100);
+});
+function loadNewConsent(){
+	$.get('/ConsentManagement/js/cookieManagement.js?version='+$.trim(iDHversion))
+		.done(function( script, textStatus ) {
+			showCookieNotice($.trim($('#orgId').val()),'306','1',cookieNoticeResponse,$.trim($('#orgId').val()));
+		})
+		.fail(function( jqxhr, settings, exception ) {
+			console.log("exception : "+exception);
+		});
+}
+window.store = {
+	localStoreSupport: function() {
+		try {
+			localStorage.setItem('test','');
+			return true;
+			/* return 'localStorage' in window && window['localStorage'] !== null; */
+		} catch (e) {
+			return false;
+		}
+	},
+	set: function(name,value,days) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime()+(days*24*60*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		}
+		else {
+			var expires = "";
+		}
+		if( this.localStoreSupport() ) {
+			localStorage.removeItem('test');
+			localStorage.setItem(name, value);
+		}
+		else {
+			document.cookie = name+"="+value+expires+"; path=/";
+		}
+	},
+	get: function(name) {
+		if( this.localStoreSupport() ) {
+			localStorage.removeItem('test');
+			ret = localStorage.getItem(name);
+			/* log(typeof ret); */
+			switch (ret) {
+			  case 'true': 
+				  return true;
+			  case 'false':
+				  return false;
+			  default:
+				  return ret;
+			}
+		}
+		else {
+			var nameEQ = name + "=";
+			var ca = document.cookie.split(';');
+			for(var i=0;i < ca.length;i++) {
+				var c = ca[i];
+				while (c.charAt(0)==' ') c = c.substring(1,c.length);
+				if (c.indexOf(nameEQ) == 0) {
+					ret = c.substring(nameEQ.length,c.length);
+					switch (ret) {
+					  case 'true': 
+						  return true;
+					  case 'false':
+						  return false;
+					  default:
+						  return ret;
+					}
+				}
+			}
+			return null;
+		}
+	},
+	del: function(name) {
+		if( this.localStoreSupport() ) {
+			localStorage.removeItem('test');
+			localStorage.removeItem(name);
+		}
+		else {
+			this.set(name,"",-1);
+		}
+	}
+}
+
+window.iHUB={
+	search:{
+		dynamicSearch:function(searchClass,parentSelector,viewmore,maxcount){
+			var selectorA,selectorVisible,viewMore=false;
+			if(viewmore.toLowerCase()=="true"){
+				if(isNaN(maxcount))
+					maxcount=10;
+				viewMore=true;
+			}
+			parentSelector=parentSelector.replace(/"/g,"'");
+			var selectorA=eval(parentSelector);
+			parentSelector.split("'");
+			/* var hideShowClass=selectorA.selector.split(' ')[(selectorA.selector.split(' ').length)-1]; */
+			var classArray = parentSelector.replace(/\(|\)/g,'').replace(new RegExp("'$"), '').split("'");
+			var hideShowClass=classArray[classArray.length-1];
+			/* selectorA=$(a.selector); */			
+			/* selectorVisible=$(b.selector); */
+			$('.'+searchClass).on('keyup',function(){
+				selectorA.hide();
+				selectorA.removeClass('hidden');
+				selectorA.removeClass(searchClass+"Dynamic");
+				selectorA.removeClass(searchClass+"Default");
+				$('.'+searchClass+'NoResult').addClass('hidden');
+				var txt = $('.'+searchClass).val();
+				if(txt==""){
+					selectorA.removeClass(searchClass+"Dynamic");
+					selectorA.addClass(searchClass+"Default");
+					$('.'+searchClass+'ViewMore').attr('id',searchClass+'Default-more');
+					$('.'+searchClass+'ViewLess').attr('id',searchClass+'Default-less');
+				}
+				var count=0;
+				selectorA.each(function(){
+					if($(this).text().toUpperCase().indexOf(txt.toUpperCase()) != -1){
+						$(this).show();
+						$(this).addClass(searchClass+"Dynamic");
+						if(viewMore && Number(count)>=Number(maxcount)){
+							$(this).addClass("hidden");
+						}
+						count++;
+					}
+					else{
+						$(this).removeClass(searchClass+"Dynamic");
+					}
+				});
+				if(viewMore){
+					if(Number(count)>Number(maxcount)){
+						$('.'+searchClass+'ViewMore').removeClass('hidden');
+						$('.'+searchClass+'ViewLess').addClass('hidden');
+						$('.'+searchClass+'ViewMore').attr('id',searchClass+'Dynamic-more');
+						$('.'+searchClass+'ViewLess').attr('id',searchClass+'Dynamic-less');
+					}
+					else{
+						$('.'+searchClass+'ViewMore').addClass('hidden');
+						$('.'+searchClass+'ViewLess').removeClass('hidden');
+					}
+				}
+				/* if($(selectorVisible.selector).length==0){ */
+				/* else if($(selectorVisible.selector).length <= Number(maxcount)){ */
+				selectorVisible=eval(parentSelector.replace(new RegExp(hideShowClass + '([^'+hideShowClass+'])*$'), hideShowClass+":visible')"));
+				if(selectorVisible.length==0){
+					$('.'+searchClass+'NoResult').removeClass('hidden');
+					$('.'+searchClass+'ViewMore').addClass('hidden');
+					$('.'+searchClass+'ViewLess').addClass('hidden');
+				}
+				else if(selectorVisible.length <= Number(maxcount)){
+					$('.'+searchClass+'ViewLess').addClass('hidden');
+				}
+				else{
+					$('.'+searchClass+'NoResult').addClass('hidden');
+				}
+			});
+		},
+		openViewMore:function(className,idName){
+			$('#'+idName).addClass('hidden');
+			idName=idName.split('-')[0];
+			$('.'+className+'ViewLess').removeClass('hidden');
+			if(idName.replace(className,'').toLowerCase()=="default"){
+				$('.'+idName).removeClass('hidden');
+			}
+			else{
+				$('.'+className+'Dynamic').removeClass('hidden');
+			}
+		},
+		openViewLess:function(className,idName,maxcount){
+			$('#'+idName).addClass('hidden');
+			idName=idName.split('-')[0];
+			$('.'+className+'ViewMore').removeClass('hidden');
+			if(idName.replace(className,'').toLowerCase()=="default"){
+				$('.'+idName+':gt('+(Number(maxcount)-1)+')').addClass('hidden');
+			}
+			else{
+				$('.'+className+'Dynamic:gt('+(Number(maxcount)-1)+')').addClass('hidden');
+			}
+		},
+		jQuerySearch:function(){
+			$('.jQuerySearch').each(function(){
+				var cId=$(this).attr('id');
+				if(cId!=undefined && cId!="")
+					iHUB.search.createjQuerySearchFromId(cId);
+			});
+		},
+		createjQuerySearchFromId:function(id){
+			var cId=$('#'+id);
+			if(cId!=undefined && cId!=""){
+				var searchClass=cId.attr('data-searchClass');
+				var style=cId.attr('data-style');
+				var selector=cId.attr('data-selector');
+				var viewmore=cId.attr('data-viewmore');
+				var maxcount=cId.attr('data-maxcount');
+				var VMappendClass=cId.attr('data-VMappendClass');
+				iHUB.search.createjQuerySearch(id,searchClass,style,selector,viewmore,maxcount,VMappendClass);
+			}
+		},
+		createjQuerySearch:function(id,searchClass,style,selector,viewmore,maxcount,VMappendClass){
+			if(searchClass!="" && searchClass!=undefined && selector!="" && selector!=undefined){
+				iHUB.search.buildDynamicSearchAndResult(id,searchClass,selector,style,VMappendClass);
+				iHUB.search.dynamicSearch(searchClass,selector,viewmore,maxcount);
+			}
+			if($.trim(viewmore).toLowerCase()=="true"){
+				iHUB.search.buildViewMore(id,searchClass,selector,viewmore,maxcount,VMappendClass);
+			}
+		},
+		buildDynamicSearchAndResult:function(id,searchClass,selector,style,VMappendClass){
+			var customBuildDynamicSearch="customBuildDynamicSearch_"+id;
+			if(eval("typeof "+customBuildDynamicSearch+" !== 'undefined'")){
+				if (typeof eval(customBuildDynamicSearch) == 'function'){
+					eval(customBuildDynamicSearch+'("'+id+'","'+searchClass+'","'+selector+'","'+style+'","'+VMappendClass+'")');
+					/* customBuildDynamicSearch(id,searchClass,selector,style,VMappendClass); */
+				}
+			}
+			else{
+				$('#'+id).find('.'+searchClass).parent('div').remove();
+				$('#'+id).append('<div class="input-group '+style+'"> <input class="form-control '+searchClass+'" placeholder="'+multilingualKeyValue('424','34')+'" data-a="424" data-b="Search" type="text"><div onclick="iHUB.search.clearjQuerySearch(\''+searchClass+'\')" class="input-group-addon cousorPointer">X</div></div>');
+			}
+			var customBuildDynamicResult="customBuildDynamicResult_"+id;
+			if(eval("typeof "+customBuildDynamicResult+" !== 'undefined'")){
+				if (typeof eval(customBuildDynamicResult) == 'function'){
+					eval(customBuildDynamicResult+'("'+id+'","'+searchClass+'","'+selector+'","'+style+'","'+VMappendClass+'")');
+					/* customBuildDynamicResult(id,searchClass,selector,style,VMappendClass); */
+				}
+			}
+			else{/*need to think on if this can be made multilingual*/
+				$('.'+searchClass+'NoResult').remove();
+				$('.'+VMappendClass).append('<div class="'+searchClass+'NoResult text-center hidden" data-a="28" data-b="Sorry, No results found">'+multilingualKeyValue('28','34')+'</div>');
+			}
+		},
+		clearjQuerySearch:function(searchClass){
+			$('.'+searchClass).val('');
+			$('.'+searchClass).keyup();
+		},
+		buildViewMore:function(id,searchClass,selector,viewmore,maxcount,VMappendClass){
+			var customBuildViewMore="customBuildViewMore_"+id;
+			if(eval("typeof "+customBuildViewMore+" !== 'undefined'")){
+				if (typeof eval(customBuildViewMore) == 'function'){
+					eval(customBuildViewMore+'("'+id+'","'+searchClass+'","'+selector+'","'+viewmore+'","'+maxcount+'")');
+					/* customBuildViewMore(id,searchClass,selector,viewmore,maxcount); */
+				}
+			}
+			else{
+				var a=eval(selector);
+				/* var hideShowClass=a.selector.split(' ')[(a.selector.split(' ').length)-1]; */
+				var classArray = selector.replace(/\(|\)/g,'').replace(new RegExp("'$"), '').split("'");
+				var hideShowClass=classArray[classArray.length-1];
+				if(isNaN(maxcount))
+					maxcount=10;
+				var b=eval(selector.replace(hideShowClass,hideShowClass+':gt('+(Number(maxcount)-1)+')'));
+				/* $(b.selector).addClass('hidden'); */
+				b.addClass('hidden');
+				/* selector=$(a.selector);
+				selector.addClass(searchClass+'Default'); */
+				a.addClass(searchClass+'Default');
+				$('.'+VMappendClass).find('.'+searchClass+'ViewMore').remove();
+				$('.'+VMappendClass).find('.'+searchClass+'ViewLess').remove();
+				var hiddenClassForViewMore="";
+				/* if(selector.length <= Number(maxcount)) */
+				if(a.length <= Number(maxcount))
+					hiddenClassForViewMore="hidden"
+				$('.'+VMappendClass).append("<a style=\"text-align: center;\" id='"+searchClass+"Default-more' onclick=\"iHUB.search.openViewMore('"+searchClass+"',this.id)\" class='cousorPointer lnkTrance "+searchClass+"ViewMore "+hiddenClassForViewMore+"' data-a='195' data-b='View More'>"+multilingualKeyValue('195','34')+"</a>");
+				$('.'+VMappendClass).append("<a style=\"text-align: center;\" id='"+searchClass+"Default-less' onclick=\"iHUB.search.openViewLess('"+searchClass+"',this.id,'"+maxcount+"')\" class='cousorPointer lnkTrance "+searchClass+"ViewLess hidden' data-a='' data-b='View Less'>View Less</a>");
+			}
+		}
+	},
+	multilingual:{
+		multilingualFormKeyValue:function(masterform_id,orgID,languageName,groupId) {
+			var JSONPath=$('#multilingualJsonPath').val();
+			if($.trim(JSONPath)!=""){
+				if($.trim(JSONPath).indexOf('product_')>-1)
+					$('[name="multilingualJsonPath"]').remove();
+				iHUB.multilingual.resetMultilingualValues();
+				if(languageName!=null && languageName!=undefined && languageName!='')
+					languageName=languageName;
+				else
+					languageName='English';
+				if (languageName!="") {
+					if($.trim(txtInstanceId)==""){
+						if($.trim($('#txtInstanceId_div').html())!="")
+							txtInstanceId=$('#txtInstanceId_div').html();
+						else
+							txtInstanceId=$('#txtInstanceId').val();
+					}
+					var url=JSONPath.replace('/ionstore','')+"?version="+$.trim(iHUB.version.get());
+					$.getJSON(url, function( data ){
+						var keyValueJson=data.multilingualData[languageName];
+						globalMLjson=keyValueJson;
+						replaceMultilingualHTMLvaluesOld(keyValueJson);
+						logiHUB("multilingualFormKeyValue response success post date is :"+new Date());	
+					});
+					iHUB.multilingual.checkAndSetMultilingualValues();
+				}
+			}
+			else{
+				iHUB.multilingual.resetMultilingualValues();
+				if(languageName!=null && languageName!=undefined && languageName!='')
+					languageName=languageName;
+				else
+					languageName='English';
+				if (languageName!="") {
+					if (groupId == "" || groupId == null)
+						groupId = "blank";
+					logiHUB("languageName..."+languageName);
+					var subAction = "formKeyValues";
+					var parameters = masterform_id + "," + orgID + "," + languageName + "," + groupId;
+					var keyValueJson;
+					var subAction = "keyValuesJson";
+					logiHUB('multilingualFormKeyValue pre ajax date is : '+new Date());
+					logiHUB('masterform_id : '+$.trim(masterform_id)+' @@ orgID : '+$.trim(orgID)+' @@ languageName : '+$.trim(languageName)+' @@ groupId : '+$.trim(groupId));
+					if($.trim(masterform_id)!="" && $.trim(orgID)!="" && $.trim(languageName)!="" && $.trim(groupId)){
+						$.ajax({
+							type: "POST",
+							url: "/EForms/MultilingualLabelLoadServlet",
+							async: false,
+							data: {
+								OrgFormParams: parameters,
+								subAction: subAction
+							},
+							dataType: "json",
+							success: function(returnValue) {					
+								logiHUB("multilingualFormKeyValue response success date is :"+new Date());
+								var condn=iHUB.checkSessionOrToken(returnValue);
+								if(eval(condn)){
+									if (returnValue != null) {
+										keyValueJson = returnValue.keyValues;
+									}
+									if (keyValueJson != null) {
+										if (Object.keys(keyValueJson).length != 0) {
+											for (var key in keyValueJson) {
+												if (keyValueJson.hasOwnProperty(key)) {
+													var key1 = key.trim();
+													var value1 = keyValueJson[key];
+													var temp = document.createElement('span');
+													temp.innerHTML = value1;
+													value1 = temp.innerHTML;
+													$('[data-multilingualId="'+key1+'"]').each(function(){
+														var showAttr=$(this).attr('data-multilingualDisplayType');
+														if($.trim(showAttr)!=""){  /* added for job CR */ 
+															var findString=$('[data-multilingualId="'+key1+'"][data-multilingualDisplayType="'+showAttr+'"]');
+															
+															if(showAttr=="html")
+																findString.html(value1);
+															if(showAttr=="input")
+																findString.val(value1);
+															if(showAttr!="input" && showAttr!="html")
+																findString.attr(showAttr,value1);
+														}
+													});
+												}
+											}
+										}
+									}
+								}
+								logiHUB("multilingualFormKeyValue response success post date is :"+new Date());
+							},
+							error: function(x, e) {
+								logiHUB({priority: 'success', title: 'Message', message: x.readyState + " " + x.status + " " + e.msg});
+							},
+							complete: function() {
+								iHUB.multilingual.checkAndSetMultilingualValues();
+							}
+						});
+					}
+				}
+			}
+		},
+		checkAndSetMultilingualValues:function(){
+			var multilingualVariableArray=[];
+			$('[data-multilingualid]').each(function(){
+				multilingualVariableArray.push($(this).attr('data-multilingualid'));
+			});
+			for(var i=0;i<multilingualVariableArray.length;i++){
+				var key=multilingualVariableArray[i];
+				/* if(eval("typeof "+key+" !== 'undefined'")){
+					if(eval(key+" === ''"))
+						eval(key+"='"+$('[data-multilingualId="'+key+'"]').attr('data-multilingualDefault')+"'");
+				} */
+				$('[data-multilingualId="'+key+'"]').each(function(){
+					var showAttr=$(this).attr('data-multilingualDisplayType');
+					if($.trim(showAttr)!=""){	/* added for job CR */ 
+						var findString=$('[data-multilingualId="'+key+'"][data-multilingualDisplayType="'+showAttr+'"]');
+						var defaultValue=findString.attr('data-multilingualDefault');					
+						/* logiHUB('key : '+key+' @@ defaultValue : '+defaultValue); */
+						if(showAttr=="html" && $.trim(findString.html())=="")
+							findString.html(defaultValue);
+						if(showAttr=="input" && $.trim(findString.val())=="")
+							findString.val(defaultValue);
+						if(findString.attr(showAttr)=="")
+							findString.attr(showAttr,defaultValue);
+					}
+				});
+			}
+			tooltipHoverFocus();
+			logiHUB("checkAndSetMultilingualValues completed");
+		},
+		resetMultilingualValues:function(){
+			var multilingualIds =[];
+			 $('[data-multilingualId]').each(function(){
+				multilingualIds.push($(this).attr('data-multilingualId'));
+			});
+			if(multilingualIds.length > 0){
+				multilingualIds=multilingualIds.filter(String).map(Function.prototype.call, String.prototype.trim).sort();
+				var uniqueMultilingualIds = [];
+				$.each(multilingualIds, function(i, el){
+					if($.inArray(el, uniqueMultilingualIds) === -1) 
+						uniqueMultilingualIds.push(el);
+				});
+				for(var i=0;i<uniqueMultilingualIds.length;i++){
+					var key=uniqueMultilingualIds[i];
+					/* eval(key+"=''"); */
+					$('[data-multilingualId="'+key+'"]').each(function(){
+						var showAttr=$(this).attr('data-multilingualDisplayType');
+						if($.trim(showAttr)!=""){	/* added for job CR */ 
+							var findString=$('[data-multilingualId="'+key+'"][data-multilingualDisplayType="'+showAttr+'"]');
+							if(showAttr=="html")
+								findString.html('');
+							if(showAttr=="input")
+								findString.val('');
+							if(showAttr!=undefined && showAttr!="input" && showAttr!="html")
+								findString.attr(showAttr,'');
+						}
+					});
+				}
+			}
+		},
+		gmv:function(key){
+			/* var getVal=$('input[data-multilingualId="'+key+'"]').val()==undefined ? "" : ($.trim($('input[data-multilingualId="'+key+'"]').val())!="" ? $('input[data-multilingualId="'+key+'"]').val() : $('input[data-multilingualId="'+key+'"]').attr('data-multilingualDefault')); */
+			var getVal="";
+			if(getVal=="" && keysArray.indexOf(key)>-1){
+				getVal=valuesArray[keysArray.indexOf(key)];
+			}
+			/* added for job CR */
+			if(getVal=="" && globalMLjson!=undefined && !jQuery.isEmptyObject(globalMLjson)){  
+				if (Object.keys(globalMLjson).length != 0) {
+					if (globalMLjson.hasOwnProperty($.trim(key))) {
+						getVal = globalMLjson[$.trim(key)].multilingual_value;
+						/* console.log("getVal.."+getVal); */
+					}
+				}
+			}/* added for job CR */ 
+			return getVal.replace(/@~@lt@~@/gi,'<').replace(/@~@gt@~@/gi,'>').replace(/@~@and@~@/gi,'&');
+		}
+	},
+	validation:{
+		errorMessage:function(id,message,top1){
+			$('#'+id+'-H').text(message);
+			$('#'+id+'-H').removeClass('hidden');
+			if($.trim(top1)!=''){			
+				if($('#'+id).parents('.modal:visible').length > 0){
+					if($('#'+id).parents('.slimScrollDiv').length!=0){
+						/* slimScroll is enabled */
+						$('#'+id).parents('.slimScrollDiv').children(':first').slimScroll({ scrollTo: '0px', alwaysVisible: true });
+						var topCalc = $('#'+id).offset().top - $('#'+id).parents('.slimScrollDiv').children(':first').offset().top;
+						/* console.log("id's top : "+$('#'+id).offset().top);
+						console.log("slimScrollDiv's top : "+$('#'+id).parents('.slimScrollDiv').children(':first').offset().top);
+						console.log("topCalc : "+topCalc); */
+						if(topCalc!=0)
+							$('#'+id).parents('.slimScrollDiv').children(':first').slimScroll({ scrollTo: topCalc+'px', alwaysVisible: true });
+					}
+					else
+						$('#'+id).parents('.modal').animate({ scrollTop: top1 }, 'slow');
+				}
+				else
+					$('html, body').animate({ scrollTop: top1 }, 'slow');
+			}
+			$('#'+id).css("border-color","red");
+			$('button.btn[data-id="'+id+'"]').css("border-color","red");
+		},
+		resetValidationColourText:function(){
+			$('[id$="-H"]').addClass('hidden');
+			$('[id$="-H"]').text('');
+			$('input.form-control[id!=""]').css("border-color","#dadada");
+			$('textarea.form-control[id!=""]').css("border-color","#dadada");
+			$('button.btn[data-id!=""]').css("border-color","#dadada");
+		}
+	},
+	tabConfig:{
+		custPagination:function(id){
+			if(typeof window.preCustPagination == 'function') {
+				window.preCustPagination(id);
+			}
+			if(self==top){
+				$('html, body').animate({ scrollTop: 0 }, 'slow');
+			}
+			else if(parent==top){
+				window.parent.$('html, body').animate({ scrollTop: 0 }, 'slow');
+			}
+			if(page===""){
+				page=1;
+			}
+			var pgNo = page;
+			$('#pagenoField'+id).val(pgNo);
+			var pStart="",pStart1="";
+			pStart = (((Number(page))-1)*10)+(Number(total));
+
+			if (page==1){
+				pStart1 = total==0 ? 0 : 1 ;
+			}
+			else{
+				pStart1=(((Number(page))-1)*10)+1;
+			}
+			recordCount = recordCount.replace(/[\[\]']+/g,'');
+			/* recordCount = recordCount.replace("[","");
+			recordCount = recordCount.replace("]",""); */
+			var divString = "<div class='custPagination container-fluid margintop20 marginbottom20' id='div4"+id+"' style='padding:0'><p class='pagenumbertext bottompagetext'> <strong><span id='Start"+id+"'>"+pStart1+" </span></strong><to data-a='23' data-b='to'>"+multilingualKeyValue('23','34')+" </to><strong><span id='end"+id+"'>"+pStart+" </span></strong><of data-a='24' data-b='of'>"+multilingualKeyValue('24','34')+"</of> <strong><span id='total"+id+"'>"+recordCount+" </span></strong><entery data-a='25' data-b='Entries'>"+multilingualKeyValue('25','34')+" </entery></p></div>";/*  multilingual keys to be changed & make it generic */
+			$('#fragment-'+id).find('.custPagination').remove();
+			$('#fragment-'+id).append(divString);
+
+			totalPagenumber="";
+			if(recordCount/10 > 1){
+				totalPagenumber = recordCount % 10 == 0 ? Number(recordCount)/10 : Number(recordCount)/10 + 1 ;
+			}
+			else{
+				totalPagenumber=1;
+			}
+
+			totalPageNumber=Math.floor(totalPagenumber);
+
+			if(totalPageNumber!="" && totalPageNumber > 1){
+				var paginationDiv="<div class='bottompagenum'>";
+				paginationDiv+="<div class='text-center visible-sm visible-xs' id='mobileDiv-"+id+"'></div>";
+				paginationDiv+="<nav class='hidden-sm hidden-xs'></nav></div>";
+				$('#div4'+id).append(paginationDiv);								
+				$('#div4'+id+' nav').append("<ul class='pagination' id='paginationUL-"+id+"'></ul>");
+				/* UL LI of Listing Pagination */
+				var mobileDiv='',paginationUl='';
+				if(pgNo!=1){
+					mobileDiv="<a class='btn btn-default cousorPointer' id='secondbtn"+id+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\"><i class='fa fa-angle-left'></i>&nbsp;<back data-a='27' data-b='Back'>"+multilingualKeyValue('27','34')+"</back></a>"; 
+					paginationUl="<li><a aria-label='Previous' class='cousorPointer' id='firstbtn"+id+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\"><i class='fa fa-angle-left'></i><i class='fa fa-angle-left'></i></a></li>";
+					paginationUl+="<li><a aria-label='Previous' class='cousorPointer' id='secondbtn"+id+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\"><i class='fa fa-angle-left'></i></a></li>";
+				}
+				if(Number(pgNo)+5 <= totalPageNumber){
+					for(var i=pgNo; i < Number(pgNo)+5 ; i++){
+						paginationUl+="<li><a class='cousorPointer' id='pageLi"+id+"-"+i+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\">"+i+"</a></li>";
+					}
+				}
+				else {
+					for(var i=(totalPageNumber-4<=0)?1:(totalPageNumber-4); i <=totalPageNumber ; i++){
+						paginationUl+="<li><a class='cousorPointer' id='pageLi"+id+"-"+i+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\">"+i+"</a></li>";
+					}  
+				}
+				if(pgNo!=totalPageNumber){
+					mobileDiv+="&nbsp;<a class='btn btn-default cousorPointer' id='thirdbtn"+id+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\" ><next data-a='26' data-b='Next'>"+multilingualKeyValue('26','34')+"</next>&nbsp;<i class='fa fa-angle-right'></i></a>";
+					paginationUl+="<li><a aria-label='Next' class='cousorPointer' id='thirdbtn"+id+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\"><i class='fa fa-angle-right'></i></a></li>";
+					paginationUl+="<li><a aria-label='Next' class='cousorPointer' id='fourthbtn"+id+"' onclick=\"iHUB.tabConfig.paginationCalliHUB('"+id+"',this.id)\"><i class='fa fa-angle-right'></i><i class='fa fa-angle-right'></i></a></li>";
+				}
+				$('#mobileDiv-'+id).append(mobileDiv);
+				$('#paginationUL-'+id).append(paginationUl);
+				/* resetActiveClassPagination(fragmentid); */
+				$('#pageLi'+id+"-"+page).parent().addClass('active');
+			}
+			page = pgNo;
+			if(typeof window.postCustPagination == 'function') {
+				window.postCustPagination(id);
+			}
+		},
+		paginationCalliHUB:function(fragmentid,clickedButtonId){
+			if(typeof window.prePaginationCalliHUB == 'function') {
+				window.prePaginationCalliHUB(fragmentid,clickedButtonId);
+			}
+			if(self==top){
+				$('html, body').animate({ scrollTop: 0 }, 'slow');
+			}
+			else if(parent==top){
+				window.parent.$('html, body').animate({ scrollTop: 0 }, 'slow');
+			}
+			var thisid = clickedButtonId;
+			if(thisid.indexOf('pageLi')!=-1){
+				page = thisid.split("-")[1];
+			}
+			else{
+				if($.trim(thisid) == "firstbtn"+fragmentid){
+					page = 1;
+				}
+				else if($.trim(thisid) == "secondbtn"+fragmentid){
+					page = Number(page)-1;
+				}
+				else if($.trim(thisid) == "thirdbtn"+fragmentid){
+					page = Number(page)+1;
+				}
+				else if($.trim(thisid) == "fourthbtn"+fragmentid){
+					recordCount =  $("#total"+fragmentid).html();
+
+					var temp = Number(recordCount)/10; 
+					temp = Math.floor(temp);
+					var extra = Number(recordCount)%10;
+					if(extra >0){
+						temp = Number(temp)+1;
+					}
+					page = temp;
+				}
+			}
+			iHUB.tabConfig.resetActiveClassPagination(fragmentid);
+
+			$('#pagenoField'+fragmentid).val(page);
+			$('#searchFilterSaved'+fragmentid).val(page);
+			$('#reloadGrid-'+fragmentid).click();
+			
+			/* var onClick=$("#reloadGrid-"+fragmentid).attr("onClick");
+			if($('#app_seq_no-'+fragmentid).val()=="" && $('#txtLicenseStatus-'+fragmentid).val()==""){
+				if(onClick.indexOf("search")>-1){	
+					$('#searchFilterSaved'+fragmentid).val("");
+					onClick=onClick.replace("search", "refresh");
+					$("#reloadGrid-"+fragmentid).unbind("click").attr("onClick","parent.showLoader();"+onClick);
+				}
+			}
+			else{	
+				var condition="";
+				if(onClick.indexOf("refresh")>-1){
+					if($('#searchFilterSaved'+fragmentid).val()!=""){
+						if($('#app_seq_no-'+fragmentid).val()!=""){
+							condition+="app_seq_no:"+$('#app_seq_no-'+fragmentid).val()+"-@@ion@@-";
+						}
+						if($('#txtLicenseStatus-'+fragmentid).val()!=""){
+							condition+="txtLicenseStatus:"+$('#txtLicenseStatus-'+fragmentid).val()+"-@@ion@@-";
+						}
+					}
+					$('#searchFilterSaved'+fragmentid).val("");
+					onClick=onClick.replace("refresh", "search");
+					$("#reloadGrid-"+fragmentid).unbind("click").attr("onClick","parent.showLoader();"+onClick);
+				}
+			} */
+			if(typeof window.postPaginationCalliHUB == 'function') {
+				window.postPaginationCalliHUB(fragmentid,clickedButtonId);
+			}
+		},
+		resetActiveClassPagination:function(fragmentid){
+			$('#paginationUL-'+fragmentid+' li').each(function(i){
+				if($(this).hasClass('active')){
+					$(this).removeClass('active');
+				}
+			});
+		},
+		goToPageNumber:function(value, fragmentid){
+			var correctPage="";
+			if(isNaN(value)){
+				alert('Please enter Numeric value');
+			}
+			else if(!isNaN(value)){
+				var Num=Number(value);
+				if(Num<=0){
+					alert('Please enter Positive value(Greater than 0)');
+				}				
+				else if(value>totalPageNumber){
+					alert('Please enter number between 0 and '+Math.ceil(totalPageNumber));
+				}
+				else{
+					correctPage=value;
+				}
+			}
+			else{
+				alert('Please enter correct value');
+			}
+			if(correctPage!=""){
+				$('#pagenoField'+fragmentid).val(value);
+				$('#reloadGrid-'+fragmentid).click();
+			}
+		},
+		sortGrid:function(thisid, fragmentid){
+			var thisid = thisid.split("-")[0];
+			if (thisid != "act" && thisid != "") {
+				var sortingField = thisid;
+				var sortingOrder = $('#sortingorderInput'+fragmentid).val();
+				if (sortingOrder == "") {
+					sortingFieldOrder = "asc";
+				} 
+				else if (sortingOrder == "asc") {
+					sortingFieldOrder = "desc";
+				}
+				else if (sortingOrder == "desc") {
+					sortingFieldOrder = "asc";
+				}
+				$('#sortingFieldInput'+fragmentid).val(sortingField);
+				$('#sortingorderInput'+fragmentid).val(sortingFieldOrder);
+				$('#reloadGrid-'+fragmentid).click();
+			}
+		}
+	},
+	toaster:{
+		blackMessageToaster:function(msg){
+			$('[id="toaster"]').remove();
+			if(typeof window.customBlackMessageToaster == 'function') {
+				window.customBlackMessageToaster(msg);
+			}
+			else{
+				if(msg!=undefined &&  $.trim(msg)!="" && msg!="undefined")
+					$.toaster({ priority : 'toaster', title : '', message : msg});
+			}
+		},
+		redMessageToaster:function(msg){
+			$('[id="toaster"]').remove();
+			if(typeof window.customRedMessageToaster == 'function') {
+				window.customRedMessageToaster(msg);
+			}
+			else{
+				if(msg!=undefined &&  $.trim(msg)!="" && msg!="undefined")
+					$.toaster({ priority : 'danger', title : '', message :msg}); 
+			}
+		}
+	},
+	checkSessionOrToken:function(result){
+		if(result!=null){
+			var newResponse = JSON.stringify(result);
+			var obj = JSON.parse(newResponse);
+			var message = obj.message;
+			if(message!=undefined && message!=null){
+				if(message=="Invalid token" || message=="session is not avaliable"){
+					console.log(message+" :: caller is " + arguments.callee.caller.toString())
+					$('#toaster').html('');
+					iHUB.toaster.redMessageToaster(multilingualKeyValue('1','34'));/* session expired, relogin to continue */
+					if(self==top){
+						createLoginLoader();
+						fnLogoutICMP('1');
+					}
+					else if(parent==top){
+						window.parent.createLoginLoader();
+						window.parent.fnLogoutICMP('1');
+					}
+					return false;
+				}
+				else{
+					return true;
+				}
+			}
+			else{
+				return true;
+			}
+		}
+		else{
+			console.log("result null  :: caller is " + arguments.callee.caller.toString())
+			$('#toaster').html('');
+			iHUB.toaster.redMessageToaster(multilingualKeyValue('1','34'));/* session expired, relogin to continue */
+			if(self==top){
+				createLoginLoader();
+				fnLogoutICMP('1');
+			}
+			else if(parent==top){
+				window.parent.createLoginLoader();
+				window.parent.fnLogoutICMP('1');
+			}
+			return false;
+		} 
+	},
+	checkSessionOrTokeniDH:function(result){
+		if(result!=null){
+			var newResponse = JSON.stringify(result);
+			var obj = JSON.parse(newResponse);
+			var message = obj.msg;
+			if(message!=undefined && message!=null){
+				if(message=="invalidSession"){
+					console.log(message+" :: caller is " + arguments.callee.caller.toString())
+					$('#toaster').html('');
+					iHUB.toaster.redMessageToaster(multilingualKeyValue('1','34'));/* session expired, relogin to continue */
+					if(self==top){
+						createLoginLoader();
+						fnLogoutICMP('1');
+					}
+					else if(parent==top){
+						window.parent.createLoginLoader();
+						window.parent.fnLogoutICMP('1');
+					}
+					return false;
+				}else if(message=="multiplerequests"){
+					iHUB.toaster.redMessageToaster('Multiple requests detected!');
+					var form = document.createElement("form");
+					form.className = "hidden";
+					var element1 = document.createElement("input"); 
+					var element2 = document.createElement("input");
+
+					form.method = "POST";
+					form.action = iHUB.url.iDH();   
+
+					element1.value="multiplerequestcaptcha";
+					element1.name="subAction";
+					form.appendChild(element1);  
+
+					element2.value=window.location.href;
+					element2.name="callBackUrl";
+					form.appendChild(element2);
+
+					document.body.appendChild(form);
+					form.submit();
+				}else{
+					return true;
+				}
+			}
+			else{
+				return true;
+			}
+		}
+		else{
+			console.log("result null  :: caller is " + arguments.callee.caller.toString())
+			$('#toaster').html('');
+			iHUB.toaster.redMessageToaster(multilingualKeyValue('1','34'));/* session expired, relogin to continue */
+			if(self==top){
+				createLoginLoader();
+				fnLogoutICMP('1');
+			}
+			else if(parent==top){
+				window.parent.createLoginLoader();
+				window.parent.fnLogoutICMP('1');
+			}
+			return false;
+		} 
+	},
+	/* commented as its not getting used */
+	/*populateMasterData:{
+		fnPopulateMasterData1:function(http_request, responseDoc){
+			if(http_request.readyState == 4){
+				if (http_request.status == 200){
+					if(http_request.responseText != null){
+						responseDoc= http_request.responseXML;
+					}
+				}
+			}
+			if(responseDoc!=null){
+				var docs = responseDoc.getElementsByTagName("MASTERTABLE");
+				var noOfDocuments=docs.length;
+
+				var tableName = new Array();
+				var fieldhtmlname=new Array();
+				if(noOfDocuments > 0){					 
+					for(count=0;count<noOfDocuments;count++){		
+
+						tableName[count] = docs[count].getAttribute("tablename");
+
+						if((tableName[count]!="")||(tableName[count]!=null)){
+							fieldhtmlname[count]=docs[count].getAttribute("fieldhtmlname");
+						
+							var fieldHTMLCount=fieldhtmlname[count].split(",");
+							for(var j=0;j<fieldHTMLCount.length;j++){
+
+								fieldName=fieldHTMLCount[j];
+								var i = 1;	
+
+								if( $("[id^='"+fieldName+"']")!=null){
+									if($("[id^='"+fieldName+"']").prop("tagName")=="SELECT"){
+										var siteCode = new Array();
+										var siteName = new Array();
+
+										var docRows=docs[count].getElementsByTagName("ROW");
+										var siteList = $("[id^='"+fieldName+"']");
+										for(rowCount=0;rowCount<docRows.length;rowCount++){  
+
+											var docFields=docRows[rowCount].getElementsByTagName("FIELD");
+											var val= docFields[0].firstChild.nodeValue;
+
+											var key= docFields[1].firstChild.nodeValue;
+											$("[id^='"+fieldName+"']").append("<option value="+val+">"+key+"</option>");
+											i++;
+										}		
+
+									}
+									else if($("[id^='"+fieldName+"']").prop("tagName")=="SPAN"){
+										var hdnField=fieldName+"Hdn";
+										var depField=hdnField+"Dep";
+										var radioHidden=fieldName.substring(0,(fieldName.length)-5);
+										if(document.getElementById(hdnField).type=="hidden"){
+											var hdnValue=document.getElementById(hdnField).value;
+											if(hdnValue=="radio"){
+												var siteCode = new Array();
+												var siteName = new Array();
+												var docRows=docs[count].getElementsByTagName("ROW");
+												var siteList = document.getElementById(fieldName);
+
+												var htmlElement="";
+												for(rowCount=0;rowCount<docRows.length;rowCount++){ 
+
+													htmlElement=htmlElement+"<input type='radio' value='";
+													var docFields=docRows[rowCount].getElementsByTagName("FIELD");
+
+													for(fieldCount=0;fieldCount<docFields.length;fieldCount++){
+														if(fieldCount==0){
+															siteName[fieldCount] = docFields[fieldCount].firstChild.nodeValue;
+															htmlElement=htmlElement+siteName[fieldCount]+"' id='";
+														}else if(fieldCount>0){
+															siteCode[fieldCount] = docFields[fieldCount].getAttribute("fieldname");
+															siteName[fieldCount] = docFields[fieldCount].firstChild.nodeValue;
+
+															htmlElement=htmlElement+siteCode[fieldCount]+"_Rad"+(rowCount+1)+"' name='"+siteCode[fieldCount]+"' onclick=fnCheckRadio(this,'"+radioHidden+"',this.name)";
+															if(document.getElementById(depField)!=null){
+																htmlElement=htmlElement+";"+document.getElementById(depField).value;
+																htmlElement=htmlElement+">";
+															}
+															else{
+																htmlElement=htmlElement+">";
+															}
+														}
+													}
+													htmlElement=htmlElement+siteName[1]+" ";
+												
+												}
+												siteList.innerHTML=htmlElement;
+											}
+										}
+									}
+								}
+							}
+						}
+					}				   		
+				}
+			}
+		}
+	}, */
+	populateData:{
+		user:function(){
+			$(".populateUserData").on("click",function () {
+				var $this=$(this);
+				var txtLearnerId=$this.attr('data-txtLearnerId');
+				var paymentLink=$this.attr('data-paymentLink');
+				getBasicValues();
+				if(self==top){
+					tokenId=$('#tokenId').val();
+				}
+				else if(parent==top){
+					tokenId=window.parent.$('#tokenId').val();
+				}
+				if(!$this.hasClass('popover-test')){
+					if((txtLearnerId!="" && txtLearnerId!=undefined) || (paymentLink!="" && paymentLink!=undefined)){
+						if((txtLearnerId!="" && txtLearnerId!=undefined)){
+							$('.populateUserData[data-txtLearnerId="'+txtLearnerId+'"]').addClass('popover-test');
+							$('.populateUserData[data-txtLearnerId="'+txtLearnerId+'"]').attr({'tabindex':'0','data-trigger':'focus','data-toggle':'popover','data-placement':'auto bottom','title':'<b data-a="2" data-b="User Information">'+multilingualKeyValue('2','34') + '</b>','data-content':'<div style="background: #fff url(/iDH/dashboard/images/iHUBLoader.gif) no-repeat scroll 50% 27%;min-height: 50px;"></div>','data-container':'body'});
+						}
+						else{
+							$('.populateUserData[data-paymentLink="'+paymentLink+'"]').addClass('popover-test');
+							$('.populateUserData[data-paymentLink="'+paymentLink+'"]').attr({'tabindex':'0','data-trigger':'focus','data-toggle':'popover','data-placement':'auto bottom','title':'<b data-a="2" data-b="User Information">'+multilingualKeyValue('2','34') + '</b>','data-content':'<div style="background: #fff url(/iDH/dashboard/images/iHUBLoader.gif) no-repeat scroll 50% 27%;min-height: 50px;"></div>','data-container':'body'});
+						}
+						$this.popover({html: true});
+						$this.popover('show');
+						$.ajax({ 
+							type: "POST",
+							url: iHUB.url.iDH(),
+							data: {
+								app_seq_no: app_seq_no,
+								tokenId: tokenId,
+								masterform_id: masterform_id,
+								txtInstanceId: txtInstanceId,
+								sessChk: sessChk,
+								orgID: orgID,
+								userAppSeqNo: txtLearnerId,
+								encryptedPayLink: paymentLink,
+								subAction: "requestUserDetails"
+							},
+							dataType: "json",
+							success: function(result){
+								var condn=iHUB.checkSessionOrToken(result);
+								if(eval(condn)){
+									var newResponse = JSON.stringify(result);
+									var obj = JSON.parse(newResponse);
+									for (label in obj) {
+										if (label == "userDetails") {
+											var obj1=obj[label];
+											for(label in obj1){
+												var obj2=obj1[label];
+												var firstname=obj2.txtFirstName==null || $.trim(obj2.txtFirstName)=="" ? "NA" : obj2.txtFirstName;
+												var loginidfordisplay=obj2.txtLoginIdForDisplay==null || $.trim(obj2.txtLoginIdForDisplay)=="" ? "NA" : obj2.txtLoginIdForDisplay;
+												var salutation=obj2.txtSalutation==null || $.trim(obj2.txtSalutation)=="" ? "NA" : obj2.txtSalutation;
+												var app_seq_no=obj2.app_seq_no==null || $.trim(obj2.app_seq_no)=="" ? "NA" : obj2.app_seq_no;
+												var lastname=obj2.txtLastName==null || $.trim(obj2.txtLastName)=="" ? "NA" : obj2.txtLastName;
+												var email=obj2.txtEmail==null || $.trim(obj2.txtEmail)=="" ? "NA" : obj2.txtEmail;
+												var txtPhoneNumber=obj2.txtPhoneNumber==null || $.trim(obj2.txtPhoneNumber)=="" ? "NA" : obj2.txtPhoneNumber;
+												$('.populateUserData[data-txtLearnerId="'+txtLearnerId+'"]').attr({'data-content':'<table style="font-size:12px;"><tr><td><b data-a="3" data-b="User Id">'+multilingualKeyValue('3','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+app_seq_no+'</td></tr><tr><td><b data-a="4" data-b="Email Id">'+multilingualKeyValue('4','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+email+'</td></tr><tr><td><b data-a="5" data-b="Mobile No.">'+multilingualKeyValue('5','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+txtPhoneNumber+'</td></tr></table>'});
+												$this.popover({html: true});
+												$this.popover('show');
+												openPopOverOnHoverMKPC();
+												/* <tr><td><b>Name</b></td><td>&nbsp;:&nbsp;</td><td>'+salutation+' '+firstname+' '+lastname+'</td></tr><tr><td><b>Login Id</b></td><td>&nbsp;:&nbsp;</td><td>'+loginidfordisplay+'</td></tr> */
+											}
+										}
+										if (label == "requestDetails") {
+											var val = obj["requestDetails"];
+											var token = val['token'];
+											/* if(self==top){
+												$('#tokenId').val(token);
+											}
+											else if(parent==top){
+												window.parent.$('#tokenId').val(token);
+											}	 */
+											iHUB.token.set(token);
+										}
+									}
+								}
+							},
+							error: function(x, e){
+								iHUB.toaster.blackMessageToaster(x.readyState + " "+ x.status +" "+ e.msg);
+							},
+							complete:function(){
+								if(!$this.is(":hover")){
+									setTimeout(function() {	$this.popover('hide');}, 3500);							
+								}
+								if(typeof window.setHeightOfDistributorManagement == 'function') {
+									setTimeout(function(){ 
+										window.setHeightOfDistributorManagement(); 
+									},300);
+								}
+							}
+						});	
+					}
+				}
+				else{
+					logiHUB('in else');
+					$this.popover('show');
+				}
+			});
+		},
+		organization:function(){
+			$(".populateOraganizationData").on("click",function () {
+				var $this=$(this);
+				var txtOrgId=$this.attr('data-txtOrgId');
+				getBasicValues();
+				if(self==top){
+					tokenId=$('#tokenId').val();
+				}
+				else if(parent==top){
+					tokenId=window.parent.$('#tokenId').val();					
+				}
+				if(!$this.hasClass('popover-test')){
+					$('.populateOraganizationData[data-txtOrgId="'+txtOrgId+'"]').addClass('popover-test');
+					$('.populateOraganizationData[data-txtOrgId="'+txtOrgId+'"]').attr({'tabindex':'0','data-trigger':'focus','data-toggle':'popover','data-placement':'auto bottom','title':'<b data-a="6" data-b="Organization Information">'+multilingualKeyValue('6','34') + '</b>','data-content':'<div style="background: #fff url(/iDH/dashboard/images/iHUBLoader.gif) no-repeat scroll 50% 27%;min-height: 50px;"></div>','data-container':'body'});
+					$this.popover({html: true});
+					$this.popover('show');
+					if(txtOrgId!="" && txtOrgId!=undefined){
+						/* "EForms/iHUB" changed to iDH */
+						$.ajax({ 
+							type: "POST",
+							url: "/iDH/Hub",
+							data: {
+								app_seq_no: app_seq_no,
+								tokenId: tokenId,
+								masterform_id: masterform_id,
+								txtInstanceId: txtInstanceId,
+								sessChk: sessChk,
+								orgID: orgID,
+								orgAppSeqNo: txtOrgId,
+								subAction: "requestOrgDetails"
+							},
+							dataType: "json",
+							success: function(result){
+								var condn=iHUB.checkSessionOrToken(result);
+								if(eval(condn)){
+									var newResponse = JSON.stringify(result);
+									var obj = JSON.parse(newResponse);
+									for (label in obj) {
+										if (label == "orgDetails") {
+											var obj1=obj[label];
+											for(label in obj1){
+												var obj2=obj1[label];
+												var organizationName=obj2.txtOrganizationName==null || $.trim(obj2.txtOrganizationName)=="" ? "NA" : obj2.txtOrganizationName;
+												var organizationWebsite=obj2.txtOrganizationWebsite==null || $.trim(obj2.txtOrganizationWebsite)=="" ? "NA" : obj2.txtOrganizationWebsite;
+												var email=obj2.txtEmail==null || $.trim(obj2.txtEmail)=="" ? "NA" : obj2.txtEmail;
+												var creatorContactNo=obj2.txtCreatorContactNo==null || $.trim(obj2.txtCreatorContactNo)=="" ? "NA" : obj2.txtCreatorContactNo;											
+												$('.populateOraganizationData[data-txtOrgId="'+txtOrgId+'"]').attr({'data-content':'<table style="font-size:12px;"><tr><td><b data-a="7" data-b="Name">'+multilingualKeyValue('7','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+organizationName+'</td></tr><tr><td><b data-a="8" data-b="Website">'+multilingualKeyValue('8','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+organizationWebsite+'</td></tr><tr><td><b data-a="4" data-b="Email Id">'+multilingualKeyValue('4','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+email+'</td></tr><tr><td><b data-a="9" data-b="Contact No.">'+multilingualKeyValue('9','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+creatorContactNo+'</td></tr></table>'});
+												$this.popover({html: true});
+												$this.popover('show');
+												openPopOverOnHoverMKPC();
+											}
+										}
+										if (label == "requestDetails") {
+											var val = obj["requestDetails"];
+											var token = val['token'];
+											/* if(self==top){
+												$('#tokenId').val(token);
+											}
+											else if(parent==top){
+												window.parent.$('#tokenId').val(token);
+											}	 */
+											iHUB.token.set(token);
+										}
+									}
+								}
+							},
+							error: function(x, e){
+								iHUB.toaster.blackMessageToaster(x.readyState + " "+ x.status +" "+ e.msg);
+							},
+							complete:function(){
+								if(!$this.is(":hover")){
+									setTimeout(function() {	$this.popover('hide');}, 3500);							
+								}
+								if(typeof window.setHeightOfDistributorManagement == 'function') {
+									setTimeout(function(){ 
+										window.setHeightOfDistributorManagement(); 
+									},300);
+								}
+							}
+						});	
+					}
+				}
+				else{
+					logiHUB('in else');
+					$this.popover('show');
+				}
+			});
+		},
+		product:function(){
+			$(".populateProductData").on("click",function () {
+				var $this=$(this);
+				var productId=$this.attr('data-productId');
+				getBasicValues();
+				if(!$this.hasClass('popover-test')){
+					$('.populateProductData[data-productId="'+productId+'"]').addClass('popover-test');
+					$('.populateProductData[data-productId="'+productId+'"]').attr({'tabindex':'0','data-trigger':'focus','data-toggle':'popover','data-placement':'auto bottom','title':'<b data-a="10" data-b="Product Information">'+multilingualKeyValue('10','34') + '</b>','data-content':'<div style="background: #fff url(/iDH/dashboard/images/iHUBLoader.gif) no-repeat scroll 50% 27%;min-height: 50px;"></div>','data-container':'body'});
+					$this.popover({html: true});
+					$this.popover('show');
+					openPopOverOnHoverMKPC();
+					if(productId!="" && productId!=undefined){
+						/* "EForms/iHUB" changed to iDH */
+						$.ajax({ 
+							type: "POST",
+							url: "/iDH/Hub",
+							data: {								
+								orgID:orgID,
+								masterform_id:masterform_id,
+								app_seq_no:app_seq_no,
+								txtdistributerId:"",
+								txtloginType:"",
+								sessChk:sessChk,
+								txtInstanceId:txtInstanceId,
+								productId:productId,
+								languageId:languageId,
+								subAction:"getListofproducts"
+							},
+							dataType: "json",
+							success: function(result){
+								var condn=iHUB.checkSessionOrToken(result);
+								if(eval(condn)){
+									var newResponse = JSON.stringify(result);
+									var obj = JSON.parse(newResponse);
+									for (label in obj) {
+										if (label == "productDetails") {
+											var obj1=obj[label];
+											for(var i = 0; i < obj1.length; i++){
+												if(obj1[i].productId==productId){												
+													$('.populateProductData[data-productId="'+productId+'"]').attr({'data-content':'<table style="font-size:12px;"><tr><td><b data-a="7" data-b="Name">'+multilingualKeyValue('7','34') + '</b></td><td>&nbsp;:&nbsp;</td><td>'+obj1[i].ItemName+'</td></tr></table>'});
+													$this.popover({html: true});
+													$this.popover('show');
+												}
+											}
+										}
+									}
+								}
+							},
+							error: function(x, e){
+								iHUB.toaster.blackMessageToaster(x.readyState + " "+ x.status +" "+ e.msg);
+							},
+							complete:function(){
+								if(!$this.is(":hover")){
+									setTimeout(function() {	$this.popover('hide');}, 3500);							
+								}
+								if(typeof window.setHeightOfDistributorManagement == 'function') {
+									setTimeout(function(){ 
+										window.setHeightOfDistributorManagement(); 
+									},300);
+								}
+							}
+						});	
+					}
+				}
+				else{
+					logiHUB('in else');
+					$this.popover('show');
+				}
+			});
+		}
+	},
+	token:{
+		set:function(tokenId){
+			if(!(tokenId=="undefined" || tokenId=="null" || tokenId==null || $.trim(tokenId)=="" || tokenId==undefined )){
+				if(self==top){
+					$('#tokenId').val(tokenId);
+					$('#token').val(tokenId);
+					store.set('token',tokenId);
+				}
+				else if(parent==top){
+					window.parent.$('#tokenId').val(tokenId);
+					window.parent.$('#token').val(tokenId);
+					store.set('token',tokenId);
+				}
+			}
+		},
+		get:function(){
+			var tokenId="";
+			if(self==top){
+				tokenId=$.trim($('#tokenId').val())!=""?$.trim($('#tokenId').val()):$.trim($('#token').val());
+			}
+			else if(parent==top){
+				tokenId=$.trim(window.parent.$('#tokenId').val())!=""?$.trim(window.parent.$('#tokenId').val()):$.trim(window.parent.$('#token').val());
+			}
+			if($.trim(tokenId)==""){
+				tokenId=store.get('token');
+			}
+			return tokenId;
+		}
+	},
+	charSet:{
+		noXSSchar: function(key,e){
+			if(e.key=="<" || e.key==">" || e.key=="?" || e.key=="+" || e.key=="=" || e.key=="[" || e.key=="]" || e.key=="{" || e.key=="}")
+				return false;
+			else
+				return true;
+		}
+	},
+	url:{
+		get:function(){
+			return "/EForms/iHUB";
+		},
+		getiDH:function(){
+			if($.trim(window.parent.$('#user_token').val()) != ''){
+				return "/iDH/Hub?user_token="+$.trim(window.parent.$('#user_token').val());
+			}else{
+				return "/iDH/Hub";
+			}
+		},
+		iDH:function(){
+			if($.trim(window.parent.$('#user_token').val()) != ''){
+				return "/iDH/Hub?user_token="+$.trim(window.parent.$('#user_token').val());
+			}else{
+				return "/iDH/Hub";
+			}
+		},
+		job:function(){
+			if($.trim(window.parent.$('#user_token').val()) != ''){
+				return "/iDH/JobServlet?user_token="+$.trim(window.parent.$('#user_token').val());
+			}else{
+				return "/iDH/JobServlet";
+			}
+		},
+		prApp:function(){
+			if($.trim($('#user_token').val()) != ''){
+				return "/iDH/PrApp?user_token="+$.trim($('#user_token').val());
+			}else{
+				return "/iDH/PrApp";
+			}
+		},
+		excelSheet:function(){
+			if($.trim($('#user_token').val()) != ''){
+				return "/iDH/ExcelSheet?user_token="+$.trim($('#user_token').val());
+			}else{
+				return "/iDH/ExcelSheet";
+			}
+		}
+	},
+	version:{
+		get:function(){
+			return $.trim(iDHversion)=="" ? "5.11" : $.trim(iDHversion);
+		},
+		set:function(v){
+			if($.trim(v)!="")
+				iDHversion = v;
+			else if($.trim($('#hubversion').val())!="")
+				iDHversion = $.trim($('#hubversion').val());
+		}
+	},
+	invoice:{
+		generateInvoice:function(){
+			$(".populateInvoiceData").on("click",function () {
+				logiHUB("test");
+				var $this=$(this);
+				var subForm=$this.attr('data-subForm');
+				var invoiceNo=$this.attr('data-invoiceNo');
+				var txtOrderType=$this.attr('data-txtOrderType');
+				var invoiceType;
+				if(txtOrderType=="Learner"){
+					invoiceType=3;
+				}
+				else if(txtOrderType=="Distributor"){
+					invoiceType=2;
+				}
+				else if(txtOrderType=="Publisher"){
+					invoiceType=1;
+				}
+				logiHUB(invoiceType);
+				logiHUB(invoiceNo);
+				logiHUB(subForm);
+				logiHUB(txtOrderType);
+				logiHUB(orgID);
+				logiHUB("test1");
+				getBasicValues();
+				tokenId=iHUB.token.get(); /* added for job CR */ 
+				txtInstanceId=$.trim(txtInstanceId)!=""?txtInstanceId:$('#instanceId').val(); /* added for job CR */ 
+				/* commented to replace with jobs part function */ 
+				/* if(self==top){
+					tokenId=$('#tokenId').val();
+				}
+				else if(parent==top){
+					tokenId=window.parent.$('#tokenId').val();
+				} */
+				/* commented to replace with jobs part function */ 
+				if(invoiceNo!="" && invoiceNo!=undefined && invoiceNo!=null && subForm!="" && subForm!=undefined && subForm!=null && invoiceType!="" && invoiceType!=undefined && invoiceType!=null){
+					$this.addClass('hidden');
+					$this.parent().append("<span id='invoiceDownloading' style='font-size: 12px;' data-a='425' data-b='Downloading...'>"+multilingualKeyValue('425','34')+"</span>");
+					$.ajax({ 
+						type: "POST",
+						url: iHUB.url.iDH(),
+						data: {
+							app_seq_no: app_seq_no,
+							tokenId: tokenId,
+							masterform_id: masterform_id,
+							txtInstanceId: txtInstanceId,
+							sessChk: sessChk,
+							orgID: orgID,
+							invoiceNo:invoiceNo,
+							subForm:subForm,
+							invoiceType:invoiceType,
+							subAction:"generateInvoice"
+							
+						},
+						dataType: "json",
+						success: function(result){
+							var condn=iHUB.checkSessionOrToken(result);
+							if(eval(condn)){
+								var newResponse = JSON.stringify(result);
+								var obj = JSON.parse(newResponse);
+								for (label in obj) {
+									var val=obj[label];
+									var token=val["token"];
+									var pdfLink=val["pdfLink"];
+									iHUB.token.set(token);
+									 if(self==top){
+										/* $('#tokenId').val(token); */
+										if($.trim(pdfLink)!='' && $.trim(pdfLink)!='NA' && $.trim(pdfLink)!="There was error generating pdf"){
+											window.open(window.location.protocol+"//"+window.location.host+pdfLink,'');
+										}
+										else if( $.trim(pdfLink)=="There was error generating pdf")
+											alert(pdfLink);
+									}
+									else if(parent==top){
+										/* window.parent.$('#tokenId').val(token); */
+										if($.trim(pdfLink)!='' && $.trim(pdfLink)!='NA' && $.trim(pdfLink)!="There was error generating pdf"){
+											window.open(window.parent.location.protocol+"//"+window.parent.location.host+pdfLink,'');
+										}
+										else if( $.trim(pdfLink)=="There was error generating pdf")
+											alert(pdfLink);
+									}
+								}	  
+							}
+						},
+						error: function(x, e){
+							iHUB.toaster.blackMessageToaster(x.readyState + " "+ x.status +" "+ e.msg);
+						},
+						complete:function(){
+							$this.removeClass('hidden');
+							$('span#invoiceDownloading').remove();							
+						}
+					});	
+				}
+			});
+		}
+	}, 
+	instanceDetails:{
+		get:function(instanceCols,returnVal){
+			if($.trim(instanceCols)!="" && instanceCols!=undefined && instanceCols!="undefined"){
+				getBasicValues();
+				if(instanceCols.indexOf(',') == -1){
+					if(eval("typeof "+instanceCols+" !== 'undefined'"))
+						return eval(instanceCols);
+					else{
+						/* "EForms/iHUB" changed to iDH */
+						$.ajax({
+							type: "POST",
+							url: "/iDH/Hub",
+							data: {
+								orgID:orgID,
+								masterform_id:masterform_id,
+								txtInstanceId:txtInstanceId,
+								languageId:languageId,
+								instanceCols:instanceCols,
+								subAction:"getInstanceDetails"
+							},
+							dataType: "json",
+							/* async:false, */
+							success: function(result){
+								var condn=iHUB.checkSessionOrToken(result);
+								if(eval(condn)){						
+									var instDetails = JSON.parse(JSON.stringify(result)).instanceDetails[instanceCols];
+									eval(instanceCols+"='"+instDetails+"'");
+									/* return instDetails; */
+									/* var retStr = "";
+									$.each(instDetails, function(key, value) {								
+										retStr+=key+"@~@"+value+"@@~@@";
+									}); */
+									eval(returnVal(eval(instDetails)));
+								}
+							},
+							error: function(x, e){
+								if(e=="parsererror" && x.responseText=="session is not avaliable"){
+									$('#toaster').html('');
+									iHUB.toaster.redMessageToaster(multilingualKeyValue('1','34'));/* session expired, relogin to continue */
+									createLoginLoader();
+									fnLogoutICMP('1');
+									return false;
+								}
+							}
+						});	
+					}
+				}
+			}
+			/* var instDetails = JSON.parse(JSON.stringify(result)).instanceDetails;
+			eval(instanceCols+"='"+instDetails+"'");
+			eval(returnVal(eval(instDetails)));*/
+		} 
+	}, 
+	validateEmail:{
+		validateEmailId:function(addr,db){
+			if (addr == '') 
+				return true;
+			var invalidChars = '\/\'\\ ";:?!()[]\{\}^|<>#$!~`^';
+			for (i=0; i<invalidChars.length; i++) {
+				if (addr.indexOf(invalidChars.charAt(i),0) > -1) {
+					if (db)
+						alert(multilingualKeyValue('426','34'));   /*  426:email address contains invalid characters */
+					return false;
+				}
+			}
+			for (i=0; i<addr.length; i++) {
+				if (addr.charCodeAt(i)>127) {
+					if (db)
+						alert(multilingualKeyValue('427','34'));   /* "email address contains non ascii characters." */
+					return false;
+				}
+			}
+
+			var atPos = addr.indexOf('@',0);
+			if (atPos == -1) {
+				if (db)
+					alert(multilingualKeyValue('428','34'));  /* 'email address must contain an @' */
+				return false;
+			}
+			if (atPos == 0) {
+				if (db) 
+					alert(multilingualKeyValue('429','34'));   /* 'email address must not start with @' */
+				return false; 
+			}
+			if (addr.indexOf('@', atPos + 1) > - 1) {
+				if (db)
+					alert(multilingualKeyValue('430','34'));   /* 'email address must contain only one @' */
+				return false;
+			}
+			if (addr.indexOf('.', atPos) == -1) {
+				if (db)
+					alert(multilingualKeyValue('431','34'));   /* 'email address must contain a period in the domain name' */
+				return false;
+			}
+			if (addr.indexOf('@.',0) != -1) {
+				if (db)
+					alert(multilingualKeyValue('432','34'));   /* 'period must not immediately follow @ in email address' */
+				return false;
+			}
+			if (addr.indexOf('.@',0) != -1){
+				if (db)
+					alert(multilingualKeyValue('433','34'));   /* 'period must not immediately precede @ in email address' */
+				return false;
+			}
+			if (addr.indexOf('..',0) != -1) {
+				if (db)
+					alert(multilingualKeyValue('434','34'));   /* 'two periods must not be adjacent in email address' */
+				return false;
+			}
+			if($.trim(orgID)=="2724" && $.trim(txtInstanceId)=="1"){
+				if(!emailValidationFor2724(addr))
+					return false;
+			}			
+			var suffix = addr.substring(addr.lastIndexOf('.')+1);
+			suffix.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+			logiHUB(suffix+":suffix");
+			return true;
+		}
+	},
+	loader:{
+		showPleaseWait:function(){
+			if(self==top){
+				$('#loader').removeClass("hidden");
+			}
+			else if(parent==top){
+				window.parent.$('#loader').removeClass("hidden");
+			}
+		},
+		hidePleaseWait:function(){
+			if(self==top){
+				$('#loader').addClass("hidden");
+			}
+			else if(parent==top){
+				window.parent.$('#loader').addClass("hidden");
+			}
+		}
+	},
+	isMobileDevice:function(){
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+			return true;
+		}
+		else{
+			return false;
+		}
+	},
+	isMobile:{
+		Android: function() {
+			return navigator.userAgent.match(/Android/i);
+		},
+		BlackBerry: function() {
+			return navigator.userAgent.match(/BlackBerry/i);
+		},
+		iOS: function() {
+			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+		},
+		Opera: function() {
+			return navigator.userAgent.match(/Opera Mini/i);
+		},
+		Windows: function() {
+			return navigator.userAgent.match(/IEMobile/i);
+		},
+		any: function() {
+			return (iHUB.isMobile.Android() || iHUB.isMobile.BlackBerry() || iHUB.isMobile.iOS() || iHUB.isMobile.Opera() || iHUB.isMobile.Windows());
+		}
+	}
+}
+window.OTP = {	
+	callOTP:function(subAction,OTPEventType,OTPType,isResend,otpid){
+		var orgId = $.trim($('#orgId').val())!="" ? $('#orgId').val() : $.trim($('[name="orgId"]').val());
+		var urlNew = "/iDH/Hub?user_token="+$.trim(window.parent.$('#user_token').val())+"&subAction="+subAction+"&orgID="+orgId+"&txtInstanceId="+instanceId+"&otpId="+$.trim(otpid)+"&otpEvent="+OTPEventType+"&otpType="+OTPType+(isResend==undefined?"":isResend);
+		if($.trim(OTPEventType)=="changeEmail"){
+			urlNew+="&txtEmailId="+$('#OTPEmail').val();
+		}
+		else if($.trim(OTPEventType)=="changePhone"){
+			urlNew+="&txtPhoneNumber="+$('#OTPPhoneNumber').val();
+		}
+		else if($.trim(OTPEventType)=="resetPassword"){
+			urlNew+="&txtLoginId="+$('#OTPLoginID').val()+"_"+masterform_id+orgId+"_"+instanceId;
+		}
+		else if($.trim(OTPEventType)=="acceptTnCOnProductPurchase"){
+			urlNew+="&txtLoginId="+$.trim($('#txtLoginId_div').text());
+		}
+		if (typeof addExtraAttributeCallOTP == 'function'){
+			urlNew+=eval('addExtraAttributeCallOTP(OTPEventType,OTPType)');
+		}
+		$.ajax({
+			type: "POST",
+			url: urlNew,
+			dataType: "json",
+			success: function(result){
+				if(subAction=="getvalidotpdata"){
+					if(jQuery.isEmptyObject(result.responseDetails)){
+						OTP.sendOTP(OTPEventType,OTPType);
+					}
+				}				
+				if(!jQuery.isEmptyObject(result.responseDetails)){
+					if(OTPType=="0"){
+						if(isNewLoginSignUp && $('.slide-nav-right:visible').length > 0)
+							$('.slide-nav-right:visible').find('#OTPSentTo').html(result.responseDetails.txtPhoneNumber);
+						else
+							$('#OTPSentTo').html(result.responseDetails.txtPhoneNumber);
+					}
+					else{
+						if(isNewLoginSignUp && $('.slide-nav-right:visible').length > 0)
+							$('.slide-nav-right:visible').find('#OTPSentTo').html(result.responseDetails.txtEmail);
+						else
+							$('#OTPSentTo').html(result.responseDetails.txtEmail);
+					}
+					if(result.responseDetails.status=="invalid user"){
+						alert(multilingualKeyValue('435','34'));   /* "Invalid Login ID" */
+						$('#OTPLoginID').val('');
+						$(".otpPopupLoginId").addClass('disabled');	
+						return false;
+					}
+					else if(result.responseDetails.status=="Email/Phone not verified"){
+						alert(multilingualKeyValue('436','34'));   /* "Email/Phone not verified" */
+						$('#OTPLoginID').val('');
+						$(".otpPopupLoginId").addClass('disabled');	
+						return false;
+					}
+					else if(result.responseDetails.status=="email already registered"){
+						alert(multilingualKeyValue('437','34'));    /* "Email id already registered" */
+						$('#OTPEmail').val('');
+						return false;
+					}
+					else if(result.responseDetails.status!="otp send initating not allowed" && result.responseDetails.status!="invalid otpid" && result.responseDetails.status!="email already registered"){
+						$('.OTPVerificationBtn').attr({"data-otpeventtype":OTPEventType,"data-otptype":OTPType,"data-otpid":result.responseDetails.status});
+						$('.resendOTP').attr({"data-otpeventtype":OTPEventType,"data-otptype":OTPType,"data-otpid":result.responseDetails.status});
+						
+						if(typeof isNewLoginSignUp == 'boolean' && isNewLoginSignUp && $.trim(OTPEventType)=="resetPassword"){
+							if(typeof responseValidateForFP == 'function')
+								responseValidateForFP(result,subAction,OTPEventType,OTPType,isResend,otpid);
+						}
+						else{
+							$(".overlay").show();
+							$(".OTPpopups").hide();
+							$('.enableValidate').addClass('disabled');
+							if($.trim(OTPEventType)=="resetPassword"){
+								$('#OTPValueBL').val('');
+								$('#new_passwordBL').val('');
+								$('#confirm_passwordBL').val('');
+								$('#customPasswordMessageBL-H').addClass('hidden');
+								$("#changePasswordNewBL").show();
+								$("#otpPopupLoginId").hide();
+							}
+							else{
+								$("#otpValidatePopup .enterOTP .instruction").hide();
+								$("#otpValidatePopup").show();
+							}							
+						}	
+						$(".resendOTP").hide();						
+						return true;
+					}
+					
+				}
+			},
+			error: function(x, e){
+				return false;
+			},
+			complete:function(){				
+				setTimeout(function() {$(".resendOTP").show(); },50000);
+			}
+		});
+	},
+	sendOTP: function(OTPEventType,OTPType){
+		OTP.callOTP("initiateotprequest",OTPEventType,OTPType,"");
+	},
+	resendOTP: function(OTPEventType,OTPType,otpid){
+		getBasicValues();
+		if($.trim(sessChk)!="")
+			OTP.callOTP("initiateotprequest",OTPEventType,OTPType,"&isResend=true",otpid);
+		else
+			OTP.callOTP("initiateotprequestws",OTPEventType,OTPType,"&isResend=true",otpid);
+		$('.OTPResponse').hide();
+		$('.OTPVerificationBtn').show();
+	},
+	getOTP: function(OTPEventType,OTPType){
+		getBasicValues();
+		OTP.resetVariables(OTPEventType,OTPType);
+		if($.trim(sessChk)!="")
+			OTP.callOTP("getvalidotpdata",OTPEventType,OTPType,"");
+		else
+			OTP.callOTP("getvalidotpdataws",OTPEventType,OTPType,"");
+		$(".resendOTP").hide();
+		$('.OTPResponse').hide();
+		$('.enableValidate').addClass('disabled');
+	},
+	validateOTP: function(OTPEventType,OTPType,OTPValue,attrObj){
+		var globalResponseValidateOTP;
+		var subAction = "validateotp";
+		if($.trim(window.parent.$('#user_token').val())=="")
+			subAction = "validateotpws";
+		var orgId = $.trim($('#orgId').val())!="" ? $('#orgId').val() : $.trim($('[name="orgId"]').val());
+		var urlNew = "/iDH/Hub?user_token="+$.trim(window.parent.$('#user_token').val())+"&subAction="+subAction+"&orgID="+orgId+"&txtInstanceId="+instanceId+"&otpEvent="+OTPEventType+"&otpType="+OTPType+"&otpValue="+OTPValue;
+		if($.trim(OTPEventType)=="changeEmail"){
+			urlNew+="&txtEmailId="+$('#OTPEmail').val();
+		}
+		else if($.trim(OTPEventType)=="changePhone"){
+			urlNew+="&txtPhoneNumber="+$('#OTPPhoneNumber').val();
+		}
+		else if($.trim(OTPEventType)=="acceptTnCOnProductPurchase"){
+			urlNew+="&txtLoginId="+$.trim($('#txtLoginId_div').text());
+		}
+		if (typeof addExtraAttributeValidateOTP == 'function'){
+			urlNew+=eval('addExtraAttributeValidateOTP(OTPEventType,OTPType,OTPValue,attrObj)');
+		}
+		$.ajax({			
+			type: "POST",
+			url: urlNew,
+			dataType: "json",
+			success: function(result){
+				/* var result={"responseDetails":"success"};  */ 
+				globalResponseValidateOTP=result;
+				if(!jQuery.isEmptyObject(result.responseDetails)){
+					if(result.responseDetails=="success"){
+						$('.resendOTP').hide();
+						$(".OTPResponse").html('OTP validated successfully');
+						$(".OTPResponse").show();
+						$('.enableValidate').hide();
+						if(OTPEventType=="generateLicence" || OTPEventType=="acceptLicense"){
+							$("#otpValidatePopup .OTPResponse").html('OTP validated successfully');
+							$("#otpValidatePopup .OTPResponse").show();
+							/* iHUB.toaster.blackMessageToaster('OTP validated successfully'); */
+							var otpid=result.otp;
+							var path = window.location.pathname;
+							if (path.indexOf('PartnerManagement') > -1 || path.indexOf('Publisher') > -1) {								
+								if (typeof callAfterOTPWorklist == 'function')
+									callAfterOTPWorklist(OTPValue);
+							}
+							else if (path.indexOf('ManageProducts') > -1) {
+								if (typeof generateLicenseOld == 'function')
+									generateLicenseOld(OTPValue);
+							}
+							setTimeout(function () {
+								$('#otpValidatePopup').hide();
+								$('.overlay').hide(); 
+							}, 2000);
+						}
+						if(OTPEventType=="changePassword"){
+							$('#new_password').val('');
+							$('#confirm_password').val('');
+							$(".overlay").show();
+							$("#changePasswordNew").show();
+						}
+						if(OTPType=="0"){
+							$('#isPhoneVerified_div').text('1');
+							if($.trim($('#OTPPhoneNumber').val())!="")
+								$('#txtPhoneNumber_div').html($('#OTPPhoneNumber').val());
+						}
+						else{
+							$('#isEmailVerified_div').text('1');
+							if($.trim($('#OTPEmail').val())!="")
+								$('#txtEmail_div').html($('#OTPEmail').val());
+						}
+						if (typeof verificationHideShow == 'function'){
+							verificationHideShow();
+						}
+					}
+					else{
+						$('.resendOTP').show();
+						if(result.responseDetails=="invalid"){
+							$('#OTPValue').val('');
+							$(".OTPResponse").html(multilingualKeyValue('438','34'));   /* 'Invalid OTP' */
+							$('.enableValidate').addClass('disabled');
+						}
+						else if(result.responseDetails=="expired"){
+							$('.enableValidate').hide();
+							$(".OTPResponse").html(multilingualKeyValue('439','34'));   /* 'OTP has expired' */
+						}
+						else{
+							$('.enableValidate').hide();
+							$(".OTPResponse").html(multilingualKeyValue('440','34'));   /* 'There has been some error' */
+						}						
+						$(".OTPResponse").show();
+					}
+				}
+			},
+			error: function(x, e){
+				return false;
+			},
+			complete:function(){
+				if (typeof postValidateOTP == 'function'){
+					postValidateOTP(globalResponseValidateOTP,OTPEventType,OTPType,OTPValue,attrObj);
+				}
+			}
+		});
+	},
+	changePassword: function(newPassword){
+		var urlNew = "/iDH/Hub?user_token="+$.trim(window.parent.$('#user_token').val())+"&subAction=changepwd&newPassword="+newPassword;
+		$.ajax({			
+			type: "POST",
+			url: urlNew,
+			dataType: "json",
+			success: function(result){
+				if(!jQuery.isEmptyObject(result.responseDetails)){
+					if(result.responseDetails=="success"){
+						$(".overlay").hide();
+						$(".OTPpopups").hide();
+						alert(multilingualKeyValue('441','34'));		/*  'Password changed successfully' */				
+					}
+					else if(result.responseDetails=="invalid"){						
+						alert(multilingualKeyValue('438','34')); /*  'Invalid OTP' */						
+					}
+					else{
+						alert(result.responseDetails);
+					}
+				}
+			},
+			error: function(x, e){
+				return false;
+			},
+			complete:function(){
+				if (typeof openEvent == 'function'){
+					openEvent();
+				}
+			}
+		});
+	},
+	changePasswordBL: function(newPassword,otpValue){
+		var urlNew = "/iDH/Hub?user_token="+$.trim(window.parent.$('#user_token').val())+"&subAction=resetpasswordws&orgID="+orgId+"&otpEvent=resetPassword&otpValue="
+			+otpValue+"&txtLoginId="+$('#OTPLoginID').val()+"_"+masterform_id+orgId+"_"+instanceId+"&newPassword="+newPassword+"&txtInstanceId="+instanceId;
+		$.ajax({			
+			type: "POST",
+			url: urlNew,
+			dataType: "json",
+			success: function(result){
+				if(!jQuery.isEmptyObject(result.responseDetails)){
+					if(result.responseDetails=="success"){
+						$(".overlay").hide();
+						$(".OTPpopups").hide();
+						alert('Password changed successfully');
+						if(isNewLoginSignUp)
+							closeAllSlide();
+					}
+					else if(result.responseDetails=="invalid"){						
+						alert('Invalid OTP');						
+					}
+					else{
+						alert(result.responseDetails);
+					}
+				}
+			},
+			error: function(x, e){
+				return false;
+			},
+			complete:function(){
+				$('#changePasswordNewBL').find('.OTPVerificationBtn').removeClass('disabled'); /* removing disable on complete of ajax call */
+				if (typeof openEvent == 'function'){
+					openEvent();
+				}
+			}
+		});
+	},
+	resetVariables:function(OTPEventType,OTPType,otpid,attrObj){
+		if(!jQuery.isEmptyObject(attrObj)){
+			$.each(attrObj, function(k, v){
+				$('.OTPVerificationBtn').attr(k,v);
+			});
+		}
+		$('.OTPVerificationBtn').attr({"data-otpeventtype":OTPEventType,"data-otptype":OTPType,"data-otpid":otpid});
+		$('.resendOTP').attr({"data-otpeventtype":OTPEventType,"data-otptype":OTPType,"data-otpid":otpid});
+		$('.OTPResetvalues').html('');
+		$('.OTPResetvalues').val('');
+		$('.enableValidate').show();
+		$('.resendOTP').show();
+	},
+	showOTPPopUp:function(OTPEventType,attrObj){
+		var PhoneNumber=$.trim($('#txtPhoneNumber_div').html());
+		var Email=$.trim($('#txtEmail_div').html());
+		$('#txtEmail_verify').text(Email);
+		var isEmailVerified=false,isPhoneVerified=false;
+		(function rerunInstanceDetails() {
+			if (typeof allInstanceDetails == 'object' && !$.isEmptyObject(allInstanceDetails)) {
+				var otpNotReqdThrough = $.trim(allInstanceDetails.OTPnotReqdThrough);
+				if(otpNotReqdThrough.split(',').indexOf('1') > -1){
+					$('#otpPopup').find('.otpValidatePopup[data-otptypename="email"]').addClass('hidden');
+				}else{
+					if(Email!="" && $.trim($('#isEmailVerified_div').text())=="1"){
+						$('#otpPopup').find('.otpValidatePopup[data-otptypename="email"]').removeClass('disabled');
+						isEmailVerified=true;
+					}
+					else{
+						$('#otpPopup').find('.otpValidatePopup[data-otptypename="email"]').addClass('disabled');
+					}
+				}
+				if(otpNotReqdThrough.split(',').indexOf('0') > -1){
+					$('#otpPopup').find('.otpValidatePopup[data-otptypename="sms"]').addClass('hidden');
+				}else{
+					if(PhoneNumber!="" && $.trim($('#isPhoneVerified_div').text())=="1"){
+						$('#otpPopup').find('.otpValidatePopup[data-otptypename="sms"]').removeClass('disabled');
+						isPhoneVerified=true;
+					}
+					else{
+						$('#otpPopup').find('.otpValidatePopup[data-otptypename="sms"]').addClass('disabled');
+					}
+				}
+				if(isEmailVerified || isPhoneVerified){
+					OTP.resetVariables(OTPEventType,"","",attrObj);
+					$(".overlay").show();
+					$("#otpPopup").show();
+				} else{
+					alert(multilingualKeyValue('442','34'));   /* 'Please verify either Email Id or Mobile Number from your Profile before changing password' */
+				}
+			}else {
+            	setTimeout(rerunInstanceDetails, 200);
+        	}
+		})();
+	},
+	OTPScreens :{
+		init: function () {
+			this.popups();
+		},
+		enableValidate: function(OTPvalueLength){
+			if(OTPvalueLength==4){
+				$('.enableValidate').removeAttr('disabled');
+				$('.enableValidate').removeClass('disabled');
+			}
+			else{
+				$('.enableValidate').attr('disabled','true');
+				$('.enableValidate').addClass('disabled');
+			}
+		},
+		enableValidatePhoneNumber: function(OTPvalueLength){
+			if(OTPvalueLength>=10){
+				$('.enableValidateMobile').removeAttr('disabled');
+				$('.enableValidateMobile').removeClass('disabled');
+				$('.enableValidateMobile').addClass('otpValidatePopup');
+			}
+			else{
+				$('.enableValidateMobile').attr('disabled','true');
+				$('.enableValidateMobile').addClass('disabled');
+				$('.enableValidateMobile').removeClass('otpValidatePopup');
+			}
+		},
+		enableValidateEmail: function(emailValue){
+			var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i;
+			if(pattern.test(emailValue)){
+				$('.enableValidateEmail').removeAttr('disabled');
+				$('.enableValidateEmail').removeClass('disabled');
+				$('.enableValidateMobile').addClass('otpValidatePopup');
+			}
+			else{
+				$('.enableValidateEmail').attr('disabled','true');
+				$('.enableValidateEmail').addClass('disabled');
+				$('.enableValidateMobile').removeClass('otpValidatePopup');
+			}
+		},
+		enableValidateLoginId: function(loginIdLength){
+			if(loginIdLength>0){
+				$('.otpPopupLoginId').removeAttr('disabled');
+				$('.otpPopupLoginId').removeClass('disabled');
+			}
+			else{
+				$('.otpPopupLoginId').attr('disabled','true');
+				$('.otpPopupLoginId').addClass('disabled');
+			}
+		},
+		validateChangePassword: function(){
+			var new_password = $.trim($('#new_password').val());
+			var confirm_password = $.trim($('#confirm_password').val());
+			iHUB.validation.resetValidationColourText();
+			if(new_password==""){
+				/*  Please enter your new password : 59 */
+				iHUB.validation.errorMessage('customPasswordMessage',multilingualKeyValue('59','32'),100);
+			}
+			else if(new_password!=""){
+				/* var validateResponse = eval(validatePWD(new_password,'customPasswordMessage')); */
+				var validateResponse = passwordRegex.test(new_password);
+				if(!validateResponse){
+					$('#customPasswordMessageBL-H').removeAttr('style');
+					/* Password should contain at least one numeric digit, one lower case character, one upper case character and at least one special character among @#$%^&*~+_()!- without white space and length should be between 6 - 15 : 66 */
+					iHUB.validation.errorMessage('customPasswordMessage',multilingualKeyValue('66','32'),100);
+				}
+				if(validateResponse){
+					if(confirm_password==""){
+						/* Please enter your new password to confirm : 60 */
+						iHUB.validation.errorMessage('customPasswordMessage',multilingualKeyValue('60','32'),100);
+					}
+					else if(new_password!=confirm_password){
+						/* The confirm password entered doesn't match with your password : 61 */
+						iHUB.validation.errorMessage('customPasswordMessage',multilingualKeyValue('61','32'),100);
+					}
+					else{
+						iHUB.validation.resetValidationColourText();
+						OTP.changePassword(new_password);
+					}
+				}
+			}
+		},
+		validateChangePasswordBL: function(){
+			var otpValue = $('#OTPValueBL').val();
+			if(isNewLoginSignUp){
+				otpValue = $("#digit-1").val()+$("#digit-2").val()+$("#digit-3").val()+$("#digit-4").val();
+			}
+			if($.trim(otpValue).length!=4){
+				$('#customPasswordMessageBL-H').removeAttr('style');
+				iHUB.validation.errorMessage('customPasswordMessageBL',multilingualKeyValue('443','34'),100);  /* 'Please enter 4 digit OTP' */
+			}
+			else{
+				var new_password = $.trim($('#new_passwordBL').val());
+				var confirm_password = $.trim($('#confirm_passwordBL').val());
+				iHUB.validation.resetValidationColourText();
+				if(new_password==""){
+					/*  Please enter your new password : 59 */
+					$('#customPasswordMessageBL-H').removeAttr('style');
+					iHUB.validation.errorMessage('customPasswordMessageBL',multilingualKeyValue('59','32'),100);
+				}
+				else if(new_password!=""){
+					/* var validateResponse = eval(validatePWD(new_password,'customPasswordMessageBL')); */
+					var validateResponse = passwordRegex.test(new_password);
+					if(!validateResponse){
+						$('#customPasswordMessageBL-H').removeAttr('style');
+						/* Password should contain at least one numeric digit, one lower case character, one upper case character and at least one special character among @#$%^&*~+_()!- without white space and length should be between 6 - 15 : 66 */
+						iHUB.validation.errorMessage('customPasswordMessageBL',multilingualKeyValue('66','32'),100);
+					}
+					if(validateResponse){
+						if(confirm_password==""){
+							/* Please enter your new password to confirm : 60 */
+							$('#customPasswordMessageBL-H').removeAttr('style');							
+							iHUB.validation.errorMessage('customPasswordMessageBL',multilingualKeyValue('60','32'),100);
+						}
+						else if(new_password!=confirm_password){
+							/* The confirm password entered doesn't match with your password : 61 */
+							$('#customPasswordMessageBL-H').removeAttr('style');
+							iHUB.validation.errorMessage('customPasswordMessageBL',multilingualKeyValue('61','32'),100);
+						}
+						else if(!$('#changePasswordNewBL').find('.OTPVerificationBtn').hasClass('disabled')){
+							$('#changePasswordNewBL').find('.OTPVerificationBtn').addClass('disabled'); /* disabling button on click to remove multiple clicks */
+							iHUB.validation.resetValidationColourText();
+							OTP.changePasswordBL(new_password,otpValue);
+						}
+					}
+				}
+			}
+		},
+		popups: function() {
+			//OTP Popup
+			$(document).on("click", ".otpPopup", function (e) {
+				var attrObj = new Object();
+				$.each(this.attributes, function(k, v){
+					if($.trim(v.name).indexOf('data-otp') > -1)
+						attrObj[v.name]=v.value;
+				});
+				console.log(attrObj);
+				if(this.attributes["data-otpeventtype"]!=undefined){
+					OTP.showOTPPopUp(this.attributes["data-otpeventtype"].value,attrObj);
+				}
+			});
+			$(document).on("click", ".otpPopupFP", function (e) {
+				$(".overlay").show();
+				$("#otpPopupFP").show();
+			});
+			/* commenting since only click of cancel popup should get close */
+			/* $(document).on("click", ".overlay", function () {
+				$(this).hide();
+				$(".popup").hide();
+			}); */
+			//OTP Popup Ends
+			//OTP Phone Popup
+			$(document).on("click", ".otpPhonePopup", function (e) {
+				$('#OTPPhoneNumber').val('');
+				if(this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined){
+					OTP.resetVariables(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value);
+					$('.enableValidateMobile').addClass('disabled');
+					$(".overlay").show();
+					$("#otpPhonePopup").show();
+				}
+			});
+			//OTP Phone Popup Ends
+			//OTP Email Popup
+			$(document).on("click", ".otpEmailPopup", function (e) {
+				$('#OTPEmail').val('');
+				if(this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined){
+					OTP.resetVariables(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value);
+					$('.enableValidateEmail').addClass('disabled');
+					$(".overlay").show();
+					$("#otpEmailPopup").show();
+				}
+			});
+			//OTP Email Popup Ends
+			//OTP Validate Popup
+			$(document).on("click", ".otpValidatePopup", function (e) {
+				if($(this).hasClass('disabled')!=true && this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptypename"]!=undefined){
+					var PhoneNumber=$.trim($('#txtPhoneNumber_div').html());
+					var Email=$.trim($('#txtEmail_div').html());
+					var isEmailVerified=false,isPhoneVerified=false;
+					if($.trim(this.attributes["data-otptypename"].value)=="email"){
+						if(Email!="" && $.trim($('#isEmailVerified_div').text())=="1"){
+							$('#otpPopup').find('.otpValidatePopup[data-otptypename="email"]').addClass('disabled'); /* disabling button on click to remove multiple clicks */
+							OTP.getOTP(this.attributes["data-otpeventtype"].value,"1");
+							$(".overlay").show();
+							$("#otpValidatePopup").show();
+						}
+						else{
+							$('#otpPopup').find('.otpValidatePopup[data-otptypename="email"]').addClass('disabled');
+						}
+					}
+					else if($.trim(this.attributes["data-otptypename"].value)=="sms"){
+						if(PhoneNumber!="" && $.trim($('#isPhoneVerified_div').text())=="1"){
+							$('#otpPopup').find('.otpValidatePopup[data-otptypename="sms"]').addClass('disabled'); /* disabling button on click to remove multiple clicks */
+							OTP.getOTP(this.attributes["data-otpeventtype"].value,"0");
+							$(".overlay").show();
+							$("#otpValidatePopup").show();
+						}
+						else{
+							$('#otpPopup').find('.otpValidatePopup[data-otptypename="sms"]').addClass('disabled');
+						}
+					}
+				}
+			});
+			//OTP Validate Popup Ends
+			//OTP Validate Popup Forgot Password
+			$(document).on("click", ".otpValidatePopupFP", function (e) {
+				if($(this).hasClass('disabled')!=true && this.attributes["data-otptypename"]!=undefined){
+					if($.trim(this.attributes["data-otptypename"].value)=="otp"){						
+						$("#OTPLoginID").val('');				
+						$("#otpPopupFP").hide();
+						$("#otpPopupLoginId").show();
+					}
+					else if($.trim(this.attributes["data-otptypename"].value)=="link"){
+						$(".overlay").hide();
+						$("#otpPopupFP").hide();
+						openFGmodal();
+					}
+				}
+			});
+			//OTP Validate Popup Forgot Password Ends
+			//OTP Validate Popup Forgot Password LoginId
+			$(document).on("click", ".otpPopupLoginId", function (e) {
+				if($(this).hasClass('disabled')!=true && this.attributes["data-otptypename"]!=undefined){
+					$(".otpPopupLoginId").addClass('disabled'); /* disabling button on click to remove multiple clicks */
+					if($.trim(this.attributes["data-otptypename"].value)=="email"){
+						OTP.getOTP(this.attributes["data-otpeventtype"].value,"1");						
+					}
+					else if($.trim(this.attributes["data-otptypename"].value)=="sms"){
+						OTP.getOTP(this.attributes["data-otpeventtype"].value,"0");
+					}
+				}
+			});
+			//OTP Validate Popup Forgot Password LoginId Ends
+			$(document).on("click", ".resendOTP", function (e) {
+				if(this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined){
+					OTP.resendOTP(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value,this.attributes["data-otpid"].value);
+				}
+			});
+			$(document).on("click", ".sendOTP", function (e) {
+				if(this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined){
+					OTP.sendOTP(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value);
+				}
+			});
+			$(document).on("click", ".enableValidateMobile", function (e) {
+				if($(this).hasClass('disabled')!=true && this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined && $('#otpPhonePopup #OTPPhoneNumber').val()!=""){
+					$(".enableValidateMobile").addClass('disabled'); /* disabling button on click to remove multiple clicks */
+					/* $("#otpPhonePopup").hide(); */
+					if(OTP.getOTP(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value)){
+						$("#otpPhonePopup").hide();
+					}
+					/* $("#otpValidatePopup").show(); *///remove this
+				}
+			});
+			$(document).on("click", ".enableValidateEmail", function (e) {
+				if($(this).hasClass('disabled')!=true && this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined && $('#otpPhonePopup #OTPEmail').val()!=""){
+					$(".enableValidateEmail").addClass('disabled'); /* disabling button on click to remove multiple clicks */
+					/* $("#otpEmailPopup").hide(); */
+					if(OTP.getOTP(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value)){
+						$("#otpEmailPopup").hide();
+					}
+					/* $("#otpValidatePopup").show(); *///remove this
+				}
+			});
+			$(document).on("click", ".enableValidate", function (e) {
+				if($(this).hasClass('disabled')!=true && this.attributes["data-otpeventtype"]!=undefined && this.attributes["data-otptype"]!=undefined && $('#otpPhonePopup #OTPEmail').val()!=""){
+					$(".enableValidate").addClass('disabled'); /* disabling button on click to remove multiple clicks */
+					/* $("#otpEmailPopup").hide(); */
+					var attrObj = new Object();
+					$.each(this.attributes, function(k, v){
+						if($.trim(v.name).indexOf('data-otp') > -1)
+							attrObj[v.name]=v.value;
+					});
+					console.log(attrObj);
+					OTP.validateOTP(this.attributes["data-otpeventtype"].value,this.attributes["data-otptype"].value,$.trim($('#OTPValue').val()),attrObj);
+					/* $("#otpValidatePopup").show(); *///remove this
+				}
+			});
+		}
+	}
+}
+function addExtraAttributeValidateOTP(OTPEventType,OTPType,OTPValue,attrObj){
+	var urlNew="";
+	if (typeof addCustomExtraAttributeValidateOTP == 'function'){
+		urlNew+=eval('addCustomExtraAttributeValidateOTP(OTPEventType,OTPType,OTPValue,attrObj)');
+	}
+	return urlNew;
+}
+function addExtraAttributeCallOTP(OTPEventType,OTPType){
+	var urlNew="";
+	if (typeof addCustomExtraAttributeCallOTP == 'function'){
+		urlNew+=eval('addCustomExtraAttributeCallOTP(OTPEventType,OTPType)');
+	}
+	return urlNew;
+}
+function tooltipHoverFocus(){
+	if($('[data-tooltip="tooltip"]').length > 0){
+		if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+			$("[data-tooltip='tooltip']").attr('data-trigger','focus');
+		}
+		else{
+			$("[data-tooltip='tooltip']:not('[data-original-title]'),[data-tooltip='tooltip'][title!='']").tooltip({ trigger: "manual",container: "body"})
+				.on("mouseenter touchstart", function () {
+					var _this = this;
+					$('[data-tooltip="tooltip"]').not(this).tooltip('hide');
+					$(this).tooltip('show');
+					$(".tooltip").on("mouseleave touchend", function () {
+						$(_this).tooltip('hide');
+					});
+				}).on("mouseleave touchend", function () {
+					var _this = this;
+					setTimeout(function () {
+						if (!$(".tooltip:hover").length) {
+							$(_this).tooltip('hide');
+						}
+					}, 300);
+			});
+		}		
+	}
+	$('[data-tooltip=tooltip]').on('click', function(){
+		$("[data-tooltip='tooltip']").tooltip('hide');
+		$("[data-tooltip='tooltip']").tooltip('disable');
+		setTimeout(function () {
+			$(".tooltip").remove();
+			$("[data-tooltip='tooltip']").tooltip('enable');
+		}, 500);
+	});
+	openPopOverOnHoverMKPC();
+}
+function openPopOverOnHoverMKPC(){
+	if($('[data-toggle="popover"]').length > 0){
+		$('[data-toggle="popover"]').popover({ trigger: "manual" , html: true, animation:false})
+			.on("mouseenter touchstart", function () {
+				var _this = this;
+				$(this).not(this).popover('hide');
+				$(this).popover("show");
+				$(".popover").on("mouseleave touchend", function () {
+					$(_this).popover('hide');
+				});
+			}).on("mouseleave touchend", function () {
+				var _this = this;
+				setTimeout(function () {
+					if (!$(".popover:hover").length) {
+						$(_this).popover("hide");
+					}
+				}, 300);
+		});
+	}
+}
+function getBasicValues(){
+	if(self==top){
+		app_seq_no=$('#app_seq_no').val();
+		masterform_id=$.trim($('#formId').val())=="" ? $.trim($('#userFormId').val()) : $.trim($('#formId').val());
+		txtInstanceId=$.trim($('#txtInstanceId_div').html())=="" ? $.trim($('#txtInstanceId').val()) : $.trim($('#txtInstanceId_div').html());
+		if($.trim(txtInstanceId)=="")
+			txtInstanceId=$.trim($('#instanceId').val());
+		sessChk=$('#sessChk').val();
+		orgId=$('#orgId').val();
+		if (typeof getLanguageId == 'function')
+			languageId=getLanguageId();
+		else
+			languageId="1";
+	}
+	else if(parent==top){
+		app_seq_no=window.parent.$('#app_seq_no').val();
+		masterform_id=$.trim(window.parent.$('#formId').val())=="" ? $.trim(window.parent.$('#userFormId').val()) : $.trim(window.parent.$('#formId').val());
+		txtInstanceId=$.trim(window.parent.$('#txtInstanceId_div').html())=="" ? $.trim(window.parent.$('#txtInstanceId').val()) : $.trim(window.parent.$('#txtInstanceId_div').html());
+		if($.trim(txtInstanceId)=="")
+			txtInstanceId=$.trim(window.parent.$('#instanceId').val());
+		sessChk=window.parent.$('#sessChk').val();
+		orgId=window.parent.$('#orgId').val();
+		if (typeof window.parent.getLanguageId == 'function')
+			languageId=window.parent.getLanguageId();
+		else
+			languageId="1";
+	}	
+}
+function handleTagsAndAppBridge(url){
+    var app = ((navigator.userAgent.indexOf('_App') >= 0) ? true : false);
+    var ios = ((navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPod') >= 0 || navigator.userAgent.indexOf('iPad') >= 0) ? true : false);
+    if(app){
+        if (ios) {
+            var r = ('null/open_browser('+url+')');
+            window.webkit.messageHandlers.observe.postMessage(r);
+        } else {
+            openin.customtab(url);
+        }      
+    }else{          
+        var newWin=window.open(url,"_blank");      
+        if(!newWin || newWin.closed || typeof newWin.closed=='undefined'){
+            alert(multilingualKeyValue('444','34'));   /* "Popup blocker is enabled. Please disable it to continue." */
+        }
+    }  
+}
+function logiHUB(texttoLog){
+	if(logmeiHUB==true)
+		console.log(texttoLog);
+}
+function getConsentForData(elementid){
+	var pddata=elementid.getAttribute('data-pddata');
+	var usecaseCode=elementid.getAttribute('data-UCCode');
+	showPurpose(pddata,usecaseCode);
+}
+function showPurpose(pddata,usecaseCode){
+	if($.trim(usecaseCode)=="")
+		usecaseCode="iHUB_RU";
+	var userid=null;
+	if($('#app_seq_no_div').length>0)
+		userid=$('#app_seq_no_div').text();	
+	var solutionid="306";
+	var orgId = $.trim($('#orgId').val())!="" ? $('#orgId').val() : $.trim($('[name="orgId"]').val());
+	var isOrgLevelConsent="";
+	if(self==top){
+		isOrgLevelConsent = $.trim($('#isOrgLevelConsent').val()).toLowerCase();
+	}	
+	else if(parent==top){
+		isOrgLevelConsent = $.trim(window.parent.$('#isOrgLevelConsent').val()).toLowerCase();
+	}
+	var hiddenOrgValue = isOrgLevelConsent=="yes" ? "1" : "";
+	if (typeof showFieldLevelPurpose == 'function'){
+		showFieldLevelPurpose(orgId,solutionid,userid,$.trim(pddata),$.trim(usecaseCode),hiddenOrgValue);
+	}
+	setTimeout(function(){
+		(function reruniHUB(){
+			if($('#purposeFrame').length > 0){
+				$('#purposeFrame').css('z-index','100000');
+				checkIfFrameClosed(pddata);
+			}else{
+				setTimeout(reruniHUB, 200);
+			}
+		})();
+	}, 500);
+}
+function checkIfFrameClosed(pddata){
+	var iframe=$('#purposeFrame').contents();
+	(function reruniHUBokCheck(){
+		if(iframe.find(".fieldLevelConsentOK").length != 0){
+			iframe.find(".fieldLevelConsentOK").on("click",function(){
+				(function reruniHUBconsent(){
+					if($('#purposeFrame').length == 0){
+						logiHUB("purposeFrame closed");
+						setTimeout(function(){					
+							personalDataConsent(pddata);
+						}, 500);
+					}else{
+						setTimeout(reruniHUBconsent, 200);
+					}
+				})();
+			});
+		}else{
+			setTimeout(reruniHUBokCheck, 200);
+		}
+	})();	
+}
+function personalDataConsent(pddata){
+	var tokenId=iHUB.token.get();
+	var url=iHUB.url.get();	
+	if(app_seq_no!=undefined && app_seq_no!=""){
+		$.ajax({ 			
+			type: "POST",		
+			url: url,		
+			data: {		
+				orgID:orgID,
+				masterform_id:masterform_id,
+				languageId:languageId,
+				app_seq_no:app_seq_no,
+				sessChk:sessChk,
+				txtInstanceId:instanceId,
+				subAction:"gdprconsent",
+				tokenId:tokenId,
+				consentType:"personaldataconsent"
+			},		
+			dataType: "json",
+			async:false,
+			success: function(result){
+				logiHUB(result);
+				if (typeof personalDataConsentResponse == 'function'){
+					personalDataConsentResponse(result,pddata);
+				}
+			},		
+			error: function(x, e){
+
+			}
+		}); 
+	}
+}
+function personalDataConsentResponse(result,pddata){
+	var newResponse = JSON.stringify(result);
+	var obj = JSON.parse(newResponse);
+	iHUB.token.set(obj.token);
+	if(!jQuery.isEmptyObject(obj.consentmsg)){
+		if(obj.consentmsg.iHUB_IsMailRequired!=undefined){
+			if(obj.consentmsg.iHUB_IsMailRequired=="0"){
+				logiHUB("iHUB_IsMailRequired consent not present");
+			}
+			else if(obj.consentmsg.iHUB_IsMailRequired=="1"){
+				
+			}
+		}
+		if(obj.consentmsg.iHUB_DigitalSignature!=undefined){
+			var tempB=$('#updateOrgProfilePop').find('#digitalSignature').find('a');
+			if(obj.consentmsg.iHUB_DigitalSignature=="0"){
+				logiHUB("iHUB_DigitalSignature consent not present");
+				tempB.attr('data-consentGiven','0');
+				/* tempB.attr('sub-onclick',tempB.attr('onclick'));
+				tempB.removeAttr('onclick'); */
+			}
+			else if(obj.consentmsg.iHUB_DigitalSignature=="1"){
+				tempB.attr('data-consentGiven','1');
+				/* tempB.attr('onclick',tempB.attr('sub-onclick'));
+				tempB.removeAttr('sub-onclick'); */
+			}
+		}
+		if(obj.consentmsg.iHUB_UserImage!=undefined){
+			var tempC=$('#MyAccount').find('#userInformation').find('span[data-target=".uploadimagepop"]');
+			if(obj.consentmsg.iHUB_UserImage=="0"){
+				logiHUB("iHUB_UserImage consent not present");
+				tempC.removeAttr('onclick').removeAttr('data-toggle');
+			}
+			else if(obj.consentmsg.iHUB_UserImage=="1"){
+				tempC.attr('onclick','setImageDataForUpload();').attr('data-toggle','modal');
+			}
+		}
+	}
+	else{
+		var tempB=$('#updateOrgProfilePop').find('#digitalSignature').find('a');
+		tempB.attr('sub-onclick',tempB.attr('onclick'));
+		tempB.removeAttr('onclick');
+		var tempC=$('#MyAccount').find('#userInformation').find('span[data-target=".uploadimagepop"]');
+		tempC.removeAttr('onclick').removeAttr('data-toggle');
+	}
+}
+function getLastLetter(str){
+	var lastLetter = '';
+	var str = $.trim(str);
+	if($.trim(str)!='')
+		lastLetter = str.split('')[str.split('').length-1];
+	return lastLetter;
+}
+function fnLogoutICMP(session){
+	/* Are you sure you want to logout? : 62 */
+	var message=multilingualKeyValue('62','32');
+	var tempInstanceDetails = getAllInstanceDetails();
+	if(typeof tempInstanceDetails == 'object'){
+		if($.trim(tempInstanceDetails.isNewLoginSignUp)=="1")
+			message = multilingualKeyValue('445','34')+' '+message;  /* 'All users from the current device will be logged out.  */
+	}
+	var messageResponse=false;
+	var loginId = "";
+	if(self==top){
+		loginId = $.trim($('#loginType_div').text()).toLowerCase();
+	}
+	else if(parent==top){
+		loginId = $.trim(window.parent.$('#loginType_div').text()).toLowerCase();
+	}
+	if(loginId!="" && "smb,facebook,google,twitter,guest".split(',').indexOf(loginId)>-1){			
+		/* You have logged in using : 63 */
+		/* Confirming logout will only log you out of iHUB session. : 64 */
+		var newType = loginId=="smb" ? "iON" : changeCaseFirstLetter($('#loginType_div').text());
+		message=multilingualKeyValue('63','32')+" "+newType+". "+multilingualKeyValue('64','32')+" "+message;
+	}
+	message = getLastLetter(message)=="?" ? message : message+"?";
+	if(session==0 || session==undefined){
+		messageResponse=confirm(message);
+	}
+	if(session==1 || messageResponse){
+		if (typeof showLoader == 'function')
+			showLoader();
+		/* getBasicValues(); */
+		/* var masterform_id=document.getElementById("formId").value;
+		var orgID=document.getElementById("orgId").value;   */
+		var url=iHUB.url.get();
+		$.ajax({ 
+			type: "POST",
+			url: url,
+			data: {
+				orgID:orgID,
+				masterform_id:masterform_id,
+				subAction:"removeTokenGeneratedFlag"
+			},
+			dataType: "json",
+			success: function(result){
+				
+			},
+			error: function(x, e){},
+			complete: function(){
+				//To logout from idh
+				$.ajax({ 
+					type: "POST",
+					url: iHUB.url.iDH(),
+					data: {
+						oID:orgID,
+						fID:masterform_id,
+						subAction:"logout",
+						UID:$('#app_seq_no').val()
+					},
+					complete: function(){
+						$.ajax({ 
+							type: "POST",
+							url: url,
+							data: {
+								orgID:orgID,
+								subAction:"getApplicationURLCustom",
+								solutionId:"9519"
+							},
+							dataType: "json",
+							success: function(result){
+								$('body').append('<iframe src="'+result.url+'LX/logout" style="display:none;background-color: rgb(255, 255, 255);"></iframe>');
+							}
+						});
+						
+						app_seq_no=window.parent.$('#app_seq_no').val();
+						$.ajax({ 
+							type: "POST",
+							url: url,
+							data: {
+								oID:orgID,
+								fID:masterform_id,
+								a:"logout",
+								UID:app_seq_no
+							},
+							dataType: "json",
+							success: function(result){
+								
+							},
+							error: function(x, e){},
+							complete: function(){
+								/* NEED TO MODIFY THIS */
+								store.del('myPreLoginCart');						
+								var cookiePolicy = $.trim(store.get('cookiePolicy_'+orgID+'_'+instanceId));
+								window.localStorage.clear();/* todo */
+								store.set('cookiePolicy_'+orgID+'_'+instanceId, cookiePolicy);
+								/* setLinkHash(instanceId+'@IID@Home/'); */
+								if (typeof hideLoader_iDH == 'function')
+									hideLoader_iDH();						
+								console.log("logoutURL : "+logoutURL);
+								if($.trim(logoutURL)!="")
+									document.location.href = logoutURL;
+								else
+									document.location.href = "/EForms/configuredHtml/"+orgID+"/"+masterform_id+"/login.html?instanceId="+instanceId;
+							}
+						}); 
+					}
+				});
+			}
+		});
+	}
+	else{
+		return false;
+	}		
+}
+function createIncorrectURLLoader(){
+	if(self==top){
+		$('#loader').html("<span style='margin-right: 5px; position: relative; top: 65px;color:white;'><strong></strong><div style=\"color: black\"><i class='fa fa-exclamation-triangle fa-5x'></i><br><strong data-a='11' data-b='Please use correct URL.'>"+multilingualKeyValue('11','34')+"</strong></div></span>");
+		$("#loader").show();
+	}
+	else if(parent==top){
+		window.parent.$('#loader').html("<span style='margin-right: 5px; position: relative; top: 65px;color:white;'><strong></strong><div style=\"color: black\"><i class='fa fa-exclamation-triangle fa-5x'></i><br><strong data-a='11' data-b='Please use correct URL.'>"+multilingualKeyValue('11','34')+"</strong></div></span>");
+		window.parent.$("#loader").show();
+	}
+}
+/* function iHUBMultilingualKeyForSubaction(message){
+	var key="";
+	if($.trim(message)!=""){
+		if(message=="not assigned"){
+			key=multilingualKeyValue('12','34');
+		}else if(message=="Distributor Publisher PartnerShip Not available"){
+			key=multilingualKeyValue('13','34');
+		}else if(message=="not updated"){
+			key=multilingualKeyValue('14','34');
+		}else if(message=="Not a valid request."){
+			key=multilingualKeyValue('15','34');
+		}else if(message=="Request for Assign Product successfully sent"){
+			key=multilingualKeyValue('16','34');
+		}else if(message=="Distributor Publisher PartnerShip Not available2"){
+			key=multilingualKeyValue('17','34');
+		}else if(message=="Already a partner"){
+			key=multilingualKeyValue('18','34');
+		}else if(message=="Partnership request successfully auto Accepted"){
+			key=multilingualKeyValue('19','34');
+		}else if(message=="No sufficient Data2"){
+			key=multilingualKeyValue('20','34');
+		}else if(message=="No such product present"){
+			key=multilingualKeyValue('21','34');
+		}else if(message=="No sufficient Data1"){
+			key=multilingualKeyValue('22','34');
+		}
+	}
+	return key;
+} */
+function modifyHREF(){
+	$('.routelink').each(function(){
+		var urlPath=(window.location.pathname).split('/')[1].toLowerCase();
+		var routelink = $.trim($(this).attr('data-routelink'));
+		
+		if(routelink!=""){
+			var newHref = returnRouteLink(routelink);
+			if(routelink=="/iDH/Products"){
+				newHref+="/open#"+$('#instanceId').val()+"@IID@Home%2FCatalogue=redirectTo~@~field=view@~@schedule@~@txtorderby&subAction=createCatalogue&variable=catalogue@~@none@~@PopularDown&pageNo=1"
+			}		
+			newHref+=window.location.search;
+			if(routelink!="" && urlPath=="idh"){
+				$(this).attr('href',newHref);
+				/* $(this).attr('href',returnRouteLink(routelink)); */
+			}else{
+				/* $(this).attr('onclick','returnRedirectLink("'+routelink+'");');	 */
+				$(this).attr('onclick','returnRedirectLink("'+newHref+'");');	
+			}
+		}		
+	});
+}
+function returnRouteLink(routelink){
+	var newHref=routelink;
+	if(routelink!=""){
+		var orgId = $.trim($('#orgId').val());
+		var instanceId = $.trim($('#instanceId').val());
+		var iHUBInstanceShortName = $.trim($('#iHUBInstanceShortName').val());			
+		if(iHUBInstanceShortName!="" || (orgId!="" && instanceId!="")){
+			var remainingPart = routelink;
+			var splitRoutelink = routelink.split("/");
+			if((routelink.indexOf("/")==0 && splitRoutelink[1]=="iDH") || (routelink.indexOf("/")!=0 && splitRoutelink[0]=="iDH")){
+				remainingPart = routelink.replace("/iDH/","");
+			}
+			else if(routelink.indexOf("/")==0){
+				remainingPart = routelink.replace("/","");
+			}
+			if($.trim(remainingPart)!=""){			
+				if(iHUBInstanceShortName!="")
+					newHref="/iDH/"+iHUBInstanceShortName+"/"+remainingPart;
+				else
+					newHref="/iDH/"+orgId+"/"+instanceId+"/"+remainingPart;
+			}
+		}
+	}
+	return newHref;
+}
+function returnRedirectLink(routelink){
+	if($.trim(routelink)!="")
+		window.location=window.location.protocol+"//"+window.location.host+routelink;
+} 
+function changeCaseFirstLetter(params) {
+	if($.trim(params).toLowerCase()=="linkedin"){
+		return "LinkedIn";
+	}
+	else if($.trim(params).toLowerCase()=="ion"){
+		return "iON";
+	}
+	else if(typeof params === 'string') {
+		return params.charAt(0).toUpperCase() + params.slice(1);
+	}
+	return null;
+}
+
+function isCanBeRedirectedToMicrosite(datalink,shortUrl,isIframe){
+	if((($.trim(isIframe)=="0" || $.trim(isIframe)=="3") && $.trim(shortUrl)!="") || (!(($.trim(isIframe)=="0" || $.trim(isIframe)=="3") && $.trim(shortUrl)!="") && $.trim(datalink)!="")){
+		return true;
+	}
+	return false;
+}
+
+function replaceMultilingualHTMLvaluesOld(keyValueJson){
+	if (keyValueJson != null) {
+		if (Object.keys(keyValueJson).length != 0) {
+			for (var key in keyValueJson) {
+				if (keyValueJson.hasOwnProperty(key)) {
+					var key1 = key.trim();
+					var value1 = keyValueJson[key].multilingual_value;
+					var temp = document.createElement('span');
+					temp.innerHTML = value1;
+					value1 = temp.innerHTML;
+					$('[data-multilingualId="'+key1+'"]').each(function(){
+						var showAttr=$(this).attr('data-multilingualDisplayType');
+						if($.trim(showAttr)!=""){  /* added for job CR */ 
+							var findString=$('[data-multilingualId="'+key1+'"][data-multilingualDisplayType="'+showAttr+'"]');
+							
+							if(showAttr=="html")
+								findString.html(value1);
+							if(showAttr=="input")
+								findString.val(value1);
+							if(showAttr!="input" && showAttr!="html")
+								findString.attr(showAttr,value1);
+						}
+					});
+				}
+			}
+		}
+	}
+}
+function changeHref(usrType){
+	var ret = $.trim(usrType)=="" ? $.trim($('#txtUsrRole').val()).toLowerCase() : usrType.toLowerCase();
+	var retValue = "Learner";
+	switch (ret) {
+		case 'learner': 
+			retValue="Learner";
+			break;
+		case 'distributor':
+			retValue="Distributor";
+			break;
+		case 'publisher':
+			retValue="Publisher";
+			break;
+		case 'corporate':
+			if($.trim($('#isAggregator').val())=="0" && $.trim($('#ccmId').val())!="")
+				retValue="CorporateDashboard/"+$.trim($('#ccmId').val());
+			else
+				retValue="Corporate";
+			break;
+		case 'interviewer':
+			retValue="Interviewer";
+			break;
+		case 'corporateadmin':
+			retValue="Admin";
+			break;
+		default:
+			retValue="Learner";
+			break;
+	}
+	var orgId = $.trim($('#orgId').val());
+	var instanceId = $.trim($('#instanceId').val());
+	$('.additionalbar_header li[id="showDashboardHeader"] a,.newDashboardHref,#DashboardHiddenField a').attr('data-routelink',"/iDH/Dashboard/"+retValue);
+	$('.additionalbar_header li[id="showDashboardHeader"] a,.newDashboardHref,#DashboardHiddenField a').attr('href',returnRouteLink("/iDH/Dashboard/"+retValue));
+}
+function getGMvalue(id,defaultValue){
+	return $.trim(iHUB.multilingual.gmv(id))=="" ? defaultValue : $.trim(iHUB.multilingual.gmv(id));
+}
+
+function checkIfSessionAvailable(){
+	if($.trim($('#sessChk').val())==""){
+		checkMyPage();
+		return false;
+	}	
+	return true;
+}
+function clickRespectiveDashboard(){
+	var linkHREF = $.trim($.trim(window.location.href).replace(window.location.protocol+"//"+window.location.host,""));
+	var clickHREF = $.trim($('#DashboardHiddenField a').attr('href'))!="" ? $.trim($('#DashboardHiddenField a').attr('href')) : $.trim($('#showDashboardHeader a').attr('href'));
+	if(linkHREF == clickHREF)
+		window.location.reload();
+	else{
+		if($.trim($('#DashboardHiddenField a').attr('href'))!="")
+			document.getElementById('DashboardHiddenField').firstElementChild.click();
+		else if($.trim($('#showDashboardHeader a').attr('href'))!="")
+			document.getElementById('showDashboardHeader').firstElementChild.click();
+	}	
+}
+function restrictXSSonInput(){
+	$("input,textarea").not(".special-character-require").on('keypress', function(key,e) {
+		/* 60<  62>  63?  61=  123{  125}  13enter 92\ 47/ */
+		if(key.keyCode=="60" || key.keyCode=="62" || key.keyCode=="63" || key.keyCode=="61" || key.keyCode=="123" || key.keyCode=="125" || key.keyCode=="13" || key.keyCode=="92" || key.keyCode=="47")
+			return false;
+		else
+			return true;		
+	});
+	$("input,textarea").on("bind","paste", function(e){
+		if(e!==undefined || e!=="undefined"){	
+			// access the clipboard using the api
+			if(!($(this).attr('class').indexOf('ng-') > -1)){
+				var pastedData = e.originalEvent.clipboardData.getData('text');
+				log("Pasted data.."+pastedData);
+				var clearData=pastedData.replace(/[=?<>\{\}\\\\/]/gi,'');
+				log("clear data.."+clearData);
+				$(this).val('');
+				$(this).val($(this).val()+clearData);
+				e.preventDefault();
+			}
+		}	
+		else{
+			log("e is undefined, so process ends");
+		}
+	});	
+}
+function emailValidationFor2724(email){
+	var a=/([a-zA-Z0-9_\-\.]+)@(aaapl.in|aimia.com|ai-ttr.com|airasia.com|tatatrusts.org|amalgamated.in|apexrealty.com.mv|tata.com|tataautocomp.com|acsiltd.com|autostampings.com|bachishoes.com|bachishoes-tatainternational.com|caratlane.com|casadecor.in|cedge.in|cmcltd.com|cmc-americas.com|crlindia.com|concordemotors.com|ecofirst.in|eightoclock.com|e-nxt.com|corp.e-nxt.com|e-nxt.in|tata.com|fiorahyper-tata.com|starquik.com|fioraservices.com|goodearthteas.com|hela.in|hooghlymetcoke.com|tajhotels.com|tajsafaris.com|tata.com|cplonsj.co.uk|51-buckinghamgate.co.uk|ihcltata.com|seleqtionshotels.com|tajsats.com|amaplantationtrails.com|vivanta.com|tajair.com|amatrailsandstays.com|tajenterpriseslimited.com|indianrotorcraft.com|iswp.co.in|infinitiretail.com|cromaretail.com|croma.com|islworld.net|tkmglobal.com|tmilltd.com|tatasteel.com|islworld.net|inzpera.com|tatatrusts.org|tatatrusts.org|tatatrusts.org|jaguarlandrover.com|landrover.com|jamipol.com|jamipol.in|tatatrusts.org|jcapcpl.com|tatatrusts.org|tatasteel.com|tatasteel.com|partners.tatasteel.com|kdhptea.co.in|tatatrusts.org|tatatrusts.org|lalvol.com|landmark-tata.com|trent-tata.com|tatapower.com|meta-helix.com|mjunction.co.in|mjunction.in|mrupee.in|montblanc.in|memw.com|moveon.pt|tatatrusts.org|tataautocomp.com|ncpamumbai.com|natsteel.com.au|natsteel.com.sg|natsteelxiamen.com.cn|bestbar.com.au|ncouragefoundation.com|nelco.in|nelcoin.com|tatanet.co.in|neotel.co.za|nourishco.com|novaintegrated.com|tata.com|one-colombo.com|tatahousing.com|powerlinkstransmission.com|powerlinks.co.in|propserv.in|tatatrusts.org|rallis.co.in|rohinielectricals.com|gingerhotels.com|stmining.com|silaeastern.com|sdtatatrust.com|tata.com|tatatrusts.org|tata.com|tatatrusts.org|taco-engg.com|tataautocomp.com|tacohendrickson.com|tataautocomp.com|tataautocomp.com|tajair-tata.aero|tajsats.com|tajhotels.com|tal.co.in|tas-agt.com|tasec.in|tamlindia.com|tataadvancedsystems.com|tata.com|tasl.aero|tataafrica.com|tatakenya.com|tataghana.com|tata-nigeria.com|dar.bol.co.tz|tatasp.co.za|tata.co.za|teledata.mz|tataafrica-ci.com|dar.bol.co.tz|tatasp.co.za|tatamozambique.com|tata-senegal.com|tata.co.tz|tatauganda.com|tatazambia.co.zm|tatazimbabwe.com|tata.co.za|teledata.mz|tatainternational.com|tatakenya.com|tatainternational.com|tata.co.tz|tatainternational.com|tata-nigeria.com|tatainternational.com|tata.ch|tataaia.com|tata-aig.com|tata-aig.in|tataaig.com|tataamc.com|tatawestasia.ae|tata.com|tatagreenbattery.com|tataautocomp.com|tacokatcon.com|tataautocomp.com|taco-engg.com|tataautocomp.com|tataautocomp.com|tataautocomp.com|tataautocomp.com|tatabluescopesteel.com|tataquality.com|tata.com|tatabex.com|tatacapital.com|tatacapital.com|tctraveller.com|tatacapital.com|tatacapital.com|tatacapital.com|asianetindia.com|tataceramicsltd.com|tatachemicals.com|tatachemicals.com|tatachemicals.com|tatachemicals.com|tatachemicals.com|tataclassedge.com|tatacapital.com|tatacoffee.com|alliancecoffee.in|tatacommunications.com|direct-internet.co.in|vgsl.co.in|tataindicomebu.com|tatacommunications.com|tatacommunications.com|tatasustainability.com|tcs.com|diligenta.co.uk|afs-ites.com|tce.co.in|tataglobalbeverages.com|tatastarbucks.com|tatagb.com|vitax.pl|nourishco.com|tetleyusa.com|tetley.ru|tetleymideast.com|tetleyharris.com|tetley-group.com|tetley.pl|tetley.com.au|tetley.co.ke|tetley.ca|tetley.co.in|tatacoffee.com|premiumfoods.com.pl|plantationtrails.net|memw.com|goodearthteas.com|goodearth.com|eightoclock.com|mapcoffee.com.au|tgbl.com|tataconsumer.com|cummins.com|tata-daewoo.com|daewootruck.co.kr|tatadigital.com|tatadocomo.com|tatatel.co.in|tatatrusts.org|tataelxsi.com|tataelxsi.co.in|tataelxsi.co.jp|tataficosa.com|tmf.co.in|tata.com|tatahitachi.co.in|tatahousing.com|smartvaluehomes.in|tata.com|tatahealth.com|tataiq.com|tatainternational.com|tildlt.com|tata-nigeria.com|tata.com|tatahk.com|bachishoes.com|calsea.in|tildlt.com|tata.com|tata.co.uk|tata.com|tatamarcopolo.com|tmckolkata.com|tmckolkata.org|tatametaliks.co.in|kgp.metaliks.com|tmdipl.com|tatamotors.com|exchange.tmindia.tatamotors.com|tmf.co.in|tatamotorsinsurancebrokers.com|tatamotors.com|tmf.co.in|tatamotorsinsurancebrokers.com|tmibasl.com|tatanykshipping.com|tatapetrodyne.in|tpc.co.in|tatapigments.co.in|tatapower.com|tatapowersed.com|tpcsed.com|powerlinkstransmission.com|powerlinks.co.in|tatapower-ddl.com|tatapowersolar.com|tatapower.com|tatatpi.com.sg|tataprecision.com|tataprojects.com|tata.com|tatarealty.in|tatacapital.com|tata.com|airvistara.com|tatasky.com|tataskybb.com|tatasmartfoodz.com|tata.com|tatatrusts.org|tata.com|tatastarbucks.com|tatasteel.com|jsr.tatasteel.com|lot.tatasteel.com|itd.tatasteel.com|crm.tatasteel.com|grs.tatasteel.com|noa.tatasteel.com|jbd.tatasteel.com|wires.tatasteel.com|tatastrips.com|aut.tatasteel.com|tatachina.com|tatasteelnz.com|wbk.tatasteel.com|dhamraport.com|tkmglobal.net|cogent-power.com|tatasteeleurope.com|fcjamshedpur.com|partners.tatasteel.com|tatasteelbsl.co.in|tatasteelcanada.com|tspdl.com|tsdpl.in|corusgroup.com|tatasteel.com|tatasteelnz.com|kalzip.com|tatasteeleurope.com|tatasponge.com|tatasteellp.com|tatasteelsez.com|tatasteelthailand.com|tsmg.com|tatasustainability.com|tatatea.co.in|tatateatinc.com|tatatechnologies.com|tatamotors.com|tatatechnologies.com.sg|tatatel.co.in|tataindicomebu.com|wttil.com|tatadocomo.com|tfcitl.com|viomnetworks.com|tatatel.co.in|tatadocomo.com|tfcitl.com|tatatoyo.com|tatatrusts.org|tata.com|tataunistore.com|smartvaluehomes.in|tatavaluehomes.com|tayo.co.in|tctravelservices.com|tatacapital.com|tetley.co.uk|thdcfacility.com|siw.co.th|tatatinplate.com|titanworld.com|titan.co.in|titangoa.co.in|titan.co.in|tataautocomp.com|titanx.com|tkmglobal.com|tmseating.com|tmilltd.com|tmilltd.com|tkmglobal.com|tatasteel.com|tatamotors.com|trent-tata.com|trenthyper-tata.com|trenthyper-tata.com|trf.com|trf.co.in|jsr.trfltd.com|epc.trfltd.com|pye.trfltd.com|dlt.lk|trlkrosaki.com|tatasteel.com|ucpl.co.in|universalvoltas.com|voltas.com|voltas-qa.com|voltasbeko.com|yorktransport.com.au|th.com|yte-casting.com|yorktpt.com.sg|yorktpt.co.in|tcsrd.org|artson.net|nesmatata.com|rallis.com)$/;
+	return a.test($.trim(email).toLowerCase());
+}
+/* added by kiran for payment link user form */
+function getPhoneNumberLength(){
+	var phoneMaxLengthN=$.trim(phoneMaxLength)!=""?$.trim(phoneMaxLength):$.trim(phoneMinLength)!=""?$.trim(phoneMinLength):"";
+	var phoneMinLengthN=$.trim(phoneMinLength)!=""?$.trim(phoneMinLength):$.trim(phoneMaxLength)!=""?$.trim(phoneMaxLength):"";
+	var phoneNumberMaxLength=$.trim(phoneMaxLengthN)!=""?$.trim(phoneMaxLengthN):$.trim(window.parent.$('#phoneNumberMaxLength').val())!=""?$.trim(window.parent.$('#phoneNumberMaxLength').val()):$.trim(window.parent.$('#phoneNumberMinLength').val())!=""?$.trim(window.parent.$('#phoneNumberMinLength').val()):"10";
+	var phoneNumberMinLength=$.trim(phoneMinLengthN)!=""?$.trim(phoneMinLengthN):$.trim(window.parent.$('#phoneNumberMinLength').val())!=""?$.trim(window.parent.$('#phoneNumberMinLength').val()):$.trim(window.parent.$('#phoneNumberMaxLength').val())!=""?$.trim(window.parent.$('#phoneNumberMaxLength').val()):"10";
+	return phoneNumberMaxLength+"@~@"+phoneNumberMinLength;
+}
+/* added by kiran for payment link user form */
+/* added by kiran for jquery changes */
+jQuery.fn.size = function() {
+	return this.length;
+};
+jQuery.fn.trim = function() {
+	return this.trim();
+};
+/* added by kiran for jquery changes */
+/*cookie management*/
+function cookieNoticeResponse(response){
+	var obj = JSON.parse(JSON.stringify(response));
+	for(var i=0;i<obj.length;i++){
+		if(obj[i].consentGiven=="true"){
+		console.log(">>"+obj[i].categoryType);
+			switch(obj[i].categoryType){
+				case 2 :
+					validateConsent("Analytical");
+				break;
+				case 3 :
+					validateConsent("Marketing");
+				break;
+				case "" :
+					validateConsent("");
+				break;
+			}
+		}
+	}
+}
+function validateConsent(category) {
+	console.log(category);
+	var check = category ? '[data-cookiescript="accepted"][data-cookiecategory="' + category + '"]' : '[data-cookiescript="accepted"]';
+	$('img' + check).each(function() {
+		$(this).attr('src', $(this).attr('data-src'))
+	});
+	$('script[type="text/plain"]' + check).each(function() {
+		if ($(this).attr('src')) {
+			$(this).after('<script type="text/javascript" src="' + $(this).attr('src') + '"><\/script>')
+		} else {
+			$(this).after('<script type="text/javascript">' + $(this).html() + '<\/script>')
+		}
+		$(this).empty()
+	});
+	$('iframe' + check).each(function() {
+		$(this).attr('src', $(this).attr('data-src'))
+	});
+	$('embed' + check).each(function() {
+		$(this).replaceWith($(this).attr('src', $(this).attr('data-src'))[0].outerHTML)
+	});
+	$('object' + check).each(function() {
+		$(this).replaceWith($(this).attr('data', $(this).attr('data-data'))[0].outerHTML)
+	});
+	$('link' + check).each(function() {
+		$(this).attr('href', $(this).attr('data-href'))
+	});
+}
+function downloadInvoice(subForm, invoiceNo, txtOrderType, productId, orderId){
+	if($.trim(subForm)!="" && $.trim(invoiceNo)!="" && $.trim(txtOrderType)!=""){
+		var invoiceType = "";
+		if(txtOrderType=="Learner")
+			invoiceType=3;
+		else if(txtOrderType=="Distributor")
+			invoiceType=2;
+		else if(txtOrderType=="Publisher")
+			invoiceType=1;
+		
+		return iHUB.url.iDH()+"&orgID="+$('#orgId').val()+"&masterform_id="+masterform_id+"&txtInstanceId="+$('#instanceId').val()+"&app_seq_no="+$('#app_seq_no').val()+"&invoiceNo="+invoiceNo+"&subForm="+subForm+"&invoiceType="+invoiceType+"&txtproductId="+productId+"&orderid="+orderId+"&subAction=downloadInvoice";
+	}
+}
+
+function getUserProgressData(){
+	$.ajax({
+		type: "POST",
+		url: iHUB.url.iDH(),
+		data: {
+			type : "",
+			subAction: "getUserProgressData",
+		},
+		dataType: "json",
+		success: function(result) {
+			var condn = iHUB.checkSessionOrToken(result);
+			if (eval(condn)) {
+				buildUserProgressData(result);
+			}
+		},
+		error: function(x, e) {
+		}
+	});
+}
+function buildUserProgressData(result){
+	/* var progressboard = result.progressboard;
+	var upd_cpd_acquired = $.trim(progressboard.upd_cpd_acquired)=="" ? "0" : $.trim(progressboard.upd_cpd_acquired);
+	var upd_learning_hours = $.trim(progressboard.upd_learning_hours)=="" ? "0" : $.trim(progressboard.upd_learning_hours);
+	var totalProduct = $.trim(progressboard.totalProduct)=="" ? "0" : $.trim(progressboard.totalProduct);
+	var completedProduct = $.trim(progressboard.completedProduct)=="" ? "0" : $.trim(progressboard.completedProduct);	
+	$('#miles_achieved').text(upd_cpd_acquired+" Miles Achieved");
+	$('#learning_hrs').text(upd_learning_hours+" Spent");
+	$('#enrolled_cnt').text(totalProduct+" Enrolled");
+	$('#completed_cnt').text(completedProduct+" Completed"); */
+	for (label in result.progressboard){
+		console.log("label : "+label+" @@ value : "+$.trim(result.progressboard[label]))
+		if($('#'+label).length == 0)
+			$('body').append('<input type="hidden" name="'+label+'" id="'+label+'" value="">');
+		$('#'+label).val($.trim(result.progressboard[label]));
+	}
+	showProgressDataDashboard();
+	if(typeof buildBadgesEarned == 'function')
+		buildBadgesEarned();
+}
+function showProgressDataDashboard(){
+	var upd_calculated_cpd = $.trim($('#upd_calculated_cpd').val())=="" ? "0" : $.trim($('#upd_calculated_cpd').val());
+	var upd_learning_hours = $.trim($('#upd_learning_hours').val())=="" ? "0" : $.trim($('#upd_learning_hours').val());
+	var totalProduct = $.trim($('#totalProduct').val())=="" ? "0" : $.trim($('#totalProduct').val());
+	var completedProduct = $.trim($('#completedProduct').val())=="" ? "0" : $.trim($('#completedProduct').val());	
+	$('#miles_achieved').text(Number(upd_calculated_cpd)+" "+multilingualKeyValue("524","34"));/* Miles Achieved */
+	$('#learning_hrs').text(Number(upd_learning_hours)+" "+multilingualKeyValue("527","34"));/* Spent */
+	$('#enrolled_cnt').text(Number(totalProduct)+" "+multilingualKeyValue("528","34"));/* Enrolled */
+	$('#completed_cnt').text(Number(completedProduct)+" "+multilingualKeyValue("529","34"));/* Completed */
+}
+
+function createShareDiv(id){
+	$('.shareNow').remove();
+	var share ='<div class="shareNow">'+
+	'<span class="shareNow_icon" onclick="openshare()" title="Share"></span>'+
+	'<div class="shareDiv">'+
+	'<p>'+
+	'<label>Share Using</label>'+
+	'<span class="facebooksv" title="Facebook" onclick="fbShare()" >'+
+	'<svg version="1.1" id="Layer_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="-2.07 -2.057 24 23.861" enable-background="new -2.07 -2.057 24 23.861" xml:space="preserve">'+
+	'<path fill="#fff" d="M14.573,9.75h-3.025v11.123H6.927V9.75H4.769V6.066h2.157V2.521c0,0,0.068-3.647,3.684-3.647h4.378v3.684 h-2.605c0,0-0.835-0.071-0.801,0.833v2.676h3.51L14.573,9.75z"></path>'+
+	'</svg>'+
+	'</span>'+
+	'<span class="twittersv" title="Twitter" onclick="twitterShare()">'+
+	'<svg version="1.1" id="Twitter1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="60.042 60.07 24 23.861" enable-background="new 60.042 60.07 24 23.861" xml:space="preserve">'+
+	'<path fill="#fff" d="M82.502,63.223c0,0-0.749,0.956-2.955,1.29c0,0-2.162-2.414-5.406-0.916c0,0-2.871,1.414-2.206,5.075 c0,0-5.282,0.248-9.4-4.868c0,0-1.952,3.451,1.458,6.114c0,0-0.751,0.208-2.122-0.582c0,0,0.042,3.494,3.786,4.532 c0,0-1.039,0.291-2.248,0c0,0,1.123,3.204,4.452,3.078c0,0-2.456,2.374-6.821,1.914c0,0,4.447,3.244,10.856,1.54 c0,0,8.65-2.623,8.858-12.851c0,0,1.58-1.292,2.285-2.33c0,0-1.578,0.831-2.577,0.706C80.462,65.925,82.46,64.137,82.502,63.223z"></path>'+
+	'</svg>'+
+	'</span>'+
+	'<span class="linkedinsv" title="LinkedIn" onclick="linkedInShare()()">'+
+	'<svg version="1.1" id="Twitter2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="60.042 60.07 24 23.861" enable-background="new 60.042 60.07 24 23.861" xml:space="preserve">'+
+	'<path fill="#fff" d="M83.042,82.514v-8.135c0-4.359-2.327-6.387-5.429-6.387c-2.503,0-3.625,1.377-4.25,2.343v-2.01h-4.717 c0.063,1.332,0,14.188,0,14.188h4.717V74.59c0-0.423,0.03-0.847,0.155-1.149c0.341-0.848,1.116-1.725,2.418-1.725c1.708,0,2.39,1.301,2.39,3.208v7.591L83.042,82.514L83.042,82.514z M63.678,66.389c1.644,0,2.668-1.091,2.668-2.453 c-0.031-1.391-1.024-2.451-2.637-2.451s-2.668,1.059-2.668,2.451c0,1.362,1.024,2.453,2.607,2.453H63.678z M66.036,82.514V68.326 h-4.715v14.188H66.036z"></path>'+
+	'</svg>'+
+	'</span>'+
+	'<span class="emailsv" title="Email" onclick="emailshare()">'+
+	'<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 33"><defs><style>.cls-3{fill:#dd594b;}.cls-2{fill:#fff;fill-rule:evenodd;}</style></defs><title>Email</title><circle class="cls-3" cx="16.5" cy="16.5" r="16.5"/><path class="cls-2" d="M17.67,18.4c-1.25,0-7.69-5.19-7.69-5.19v-.57a1.28,1.28,0,0,1,1.28-1.28H24.07a1.28,1.28,0,0,1,1.28,1.28v.64S19,18.4,17.67,18.4Zm0,1.75c1.36,0,7.67-4.95,7.67-4.95v7.67a1.28,1.28,0,0,1-1.28,1.28H11.26A1.28,1.28,0,0,1,10,22.87V15.2S16.42,20.15,17.67,20.15Z" transform="translate(-1.35 -1.36)"/></svg>'+
+	'</span>'+
+	'<span class="watsappnsv" onclick="whatsappshare()">'+
+	'<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.16 29.39">'+
+	'<defs>'+
+	'<style>'+
+	'.cls-1 {'+
+	'fill: #28b34b;'+
+	'fill-rule: evenodd;'+
+	'}'+
+	'</style>'+
+	'</defs>'+
+	'<title>WhatsApp</title>'+
+	'<g id="Page-1">'+
+	'<path id="whatsup" class="cls-1" d="M16.47,1.54A14.32,14.32,0,0,0,2.15,15.86a14.15,14.15,0,0,0,2.06,7.39L1.62,30.94,9.55,28.4A14.32,14.32,0,1,0,16.47,1.54Zm0,26.36a11.92,11.92,0,0,1-6.62-2L5.22,27.39l1.5-4.47a12,12,0,1,1,9.75,5Zm-3.36-18c-.23-.56-.41-.58-.77-.59l-.4,0a1.78,1.78,0,0,0-1.23.43,3.85,3.85,0,0,0-1.23,2.93,6.75,6.75,0,0,0,1.44,3.63c.17.23,2.45,3.83,6,5.3,2.77,1.14,3.59,1,4.22.9a3.38,3.38,0,0,0,2.36-1.69,2.87,2.87,0,0,0,.21-1.67c-.09-.15-.32-.23-.67-.41s-2.08-1-2.4-1.14a.68.68,0,0,0-.87.26,15.49,15.49,0,0,1-.94,1.25.77.77,0,0,1-.85.13,9.08,9.08,0,0,1-2.83-1.74,10.82,10.82,0,0,1-2-2.43c-.2-.36,0-.56.14-.76s.35-.37.52-.57a2.22,2.22,0,0,0,.39-.55.7.7,0,0,0-.05-.65C14.11,12.37,13.4,10.64,13.11,9.94Z" transform="translate(-1.62 -1.54)"></path>'+
+	'</g>'+
+	'</svg>'+
+	'</span>'+
+	'</p>'+
+	'<p><i class="QR_icon"></i><a onclick="qrshare1();updateQRCode();" class="showQRmodal">Share Via QR Code</a></p>'+
+	'<p><i class="link_icon"></i><a id="clipbrd"  onclick="clipboardsr()">Copy Link</a>'+
+	'<label class="copiedMsg">Link copied to your clipboard</label>'+
+	'</p>'+
+	'</div>'+
+	'</div>';
+	$(id).append(share);
+}
+function openshare() {
+    $(".shareNow div").show();
+    $("body").click(function(e) {
+        if (!$(".shareNow").is(e.target) && $(".shareNow").has(e.target).length === 0) {
+            $('.shareNow .shareNow_icon').removeClass('active');
+            $(".shareNow div").hide();
+        }
+    });
+}
+
+function qrshare1() {
+    $('#QR_code').modal('show');
+}
+
+function fbShare() {
+    var url = "https://learning.tcsionhub.in";
+    var t = document.title;
+    if ($.trim($('#share_link').val()) != "") {
+		url = $('#share_link').val();
+		url = $("<div/>").append(url).text();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		url = $('#socialmediashare_path').val();
+		url = $("<div/>").append(url).text();
+	}	else {
+		url = "https://learning.tcsionhub.in";
+    }
+    window.open('http://www.facebook.com/sharer.php?u=' + url + '&t=' + encodeURIComponent(t), 'sharer', 'toolbar=0,status=0,width=700,height=500');
+    return false;
+}
+
+function twitterShare() {
+    var url = "https://learning.tcsionhub.in";
+    var t = document.title;
+    if ($.trim($('#share_link').val()) != "") {
+		url = $('#share_link').val();
+		url = $("<div/>").append(url).text();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		url = $('#socialmediashare_path').val();
+		url = $("<div/>").append(url).text();
+	}	else {
+		url = "https://learning.tcsionhub.in";
+    }
+    window.open('http://twitter.com/share?url=' + url + '', 'sharer', 'toolbar=0,status=0,width=700,height=500');
+    return false;
+}
+
+function linkedInShare() {
+    var url = "https://learning.tcsionhub.in";
+    var t = document.title;
+    if ($.trim($('#share_link').val()) != "") {
+		url = $('#share_link').val();
+		url = $("<div/>").append(url).text();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		url = $('#socialmediashare_path').val();
+		url = $("<div/>").append(url).text();
+	}	else {
+		url = "https://learning.tcsionhub.in";
+    }
+    window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + url + '', 'sharer', 'toolbar=0,status=0,width=700,height=500');
+    return false;
+}
+
+function whatsappshare() {
+    /* var sharePathWhatsapp = $('#share_link').val();
+    if (sharePathWhatsapp == null) {
+        sharePathWhatsapp = "https://learning.tcsionhub.in";
+    } else {
+        sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+    } */
+	var sharePathWhatsapp = "https://learning.tcsionhub.in";
+    var t = document.title;
+    if ($.trim($('#share_link').val()) != "") {
+		sharePathWhatsapp = $('#share_link').val();
+		sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		sharePathWhatsapp = $('#socialmediashare_path').val();
+		sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+	}	else {
+		sharePathWhatsapp = "https://learning.tcsionhub.in";
+    }
+    var LinkTextToShare = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(sharePathWhatsapp);
+    window.open(LinkTextToShare, "_blank");
+}
+
+function emailshare() {
+	var url = "https://learning.tcsionhub.in";
+    var t = document.title;
+    if ($.trim($('#share_link').val()) != "") {
+		url = $('#share_link').val();
+		url = $("<div/>").append(url).text();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		url = $('#socialmediashare_path').val();
+		url = $("<div/>").append(url).text();
+	}	else {
+		url = "https://learning.tcsionhub.in";
+    }
+	console.log(url);
+    var urls = 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=&su=Your+Subject+here&body=' + url + '&ui=2&tf=1&pli=1';
+    window.open(urls, 'sharer', 'toolbar=0,status=0,width=648,height=395');
+    return false;
+}
+
+function clipboardsr() {
+    var board = $("<input>");
+	var url="";
+    $("body").append(board);
+	 if ($.trim($('#share_link').val()) != "") {
+		url = $('#share_link').val();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		url = $('#socialmediashare_path').val();
+	}
+    board.val(url).select();
+    document.execCommand("copy");
+    board.remove();
+    $('.copiedMsg').show();
+    setTimeout(function() {
+        $('.copiedMsg').hide();
+    }, 2000);
+}
+
+function updateQRCode() {
+    var text = ""; /*$(location).attr('href')*/
+	 if ($.trim($('#share_link').val()) != "") {
+		text = $('#share_link').val();
+    }
+	else if($.trim($('#socialmediashare_path').val()) != ""){
+		text = $('#socialmediashare_path').val();
+	}	else {
+		text = "https://learning.tcsionhub.in";
+    }
+	console.log("qr_code_text"+text);
+    var element = document.getElementById("qrcode");
+    var bodyElement = document.body;
+    if (element.lastChild)
+        element.replaceChild(showQRCode(text), element.lastChild);
+    else
+        element.appendChild(showQRCode(text));
+}
+
+function fbShareQr() {
+    var url = $('#share_link').val(); /*$(location).attr('href')*/
+    var t = document.title;
+    if (url == null) {
+        updateQRCode("https://learning.tcsionhub.in");
+    } else {
+        url = $('#qrcode').attr('src');
+        url = $("<div/>").append(url).html();
+    }
+    window.open('http://www.facebook.com/sharer.php?u=' + url + '&t=' + encodeURIComponent(t), 'sharer', 'toolbar=0,status=0,width=700,height=500');
+    return false;
+}
+
+function twitterShareQr() {
+    var url = $('#share_link').val(); /*$(location).attr('href')*/
+    var t = document.title;
+    if (url == null) {
+        url = "https://learning.tcsionhub.in";
+    } else {
+        updateQRCode(url);
+        var element = document.getElementById("qrcode");
+        url = $("<div/>").append(element).html();
+    }
+    window.open('http://twitter.com/share?url=' + url + '', 'sharer', 'toolbar=0,status=0,width=700,height=500');
+    return false;
+}
+
+function linkedInShareQr() {
+    var url = $('#share_link').val(); /*$(location).attr('href')*/
+    var t = document.title;
+    if (url == null) {
+        url = "https://learning.tcsionhub.in/";
+    } else {
+        url = $("<div/>").append(url).text();
+    }
+    window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + url + '', 'sharer', 'toolbar=0,status=0,width=700,height=500');
+    return false;
+}
+
+function whatsappshareQr() {
+    var sharePathWhatsapp = $('#share_link').val(); /*$(location).attr('href')*/
+    if (sharePathWhatsapp == null) {
+        sharePathWhatsapp = "https://learning.tcsionhub.in";
+    } else {
+        sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+    }
+    var LinkTextToShare = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(sharePathWhatsapp);
+    window.open(LinkTextToShare, "_blank");
+}
+
+function emailshareQr() {
+    var url = $('#share_link').val(); /*$(location).attr('href')*/
+    var t = document.title;
+    if (url == null) {
+        url = "https://learning.tcsionhub.in/";
+    } else {
+        url = $("<div/>").append(url).text();
+    }
+    var urls = 'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=&su=Your+Subject+here&body=' + url + '&ui=2&tf=1&pli=1';
+    window.open(urls, 'sharer', 'toolbar=0,status=0,width=648,height=395');
+    return false;
+}
+
+function downloadqr() {
+    var images = $('#qrcode img').attr('src');
+    $("#downqr").attr("href", images);
+}

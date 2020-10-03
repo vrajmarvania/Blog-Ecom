@@ -1,0 +1,504 @@
+
+//Microsite Logic Start Here
+ 
+  var uid;
+  var url='';
+  var pid='';
+  var pcode='';
+  var pname='';
+ 
+ 
+   $(window).on('message', function (e) {
+            var messageReceived = e.originalEvent.data;
+            if (messageReceived[1] != undefined) {
+			if(messageReceived[1]["actionIdentifier"] =="formSubmitted")
+			{
+			  pcode=$("#productId").val();
+			  pname=$("#productName").val();
+			  $(".nqt_register_btn" ).text("View Details"); 
+			  $(".nqt_register_now_btn" ).text("View Details"); 
+			}
+			else
+			{
+			  $("#modal_profileEform"). modal('show');
+			}
+        }
+   })
+ 
+ 
+
+function checkUserSession()
+{
+   if (typeof(Storage) !== "undefined") {
+                sessionStorage.setItem("EventNameFlag","Register");
+            }
+   uid=$("#app_seq_no").val();
+   if(uid!=undefined) 
+  {
+    var EventName = sessionStorage.getItem("EventNameFlag");
+            if (EventName == "Register") {
+					ApplyNow();
+					
+            }
+  }
+  else
+  {
+     checkMyPage();
+  }
+}
+
+function initiateMicrositeAction()
+{
+   uid=$("#app_seq_no").val();
+   if(uid!=undefined) 
+  {
+  	var EventName = sessionStorage.getItem("EventNameFlag");
+            if (EventName == "Register") {
+					ApplyNow();
+            }
+  }
+}
+         
+
+function ApplyNow()
+{
+   pcode=$("#productId").val();
+   uid=$("#app_seq_no").val();
+   if(uid!=undefined) 
+  {
+            if($('#instanceId').val()=="1")
+            {	 pid=pcode; 
+			     url='https://learning.tcsionhub.in//EForms/configuredHtml/1016/67887/application.html?uid='+uid+'&pcode='+pid+' ';	
+		    }
+			else
+			{    pid="BETA"+pcode; 
+			     url='https://qa-efmprd-g01.tcsion.com//EForms/configuredHtml/1016/67887/application.html?uid='+uid+'&pcode='+pid+' ';	
+			}
+	
+     	console.log('Profile Eform Opened: '+url);
+	    $('#if3').attr('src', url);
+		
+		if($(".nqt_register_btn" ).text()=="View Details")
+		{
+		 $("#modal_profileEform"). modal('show');
+		}
+		
+		
+  }
+	
+}
+
+function SubscribeSampleTest()
+{
+   var sampletestpcode=$("#SampleTestproductId").val();
+   var productName=$("#SampleTestproductName").val();
+   parent.subscribeEventHandler(sampletestpcode,productName);
+}
+
+	 function CallBack()
+{
+    var productname=$("#productName").val();
+	var url='/EForms/configuredHtml/1016/62038/application.html?pname='+productname;
+    $('#if1').attr('src', url);
+
+}
+
+
+function GoToRIO()
+{
+  window.open("https://learning.tcsionhub.in/hub/rio/","_self");
+
+}
+
+function GoTocareeredge()
+{
+  window.open("https://learning.tcsionhub.in/courses/career-edge/","_self");
+
+}
+
+function GoToPrepforJob()
+{
+  window.open("https://learning.tcsionhub.in/lifelonglearning/wp/prep4job/alljobs/","_self");
+
+}
+
+function ApplyforTCS()
+{
+  window.open("https://nextstep.tcs.com/campus/","_blank");
+
+}
+ 
+ //Microsite Logic End Here
+
+
+
+$(document).ready(function(){
+
+ // wow min js animation
+// new WOW().init();
+
+ // CODE FOR FAQ SECTION STARTS
+ $('.faq_wrap:eq(0), .faq_wrap:eq(1), .faq_wrap:eq(2), .faq_wrap:eq(3)').show();
+ $(document).on('click', '.faq_section .plus', function () {
+     $(this).hide();
+     var ind = $(this).parents(".faq_section").find(".faq_wrap").length;
+     $(this).parents(".faq_section").find(".hideBlck").css("max-height", "100%");
+     $(this).parents(".faq_section").find(".faq_wrap").slideDown();
+     $(".faq_section .showcollapse a.minusshow").show();
+ });
+
+ $(document).on('click', '.faq_section .showcollapse .minusshow', function () {
+     $(this).hide();
+     var ind = $(this).parents(".faq_section").find(".faq_wrap").length;
+     $(".faq_wrap").hide();
+     $('.faq_wrap:eq(0), .faq_wrap:eq(1), .faq_wrap:eq(2), .faq_wrap:eq(3)').show(300);
+     $(".faq_section .expand .plus").show();
+ });
+ // CODE FOR FAQ SECTION ENDS
+
+// owl carousel stamps starts here
+//Owl carousel initialization starts with out arrow svg code and nav will be false
+$('.owl_careeredge_stamp').owlCarousel({
+    loop: false,
+    Load: true,
+    margin: 0,
+    nav: true,
+    dots:true, /* 2 september 2020*/
+    // stagePadding: 60,
+    navText: ['<i class="fa fa-chevron-left" title="Previous"></i>', '<i class="fa fa-chevron-right" title="Next"></i>'],
+
+    dotsClass: "owl-dots customPlay",
+    responsive: {
+        0: {
+            items: 1,
+            slideBy: 1
+        },
+        600: {
+            items: 2,
+            slideBy: 1
+        },
+        900: {
+            items: 2,
+            slideBy: 1
+        },
+        1000: {
+            items: 3,
+            slideBy: 1,
+            margin: 10,
+            // stagePadding:120
+
+        },
+        1300: {
+            items: 3,
+            slideBy: 1,
+            margin: 10,
+            // stagePadding:120
+        }
+    }
+});
+
+// owl carousel stamps ends here
+// baner slider starst$(function(){
+$(function(){
+    $('.owl_nqt_banner').owlCarousel({
+        autoplay: true,
+        lazyLoad: true,
+        loop: true,
+        dots: true,
+        // try to hide it
+        // dotsClass: "owl-dots customPlay",
+        nav:false,
+        // navText: [
+        //     '<i class="fa fa-angle-left" aria-hidden="true"></i>',
+        //     '<i class="fa fa-angle-right" aria-hidden="true"></i>'
+        // ],
+        // navContainer: '.container-fluid .custom-nav',
+        // animateOut:'slideOutRight',
+        // animateIn: 'flipInY',
+        items:1,
+        margin: 20,
+        autoplayTimeout: 7000,
+        smartSpeed: 800,
+    });
+});
+
+// related courses slider js starts
+$(function(){
+    $('.owl-slider_related_courses').owlCarousel({
+        loop:false,
+        nav:false,
+        // navText: [
+        //     '<i class="fa fa-angle-left" aria-hidden="true"></i>',
+        //     '<i class="fa fa-angle-right" aria-hidden="true"></i>'
+        // ],
+        // navContainer: '.container-fluid .custom-nav',
+        // animateOut:'slideOutRight',
+        // animateIn: 'flipInY',
+        items:3,
+        margin:10,
+        autoplay: false,
+        autoplayTimeout:5000,
+        autoplaySpeed: 5000,
+        responsive: {
+            0: {
+              items: 1
+            },
+            600: {
+              items: 1
+            },
+            1024: {
+                items: 2,
+                stagePadding: 30
+            },
+            1281: {
+                items: 3,
+                stagePadding: 40,
+                margin:0,
+                
+            }
+        }
+    });
+});
+//JS code for trigger dots on click of navigation arrows starts
+$('.carousel_right_arrow').click(function () {
+    if ($(this).parent('.new_carousel').find('.owl-dot').hasClass('active')) {
+        $(this).parent('.new_carousel').find('.owl-dot.active').next('.owl-dot').trigger("click");
+    }
+});
+$('.carousel_left_arrow').click(function () {
+    if ($(this).parent('.new_carousel').find('.owl-dot').hasClass('active')) {
+        $(this).parent('.new_carousel').find('.owl-dot.active').prev('.owl-dot').trigger("click");
+    }
+});
+
+//JS click of enable/disable left right navigation arrows starts
+$('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+$(document).on('translated.owl.carousel', '.owl-carousel', function (e) {
+    var items = e.item.count;     // Number of items
+    var item = e.item.index;     // Position of the current item
+    var size = e.page.size;      // Number of items per page
+    var $this = $(this);
+
+    if (size + item >= items) {
+        $this.parent('.new_carousel').find('.carousel_right_arrow').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    } else if (item == 0) {
+        $this.parent('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_right_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+    else {
+        $this.parent('.new_carousel').find('.carousel_right_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+});
+
+//JS click of enable/disable left right navigation arrows for all devices starts
+$(document).on('resized.owl.carousel', '.owl-carousel', function (e) {
+    var items = e.item.count;     // Number of items
+    var item = e.item.index;     // Position of the current item
+    var size = e.page.size;      // Number of items per page
+    var $this = $(this);
+
+    if (size + item >= items) {
+        $this.parent('.new_carousel').find('.carousel_right_arrow').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    } else if (item == 0) {
+        $this.parent('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_right_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+    else {
+        $this.parent('.new_carousel').find('.carousel_right_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+});
+
+$('.owl-tcsiondirect_videos_slider').owlCarousel({
+    loop: false,
+    Load: true,
+    margin: 10,
+    nav: false,
+    dotsClass: "owl-dots customPlay",
+    responsive: {
+        0: {
+            items: 1,
+            slideBy: 1
+        },
+        600: {
+            items: 1,
+            slideBy: 1
+        },
+        667: {
+            items: 2,
+            slideBy: 2
+        },
+        768: {
+            items: 2,
+            slideBy: 2
+        },
+        900: {
+            items: 3,
+            slideBy: 3
+        },
+        1200: {
+            items: 3,
+            slideBy: 3,
+            stagePadding: 0,
+            
+        }
+    }
+});
+// videos
+$('.carousel_right_arrow_videos').click(function () {
+    if ($(this).parent('.new_carousel').find('.owl-dot').hasClass('active')) {
+        $(this).parent('.new_carousel').find('.owl-dot.active').next('.owl-dot').trigger("click");
+    }
+});
+$('.carousel_left_arrow_videos').click(function () {
+    if ($(this).parent('.new_carousel').find('.owl-dot').hasClass('active')) {
+        $(this).parent('.new_carousel').find('.owl-dot.active').prev('.owl-dot').trigger("click");
+    }
+});
+// videos
+$('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+$(document).on('translated.owl.carousel', '.owl-carousel', function (e) {
+    var items = e.item.count;     // Number of items
+    var item = e.item.index;     // Position of the current item
+    var size = e.page.size;      // Number of items per page
+    var $this = $(this);
+
+    if (size + item >= items) {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_videos svg path').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    } else if (item == 0) {
+        $this.parent('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+        $this.parent('.new_carousel').find('.carousel_right_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+    else {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+});
+// videos
+$(document).on('resized.owl.carousel', '.owl-carousel', function (e) {
+    var items = e.item.count;     // Number of items
+    var item = e.item.index;     // Position of the current item
+    var size = e.page.size;      // Number of items per page
+    var $this = $(this);
+
+    if (size + item >= items) {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_videos svg path').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    } else if (item == 0) {
+        $this.parent('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+        $this.parent('.new_carousel').find('.carousel_right_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+    else {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_videos svg path').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+});
+// ********************************************** //
+
+// related courses slider js starts
+$(function(){
+    $('.owl-slider_corporate_partner').owlCarousel({
+        loop:false,
+        nav:false,
+        // navText: [
+        //     '<i class="fa fa-angle-left" aria-hidden="true"></i>',
+        //     '<i class="fa fa-angle-right" aria-hidden="true"></i>'
+        // ],
+        // navContainer: '.container-fluid .custom-nav',
+        // animateOut:'slideOutRight',
+        // animateIn: 'flipInY',
+        items:3,
+        margin:10,
+        autoplay: false,
+        autoplayTimeout:5000,
+        autoplaySpeed: 5000,
+        responsive: {
+            0: {
+              items: 1
+            },
+            600: {
+              items: 1
+            },
+            700: {
+                items: 2,
+                stagePadding: 50
+            },
+            768: {
+                items: 3,
+                stagePadding: 50
+            },
+            1024: {
+                items: 3,
+                stagePadding: 150
+
+            },
+            1281: {
+                items: 3,
+                stagePadding: 350
+            }
+        }
+    });
+});
+//JS code for trigger dots on click of navigation arrows starts
+$('.carousel_right_arrow_corporate').click(function () {
+    if ($(this).parent('.new_carousel').find('.owl-dot').hasClass('active')) {
+        $(this).parent('.new_carousel').find('.owl-dot.active').next('.owl-dot').trigger("click");
+    }
+});
+$('.carousel_left_arrow_corporate').click(function () {
+    if ($(this).parent('.new_carousel').find('.owl-dot').hasClass('active')) {
+        $(this).parent('.new_carousel').find('.owl-dot.active').prev('.owl-dot').trigger("click");
+    }
+});
+
+//JS click of enable/disable left right navigation arrows starts
+$('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+$(document).on('translated.owl.carousel', '.owl-carousel', function (e) {
+    var items = e.item.count;     // Number of items
+    var item = e.item.index;     // Position of the current item
+    var size = e.page.size;      // Number of items per page
+    var $this = $(this);
+
+    if (size + item >= items) {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_corporate').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    } else if (item == 0) {
+        $this.parent('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_right_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+    else {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+});
+
+//JS click of enable/disable left right navigation arrows for all devices starts
+$(document).on('resized.owl.carousel', '.owl-carousel', function (e) {
+    var items = e.item.count;     // Number of items
+    var item = e.item.index;     // Position of the current item
+    var size = e.page.size;      // Number of items per page
+    var $this = $(this);
+
+    if (size + item >= items) {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_corporate').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    } else if (item == 0) {
+        $this.parent('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "0.3", "cursor": "default", "pointer-events": "none" });
+        $this.parent('.new_carousel').find('.carousel_right_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+    else {
+        $this.parent('.new_carousel').find('.carousel_right_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+        $this.parent('.new_carousel').find('.carousel_left_arrow_corporate').css({ "opacity": "1", "cursor": "pointer", "pointer-events": "auto" });
+    }
+});
+// for tooltip
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+
+});

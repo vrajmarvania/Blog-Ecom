@@ -1,0 +1,1864 @@
+body .modal-backdrop.in{
+opacity:0.3;
+}
+::placeholder {
+    color: #c1bdbe;
+    font-size: 12px;
+    font-family: OpenSans-Regular;
+}
+.modal_container{
+    padding: 20px;
+}
+
+.modal_common_class .modal-dialog{width:848px}
+
+.modal_common_class.giftpopup .modal-dialog{width:855px}
+
+.modal_common_class .couponhead{
+	font-size:28px; color:#333333;	
+}
+
+.modal_common_class .modal_terms_popup .couponhead{font-size:25px; color:#333333;}
+.modal_common_class .coupon-details_popup .couponhead{font-size:25px; color:#333333;}
+
+@media screen and (max-width: 500px){
+    .modal_common_class  .couponhead{
+        font-size:21px !important; 
+        margin-top: 10px !important;
+    }
+    #terms .modal_terms_popup .modal-body{padding-left: 10px !important;padding-right: 10px !important;}
+    #terms .modal_terms_popup .modal_terms_content{padding-left: 14px !important;padding-right: 14px !important;}
+    #terms .modal-header{padding-left: 20px !important;padding-right: 20px !important;}
+}
+.modal_common_class.giftpopup .couponhead{
+	font-size:24px; color:#333333	
+}
+
+
+.modal_common_class .subhead{
+	font-size:35px; color:#333333	
+}
+
+.modal_terms_popup .modal_common_class .couponhead{margin:2px 0 0 2px;}
+.ofr_info{color: #333;}
+.ofr_info span{color:#6e6e6e;font-size: 12px;}
+.modal_common_class .modal-header{border-bottom:none}
+
+.subject_info_pop img{float:left; margin-right:10px}
+.subname_pop{width:40%;    line-height: 21px;    display: inline-block;}
+
+.modal_common_class .modal-header .close{
+    opacity: 1;
+    outline: 0px;
+	top: 20px;
+    right: 20px;
+}
+.modal_common_class .modal-footer{
+    text-align: center;
+    background: #f6f6f6;
+    border: none;
+}
+.modal_common_class .modal-footer .btn-green{
+    font-size: 16px;
+    height: 41px;
+    padding: 6px 28px;
+}
+.modal_common_class .modal-footer .btn-cancel{
+    border: none;
+    color: #23b4ec;
+    background: transparent;
+}
+.modal_common_class .form-control{
+    /* border-right: 0px; */
+    border-radius: 0px;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -o-box-shadow: none;
+}
+.modal_common_class .activate_coupons .noborder_inputgroup .form-control:focus{
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -o-box-shadow: none;
+}
+.modal_common_class .activate_coupons .form-control:focus{
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    -o-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.modal_common_class .activate_coupons .noborder_inputgroup{float: left;width: 70%;}
+.modal_common_class .activate_coupons .input-group-button{background: #effce8;width: 25%;float: left;padding: 7px 10px;border: 1px solid #ccc;border-left: none;}
+
+.modal_common_class .activate_coupons .input-group-addon{
+    background-color: transparent;
+    border-radius: 0;
+}
+
+@media screen and (max-width: 590px) and (min-width:481px) {
+    .modal_common_class .activate_coupons .input-group-button{padding: 7px;width: 30%;}
+}
+@media screen and (max-width: 480px) and (min-width:376px) {
+    .modal_common_class .activate_coupons .noborder_inputgroup{width:65% !important;}
+    .modal_common_class .activate_coupons .input-group-button{width: 35%;height: 36px;padding: 8px 5px;}
+    .modal_common_class .activate_coupons .input-group-button span{font-size: 11px;}
+}
+
+@media screen and (max-width: 375px) {
+    .modal_common_class .activate_coupons .noborder_inputgroup{width:60% !important;}
+    .modal_common_class .activate_coupons .input-group-button{width: 40%;height: 36px;padding: 8px 5px;}
+    .modal_common_class .activate_coupons .input-group-button span {font-size: 9px;line-height: 10px;
+    }
+}
+.btn:focus, .btn:active{
+    outline:0;
+}
+
+.modal_common_class .fa{
+    width: 16px;
+    color: #989494;
+}
+.modal_common_class .btn-green:hover{
+    background: #019952 none repeat scroll 0 0;
+}
+.modal_common_class .dateTime_txt{
+    color: #333;
+}
+.modal_common_class .errortxt{
+    font-size: 11px;
+    bottom: auto;
+}
+.modal_common_class .selName{
+    font-size: 11px;
+}
+.modal_common_class .selName.in{
+   opacity:1;top:-16px;
+}
+
+
+
+/* Kiran's Css Starts */
+.marginbottom10{margin-bottom: 10px;}
+.marginbottom20{margin-bottom: 20px;}
+.modal_common_class{
+	border-radius: 5px;
+	/* padding:35px; */
+}
+
+
+
+.modal.fade .modal_terms_popup{font-family: OpenSans-Regular; transition:transform 0.5s ease-out !important; transform: translate(0px, -80%);}
+.modal.in .modal_terms_popup{transform: translate(0px, 5%);}
+.modal_terms_popup .slimScrollBar{right: 14px !important;}
+.modal_terms_popup .slimScrollRail{right: 14px!important;}
+.modal_terms_popup .modal-header{border:none;padding: 34px 34px 0px 34px;}
+.modal_terms_popup .close{position: absolute;top: 23px;right: 31px;z-index: 9;}
+.modal_terms_popup .modal-body{padding-top: 8px;}
+#terms .modal-body{padding-top: 0px;}
+.modal_terms_popup .modal_terms_content{padding:25px 24px 0px 24px;overflow: auto;height:400px;}
+#terms .modal-header{background: #fff !important;padding-top: 30px;padding-left: 44px;border-radius: 4px;padding-bottom: 5px;}
+.modal_terms_content p{margin-bottom: 20px;padding-right: 10px;}
+/*.modal_terms_popup .modal-header{border:none;padding: 20px 20px 10px 20px;}*/
+.modal_terms_popup .modal-footer{border:none;background: white;}
+.modal_coupons_popup .modal-footer{border:none;}
+.backgroundLightGreen{background-color: #f4fcfe;}
+.modal_coupons_popup .modal-footer{background-color: #fff;}
+
+.modal_common_class .modal_coupons_popup{width: 675px;}
+.modal.fade .modal_coupons_popup{font-family: OpenSans-Regular; transition:transform 0.5s ease-out !important; transform: translate(0px, -80%);}
+.modal.in .modal_coupons_popup{transform: translate(0px, 6%);}
+.modal.fade .modal_coupons_popup{transition: transform 0.5s ease-out !important;}
+.modal_coupons_popup .close{position: absolute;top: 20px;right: 20px;z-index: 9;}
+.modal_coupons_popup .modal-body{padding-top: 0px;}
+.modal_coupons_popup .modal_terms_content{background-color: #f4fcfe;padding: 0px 35px 30px;}
+.modal_coupons_popup .modal-header-part{padding: 20px 35px 20px 35px;    border-radius: 4px;}
+.modal_coupons_popup .modal-header-part .close{opacity:1;outline: 0px;}
+.modal_coupons_popup .modal-body-part{background-color: #f4fcfe;}
+
+.modal_coupons_popup  .pre-login-container{background-color: #f4fcfe;padding: 0px 35px 30px;}
+.modal_coupons_popup  .discount-container{text-align: center;background: white;padding: 14px 0px 20px;}
+
+.pre-login-container .detail-row:nth-child(1){width: 16%;display: inline-block;vertical-align:top;}
+.pre-login-container .detail-row:nth-child(1) img{margin: 0px 0px 8px;}
+.pre-login-container .detail-row:nth-child(2){width: 82%;display: inline-block;vertical-align:top;}
+.pre-login-container .detail-row:nth-child(2) div:nth-child(2) {font-size: 17px;line-height: 20px;}
+.pre-coupon-info img{float:left; margin:0px 8px 10% 0px;}
+
+.pre-coupon-discount{font-size: 25px;color: #f06017;line-height: 18px;margin-top: 8px;}
+
+.mail_blocks span{color:#333}
+
+
+
+.giftpopup .cke_button__insertfield{position:relative}
+.insert_field_div{position:absolute !important;top:27px; padding:20px; border: 1px solid #c2bdbd !important;    min-width: 150px;}
+
+.insert_field_div ul{list-style-type:none}
+.insert_field_div li{padding: 10px;
+    background-color: #fff;cursor:pointer}
+
+.insert_field_div li:hover{background-color:#f5f5f5}
+.giftpopup .cke_button__insertfield_icon{display:none}
+.giftpopup .cke_button_label.cke_button__insertfield_label{display:inline}
+.giftpopup .cke_top{
+    display: inline-block !important;
+    overflow: initial!important;
+    width: 100%;
+    padding: 8px 0 4px 0px!important;
+	z-index:999
+}
+
+.related_coupons .slimScrollBar{right: 24px !important;}
+.related_coupons .slimScrollRail{right: 24px!important;}
+@media screen and (max-width: 1024px) and (min-width:981px){
+     .related_coupons .slimScrollBar {
+        right: 5px !important;
+
+    }
+    .related_coupons .slimScrollRail {
+        right: 5px !important;
+    } 
+}
+@media screen and (max-width: 375px) {
+    .related_coupons .slimScrollBar{right: 7px !important;}
+    .related_coupons .slimScrollRail{right: 7px!important;}
+    .activate_coupons .searchBox_createCoupon .input-group input::placeholder{font-size: 11px;}
+    .activate_coupons .searchBox_createCoupon .input-group div:nth-child(3) span{font-size: 11px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount .other-text{line-height: 20px;display: block;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(2){margin-bottom: 15px !important;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2){margin-bottom: 3px !important;}
+    
+    
+}
+@media screen and (max-width: 320px){
+    .related_coupons .slimScrollBar{right: 3px !important;}
+    .related_coupons .slimScrollRail {right: 3px!important;}
+    #terms .modal_terms_popup .slimScrollBar{right: 7px !important;}
+    #terms .modal_terms_popup .slimScrollRail{right: 7px !important;}
+    #terms .modal-header{padding-left: 30px;}
+    #terms .modal_terms_popup .modal-body{padding-left: 10px;padding-right: 10px;}
+    .activate_coupons .modal-body{padding: 15px;}
+    .modal_terms_content p, .coupon_details_content p{padding-right: 0px !important;}
+}
+
+@media screen and (max-width: 650px) and (min-width:425px) {
+    .modal_coupons_popup .pre-login-container{padding: 0px 20px 20px;}
+    .modal_coupons_popup .coupen-signanture{padding:35px 20px 20px;}
+    .pre-login-container .detail-row:nth-child(1) {width: 30%;text-align: center;}
+    .pre-login-container .detail-row:nth-child(2) div:nth-child(1){font-size: 22px;line-height: 15px;margin-bottom: 5px;}
+    .pre-login-container .detail-row:nth-child(2) div:nth-child(2){font-size: 14px;line-height: 16px;margin-bottom: 5px;}
+    .pre-login-container  .detail-row:nth-child(2) {width: 65%;}
+    .modal_common_class .subhead{font-size: 30px;}
+}
+@media screen and (max-width: 424px) and (min-width:349px) {
+    .modal_coupons_popup .pre-login-container{padding: 0px 20px 20px;}
+    .modal_coupons_popup .coupen-signanture{padding:35px 20px 20px;}
+    .pre-login-container .detail-row:nth-child(1) {width: 33%;}
+    .pre-login-container .detail-row:nth-child(2) div:nth-child(1){font-size: 21px;line-height: 15px;margin-bottom: 5px;}
+    .pre-login-container .detail-row:nth-child(2) div:nth-child(2){font-size: 13px;line-height: 15px;margin-bottom: 5px;}
+    .pre-login-container  .detail-row:nth-child(2) {width: 65%;}
+    .modal_common_class .subhead{font-size: 30px;}
+}
+@media screen and (max-width: 350px) {
+    .pre-coupon-discount{line-height: 30px;}
+    .pre-login-container .detail-row:nth-child(1) {width: 100%;text-align: center;}
+    .pre-login-container .detail-row:nth-child(2) div:nth-child(2){font-size: 14px;line-height: 18px;margin-bottom: 15px;}
+    .pre-login-container  .detail-row:nth-child(2) {width: 100%;text-align: center;}
+    .modal_common_class .subhead{font-size:30px !important;}
+    .cart_page .btn-blue{height: 50px !important;padding: 6px 20px !important;}
+}
+
+
+.small-text{font-size:14px;}
+.other-text{color: #6e6e6e;font-size: 12px;}
+.coupen-divider {
+    height: 30px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: inline-block;
+}
+.coupen-divider span {
+    display: block;
+    background: url(/EForms/images/onlineAppForm/form3090/coup-divider.png) repeat-x;
+    width: auto;
+    height: 2px;
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    top: 13px;
+}
+
+.coupen-signanture {background: white;padding: 35px;text-align: center;color: #6e6e6e;font-size: 13px;}
+.coupen-signanture p:last-child{font-family: OpenSans-Semibold, arial;}
+.coupen-signanture p:last-child span{color:#00abe1;}
+.coupen-signanture p a{color: #23b4ec;}
+.coupen-signanture p a:hover{text-decoration: underline;}
+.cart_page .btn-blue{
+    font-size: 16px;
+    height: 57px;
+    padding: 6px 38px;
+    border-radius: 3px;
+    border: none;
+    /* box-shadow: 2px 2px 18px 3px #ccc; */
+    box-shadow: 2px 2px 12px #ccc !important;
+    background: #00abe1;
+}
+.colorblack{color:black;}
+.cart_page .padding10{padding:10px 0px;}
+
+.modal.fade .coupon-details_popup{font-family: OpenSans-Regular; transition:transform 0.5s ease-out !important; transform: translate(0px, -80%);}
+.modal.in .coupon-details_popup{transform: translate(0px, 5%);}
+.modal_common_class .coupon-details_popup .modal-header{border-top-left-radius: 5px;background: #ffffff;border-top-right-radius: 5px;padding-top: 30px;padding-bottom: 15px;}
+.coupon-details_popup .slimScrollBar{right: 14px !important;}
+.coupon-details_popup .slimScrollRail{right: 14px!important;}
+.coupon-details_popup .close{position: absolute;top: 20px;right: 20px;z-index: 9;}
+.coupon-details_popup .modal-footer{background: none;}
+.coupon_details_content p{margin-bottom: 20px;padding-right: 10px;}
+.coupon-details_popup .modal-body{padding-top: 0px;}
+.coupon_details_content{ padding: 0px 20px;overflow: auto;height: 450px;}
+.coupon_details_content div:nth-child(2) div:nth-child(1){line-height: 20px;}
+.coupon_details_content .detail-first-part{border:1px dashed #00abe1;padding:10px 0px;border-left-width: 0px;border-right-width: 0px;}
+.coupon_details_content .detail-first-part .detail-row:nth-child(1) {width: 13%;display: inline-block;vertical-align: top;}
+
+.coupon_details_content .detail-first-part .detail-row:nth-child(2){width: 65%;display: inline-block;vertical-align: middle;}
+.coupon_details_content .detail-first-part .detail-row:nth-child(3){width: 17%;text-align: center;display: inline-block;vertical-align: middle;line-height: 12px;}
+
+@media screen and (max-width: 768px) and (min-width: 651px){
+    .coupon_details_content .detail-first-part .detail-row:nth-child(1) {width: 18%;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) {width: 60%;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(3) {width: 20%;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){font-size: 14px;line-height: 16px;margin-bottom: 5px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(2){font-size: 11px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount{font-size:20px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(3) div{font-size: 23px;line-height: 25px !important;}
+    .coupon-details_popup .slimScrollBar{right: 1px !important;}
+    .coupon-details_popup .slimScrollRail{right: 1px!important;}
+}
+
+@media screen and (max-width: 650px) and (min-width: 551px){
+    .coupon_details_content .detail-first-part .detail-row:nth-child(1) {width: 22%;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) {width: 75%;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(3) {width: 70%;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){font-size: 14px;line-height: 16px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(2){font-size: 11px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount{font-size:20px;}
+    .coupon-details_popup .slimScrollBar{right: 1px !important;}
+    .coupon-details_popup .slimScrollRail{right: 1px!important;}
+}
+
+@media screen and (max-width: 550px) {
+    .coupon_details_content{padding: 0px 10px;}
+    /* .coupon_details_content div:nth-child(2){padding: 0px 10px;} */
+    .coupon_details_content .detail-first-part{padding: 10px 0px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(1) {width: 100%;text-align: center;margin-bottom: 20px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) {width: 100%;text-align: center;margin-bottom: 10px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){font-size: 13px;margin-bottom: 10px; line-height: 15px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) div:nth-child(2){font-size: 11px;line-height: 15px !important;margin-bottom: 15px;}
+    .coupon_details_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount{line-height: 12px;font-size:23px; }
+    .coupon_details_content .detail-first-part .detail-row:nth-child(3) {width: 100%;text-align: center;margin-bottom: 20px;}
+    .coupon-details_popup .slimScrollBar{right: 1px !important;}
+    .coupon-details_popup .slimScrollRail{right: 1px!important;}
+}
+
+.modal_common_class .activate_coupons .couponhead{font-size:25px; color:#333333;}
+.modal_common_class .activate_coupons{width: 595px;}
+.modal.fade .activate_coupons{font-family: OpenSans-Regular; transition:transform 0.5s ease-out !important; transform: translate(0px, -80%);}
+.modal.in .activate_coupons{transform: translate(0px, 5%);}
+
+.modal.fade .activate_coupons{transition: transform 0.5s ease-out !important;}
+.modal_common_class .activate_coupons .couponhead{font-size: 25px;color: #333333;}
+.activate_coupons .close{position: absolute;top: 20px;right: 20px;z-index: 9;}
+.activate_coupons .modal-body{padding-top: 5px;}
+.modal_coupons_popup .modal-header-part .close{opacity:1;outline: 0px;}
+.activate_coupon_content {padding: 0px 15px;}
+.activate_coupon_content .detail-first-part{border:1px dashed #00abe1;padding:10px 0px 10px;border-left-width: 0px;border-right-width: 0px;}
+.activate_coupon_content .detail-first-part .detail-row:nth-child(1) {width: 18%;display: inline-block;vertical-align: top;}
+.activate_coupon_content .detail-first-part .detail-row:nth-child(2){width: 75%;display: inline-block;vertical-align: middle;}
+.activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){line-height: 15px;
+    /* margin-top: 10px; */
+}
+.activate_coupon_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount{margin-top: 8px;color: #fe8109;}
+
+@media screen and (max-width: 991px) and (min-height:430px){
+    /* .activate_coupons .modal-body .activate_coupon_content{margin: 32px 0px 65px !important;} */
+}
+@media screen and (max-width: 845px) and (min-width: 769px){
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(1){
+        width: 14%;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) {
+        width: 70%;
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+@media screen and (max-width: 650px) and (min-width: 481px){
+    .activate_coupon_content{padding: 0px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(1) {width: 22%;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) {width: 70%;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){font-size: 14px;margin-bottom: 10px;line-height: 16px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(3){font-size: 12px;margin-bottom: 5px;}
+}
+@media screen and (max-width: 480px) and (min-width: 431px){
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(1) {width: 25%;display: inline-block;vertical-align: top;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) {width: 70%;display: inline-block;vertical-align: middle;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){font-size: 14px;margin-bottom: 10px;line-height: 16px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(3){font-size: 12px;margin-bottom: 5px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount{line-height: 10px;}
+}
+@media screen and (max-width: 430px) {
+    .activate_coupons .modal-body .activate_coupon_content {margin: 75px 0px 30px !important;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(1) {width: 100%;text-align: center;margin-bottom: 20px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2)  {width: 100%;text-align: center;margin-bottom: 20px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(1){font-size: 13px;margin-bottom: 10px;line-height: 18px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) div:nth-child(3){font-size: 12px;margin-bottom: 5px;}
+    .activate_coupon_content .detail-first-part .detail-row:nth-child(2) .pre-coupon-discount{line-height: 10px;}
+    
+}
+.activate_coupons .searchBox_createCoupon .input-group input{
+    border-right: none;
+}
+.activate_coupons .chooseCouponBdy .txtCodeHeading{color:#00abe1;font-size: 12px;}
+.modal_common_class .activate_coupons .modal-header{padding-bottom: 5px;}
+.activate_coupons .modal-body .activate_coupon_content{margin: 66px 0px 75px;}
+.activate_coupons .modal-body .chooseCouponBdy{padding: 0px 15px;}
+.colorblue{color:#578eef !important;}
+
+.fontsize11{font-size: 11px;}
+.font14{font-size: 14px;}
+.font13{font-size: 13px;}
+.fontsize16{font-size: 16px;}
+
+.modal_common_class .related_coupons{font-family: OpenSans-Regular, arial;
+    /* width: 927px; */
+    width:1050px;
+}
+.modal.fade .related_coupons{font-family: OpenSans-Regular; transition:transform 0.5s ease-out !important; transform: translate(0px, -80%);}
+.modal.in .related_coupons{transform: translate(0px, 5%);}
+
+.modal_common_class .related_coupons .couponhead {
+    font-size: 25px;
+    color: #333333;
+}
+.modal_common_class .related_coupons .modal-header{padding:30px 35px 5px 60px;}
+.modal_common_class .related_coupons .modal-body{padding:0px 0px 10px;height: 495px;}
+.modal_common_class .related_coupons .modal_terms_content{padding: 25px 0px;height: 460px !important;}
+.modal_common_class .related_coupons .modal-body  .slimScrollDiv{height: 460px !important;}
+
+.related_coupons .gridwrap {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.related_coupons .coupgrid {
+    width: 290px;
+    float: left;
+    margin: 0 15px;
+}
+
+.related_coupons .coup-wrap {
+    position: relative;
+    border: 1px solid #e4e4e4;
+    box-shadow: 0 0 7px 1px #e4e4e4;
+    border-radius: 10px;
+    padding: 34px 25px 21px 25px;
+    margin: 0 auto 30px auto;
+    background: #fff;
+}
+
+.related_coupons .coup-img {
+    margin: 0 auto 15px auto;
+    text-align: center;
+    height: 54px;
+    overflow: hidden;
+    display: table;
+}
+
+.related_coupons .coup-img img {
+    display: table-cell;
+    vertical-align: middle;
+    border-radius: 3px;
+}
+
+.related_coupons .coup-img .coup-perc {
+    display: table-cell;
+    vertical-align: middle;
+    padding:2px 0px 0px;
+}
+
+.related_coupons .coup-perc {
+    color: #f06017;
+    font-size: 23px;
+    font-family: 'openSans-Semibold';
+    width: 96px;
+    overflow: hidden;
+    line-height: 23px;
+}
+
+.related_coupons .coup-perc .coff {
+    font-size: 14px;
+    font-family: 'OpenSans-Regular';
+}
+.related_coupons .coup-desc {
+    margin-left: 2px;
+}
+
+.related_coupons .coup-title {
+    font-family: 'openSans-Semibold';
+    font-size: 15px;
+    line-height: 19px;
+    color: #333333;
+    margin-bottom: 4px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.related_coupons .coup-exp {
+    font-size: 12px;
+    line-height: 21px;
+    margin-bottom: 15px;
+    margin-left: 4px;
+}
+
+.related_coupons .coup-sale {
+    text-align: center;
+    font-size: 25px;
+    line-height: 29px;
+    color: #333333;
+    font-family: 'openSans-Semibold';
+    margin-bottom: 0;
+}
+
+.related_coupons .coup-time {
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    margin-left: -4px;
+}
+
+.related_coupons .coup-divider {
+    height: 30px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: inline-block;
+}
+
+.related_coupons .coup-divider:before {
+    background: white;
+    height: 30px;
+    width: 20px;
+    border-radius: 0 30px 30px 0 / 0 30px 30px 0;
+    border: 1px solid #e4e4e4;
+    display: inline-block;
+    content: '';
+    position: absolute;
+    left: -5px;
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    box-shadow: inset -4px 0px 7px 0px #e4e4e4;
+    /* background: #f9f9f9; */
+}
+
+.related_coupons .coup-divider span {
+    display: block;
+    background: url(/EForms/images/onlineAppForm/form3090/coup-divider.png) repeat-x;
+    width: auto;
+    height: 2px;
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    top: 13px;
+}
+
+.related_coupons .coup-divider:after {
+    background: white;
+    height: 30px;
+    width: 20px;
+    border-radius: 30px 0 0 30px / 30px 0 0 30px;
+    border: 1px solid #e4e4e4;
+    display: inline-block;
+    content: '';
+    position: absolute;
+    right: -5px;
+    border-bottom: none;
+    border-top: none;
+    border-right: none;
+    box-shadow: inset 4px 0px 7px 0px #e4e4e4;
+    /* background: #f9f9f9; */
+}
+
+.related_coupons .redeem-coup {
+    margin: 60px auto 0 auto;
+    text-align: center;
+}
+
+.related_coupons .redeem-coup a {
+    padding: 13px 0;
+    color: #fff;
+    background: #00abe1;
+    font-size: 14px;
+    display: block;
+    border-radius: 3px;
+    max-width: 200px;
+    margin: 0 auto;
+    text-decoration: none;
+    /* box-shadow: 2px 2px 18px 3px #ccc; */
+    box-shadow: 2px 2px 12px #ccc;
+}
+
+.related_coupons .redeem-coup a:hover{color: #fff;background: #2f83c9;display: block;border-radius: 3px;
+    /* box-shadow: 2px 2px 18px 3px #ccc; */
+    box-shadow: 2px 2px 12px #ccc;}
+
+/* Kiran's Css Ends */
+/* GIft popup's Css Starts */
+.sharediv{margin-top:15px; padding-left:93px; display:none}
+.share_title{margin-top:10px; color:#333333}
+.share_icons a {
+    display: inline-flex;
+}
+
+.share_icons{margin-left:10px}
+
+.share_icons a span {
+    display: inline-block;
+    padding: 20px 16px;
+	background-size:100%;
+}
+
+.facebook {
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMzhweCIgaGVpZ2h0PSIzOHB4IiB2aWV3Qm94PSIwIDAgMzggMzgiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDM4IDM4IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxwYXRoIGZpbGw9IiMzQjU5OTkiIGQ9Ik0zNi41NzYsMTkuMDAxYzAsOS42NjYtNy45MSwxNy41NzQtMTcuNTc2LDE3LjU3NGwwLDBjLTkuNjY3LDAtMTcuNTc2LTcuOTA4LTE3LjU3Ni0xNy41NzRsMCwwDQoJCUMxLjQyNCw5LjMzMyw5LjMzMywxLjQyNSwxOSwxLjQyNWwwLDBDMjguNjY2LDEuNDI1LDM2LjU3Niw5LjMzMywzNi41NzYsMTkuMDAxTDM2LjU3NiwxOS4wMDF6Ii8+DQoJPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTI1LjA2OCwyMC4xNTVsMC42MDQtNC42ODFoLTQuNjMzdi0yLjk4NmMwLTEuMzU0LDAuMzc3LTIuMjc3LDIuMzE4LTIuMjc3bDIuNDc3LTAuMDAyVjYuMDI1DQoJCWMtMC40MjgtMC4wNTctMS44OTYtMC4xODUtMy42MDctMC4xODVjLTMuNTczLDAtNi4wMiwyLjE4MS02LjAyLDYuMTg2djMuNDQ4aC00LjA0MXY0LjY4MWg0LjA0MXYxMi4wMDRoNC44MzJWMjAuMTU1SDI1LjA2OHoiLz4NCjwvZz4NCjwvc3ZnPg0K') no-repeat 50% 50%;
+}
+.linkedIn {
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMzhweCIgaGVpZ2h0PSIzOHB4IiB2aWV3Qm94PSIwIDAgMzggMzgiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDM4IDM4IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxwYXRoIGZpbGw9IiMwMTdCQjYiIGQ9Ik0zNi43MjEsMTkuMDAxYzAsOS43NDYtNy45NzQsMTcuNzItMTcuNzE4LDE3LjcyaC0wLjAwNGMtOS43NDUsMC0xNy43MTktNy45NzQtMTcuNzE5LTE3Ljcydi0wLjAwMg0KCQljMC05Ljc0Nyw3Ljk3NS0xNy43MiwxNy43MTktMTcuNzJoMC4wMDRjOS43NDQsMCwxNy43MTgsNy45NzMsMTcuNzE4LDE3LjcyVjE5LjAwMXoiLz4NCgk8cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNOC44NjQsMTUuNDg4aDQuMzQ5djEzLjk3SDguODY0VjE1LjQ4OHogTTExLjA0LDguNTQ0YzEuMzg5LDAsMi41MTcsMS4xMjgsMi41MTcsMi41MTcNCgkJcy0xLjEyOCwyLjUxNy0yLjUxNywyLjUxN2MtMS4zOTYsMC0yLjUyMS0xLjEyOC0yLjUyMS0yLjUxN1M5LjY0NSw4LjU0NCwxMS4wNCw4LjU0NCIvPg0KCTxwYXRoIGZpbGw9IiNGRkZGRkYiIGQ9Ik0xNS45MzgsMTUuNDg4aDQuMTY0djEuOTA5aDAuMDU5YzAuNTc5LTEuMDk5LDEuOTk3LTIuMjU3LDQuMTEyLTIuMjU3YzQuMzk1LDAsNS4yMDYsMi44OTMsNS4yMDYsNi42NTQNCgkJdjcuNjY0aC00LjM0di02Ljc5M2MwLTEuNjIzLTAuMDMtMy43MDYtMi4yNTctMy43MDZjLTIuMjYyLDAtMi42MDYsMS43NjUtMi42MDYsMy41ODV2Ni45MTNoLTQuMzM4VjE1LjQ4OHoiLz4NCjwvZz4NCjwvc3ZnPg0K') no-repeat 50% 50%;
+}
+.twitter {
+    background: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMzhweCIgaGVpZ2h0PSIzOHB4IiB2aWV3Qm94PSIwIDAgMzggMzgiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDM4IDM4IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxwYXRoIGZpbGw9IiMyQUE4RTAiIGQ9Ik0zNi42NTgsMTkuMDAxYzAsOS43MS03Ljk0NCwxNy42NTctMTcuNjU2LDE3LjY1N2gtMC4wMDNjLTkuNzEyLDAtMTcuNjU3LTcuOTQ2LTE3LjY1Ny0xNy42NTd2LTAuMDA0DQoJCWMwLTkuNzExLDcuOTQ1LTE3LjY1NywxNy42NTctMTcuNjU3aDAuMDAzYzkuNzExLDAsMTcuNjU2LDcuOTQ1LDE3LjY1NiwxNy42NTdWMTkuMDAxeiIvPg0KCTxwYXRoIGZpbGw9IiNGRkZGRkYiIGQ9Ik0yOS4yMzYsMTIuNjVjLTAuNzUzLDAuMzMzLTEuNTYzLDAuNTYxLTIuNDEyLDAuNjYyYzAuODY3LTAuNTIsMS41MzUtMS4zNDQsMS44NDgtMi4zMjMNCgkJYy0wLjgxMiwwLjQ4MS0xLjcxMiwwLjgzLTIuNjY5LDEuMDE5Yy0wLjc2NS0wLjgxNy0xLjg1NS0xLjMyNi0zLjA2NC0xLjMyNmMtMi4zMiwwLTQuMjAxLDEuODgtNC4yMDEsNC4yDQoJCWMwLDAuMzI5LDAuMDM3LDAuNjQ5LDAuMTA5LDAuOTU3Yy0zLjQ5MS0wLjE3NC02LjU4Ni0xLjg0Ni04LjY1OC00LjM4OWMtMC4zNjEsMC42MjItMC41NjgsMS4zNDMtMC41NjgsMi4xMTMNCgkJYzAsMS40NTUsMC43NDIsMi43NDQsMS44NjgsMy40OTZjLTAuNjg4LTAuMDItMS4zMzUtMC4yMTEtMS45MDItMC41MjZ2MC4wNTRjMCwyLjAzNCwxLjQ0OSwzLjczMywzLjM3LDQuMTE3DQoJCWMtMC4zNTEsMC4wOTYtMC43MjQsMC4xNDgtMS4xMDYsMC4xNDhjLTAuMjcxLDAtMC41MzQtMC4wMjYtMC43OS0wLjA3NmMwLjUzNCwxLjY2OSwyLjA4NSwyLjg4MywzLjkyMiwyLjkxOA0KCQljLTEuNDM3LDEuMTI2LTMuMjQ3LDEuNzk5LTUuMjE2LDEuNzk5Yy0wLjMzOSwwLTAuNjcyLTAuMDIxLTEuMDAxLTAuMDU5YzEuODU3LDEuMTg5LDQuMDY2LDEuODg3LDYuNDM5LDEuODg3DQoJCWM3LjcyNSwwLDExLjk1LTYuNCwxMS45NS0xMS45NTJjMC0wLjE4MS0wLjAwNi0wLjM2Mi0wLjAxMy0wLjU0NEMyNy45NjEsMTQuMjMzLDI4LjY3MywxMy40OTMsMjkuMjM2LDEyLjY1eiIvPg0KPC9nPg0KPC9zdmc+DQo=') no-repeat 50% 50%;
+}
+
+
+.message_div{
+margin-top:15px
+}
+.mail_blocks{margin-bottom:8px; position:relative; display: inline-block; width: 100%;    color: #333;}
+
+.mail_blocks .small_textbox{width:100%; border:1px solid #c2bdbd; padding:11px;    margin-top: 2px;}
+
+.mail_blocks .cke_chrome{ margin-top: 2px;}
+.mail_blocks span{font-size:13px; }
+.mail_blocks span.toclass{display:inline-block}
+
+.small_textbox.textareagift{resize:none}
+
+.giftpopup .modal-footer{background-color:#f6f6f6}
+
+.modal_common_class .modal-header{    padding: 28px 35px 20px 35px;border:none;}
+
+.giftpopup .modal-body{padding: 5px 55px 10px 55px}
+.ofr_info{margin-top:3px}
+
+.modal_common_class .modal-footer .btn-cancel.greycancel{color: #23b4ec;font-size:16px;outline: 0px;}
+.modal_common_class .modal-footer .btn-cancel.greycancel:active{box-shadow: none;text-decoration: underline;}
+.modal_common_class .modal-footer .btn-cancel.greycancel:hover,
+.modal_common_class .modal-footer .btn-cancel.greycancel:focus {
+    text-decoration: underline;
+}
+#gifttofrnd .modal-content{
+	background-image:url('/EForms/images/onlineAppForm/form3090/bgpopupgift.gif');
+	background-repeat: no-repeat;
+    box-shadow: unset;
+    background-color: #fff;
+    background-position: 100% -4%;
+    background-size: 57%;
+}
+
+#sharefriend .modal-content{
+	background-image:url('/EForms/images/onlineAppForm/form3090/bgpopupshare.gif');
+	background-repeat: no-repeat;
+    box-shadow: unset;
+    background-color: #fff;
+    background-position: 100% 7%;
+    background-size: 60%;
+}
+
+
+.giftpopup .cke_contents{height:100px !important}
+.giftpopup .cke_bottom{display:none}
+
+.giftpopup .cke_top{background: #fff;background-image: none;width: 100%;}
+
+.giftpopup .cke_toolgroup, .giftpopup .cke_combo_button{border:none; box-shadow:none; background:none}
+
+.giftpopup #cke_14{display:none}
+
+.comm-search-result_li .search-result-box{ border-bottom:1px dashed #ddd; display:inline-block; width: 100%;     background-color: #fff; margin-top:0px;padding:10px}
+.comm-search-result_li{
+    cursor: pointer;
+}
+.search-result-box:hover{
+    background-color: #e7f9fb;
+}
+.comm-search-result{padding:0; list-style-type:none}
+
+.jscroll_custom{
+	min-height:100px;
+	max-height:153px;
+    overflow-y: auto;
+	position: absolute;
+	margin-top: 0;
+	border: 1px solid #ddd;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+	width:100%;
+	background: #fff;
+	display:none;
+	z-index:100;
+    overflow-x:hidden;
+    font-family: OpenSans-Regular, arial;
+    font-size:12px;
+}
+	
+.jscroll_custom::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.jscroll_custom::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+/* Handle */
+.jscroll_custom::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+/* Handle on hover */
+.jscroll_custom::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}	
+	
+.append_div .media-body{
+	padding: 4px 30px 5px 20px;
+    border: 1px solid #c2bdbd;
+    display: inline-block;
+    border-radius: 24px;
+    width: auto;
+	margin-bottom:10px;
+	position:relative
+}
+
+.closeBX {
+visibility: visible;
+    right: 12px;
+    top: 4px;
+    transition: all .3s;
+    color: #333333;
+    font-size: 13px;
+    margin-left: 5px;
+    /* opacity: .6; */
+    cursor: pointer;
+    position: absolute;
+}
+
+.search-result-box{display:inline-block;    margin-right: 10px;}
+
+.closeBX::after {
+    content: "X";
+}
+
+.mail_blocks .slimScrollDiv{ width: 281px !important;position:absolute !important}
+
+.mail_blocks span.gmailcolor{color:#1685b0}
+.import_gmail{float:right;margin-top:2px}
+.import_gmail span{font-size:12px}
+
+
+.gmail_ico{
+	background-image:url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iMjBweCIgaGVpZ2h0PSIxNXB4IiB2aWV3Qm94PSIwIDAgMjAgMTUiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDE1IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxnPg0KCTxwYXRoIGZpbGw9IiNFQzJDMjEiIGQ9Ik0xOC4yNTEsMC4wNjNjMC4xODMtMC4xMTMsMC4zNjgtMC4wNSwwLjU0NywwYzAuNjkxLDAuMTk3LDEuMTgyLDAuODU1LDEuMTkzLDEuNjA0DQoJCWMwLjAwNCwwLjE4OS0wLjAwNCwwLjM3Ny0wLjAwNCwwLjU2MmMtMC4wNTMsMC0wLjA4NSwwLjAzMy0wLjEyNSwwLjA2MmMtMC41MSwwLjM3Ny0xLjAyOCwwLjc1NC0xLjUzNCwxLjEzNQ0KCQljLTAuMjA2LDAuMTU1LTAuNDMzLDAuMjc3LTAuNjA2LDAuNDc1Yy0wLjA3MywwLTAuMTI2LDAuMDQ5LTAuMTc5LDAuMDg3Yy0xLjY4MywxLjIwMy0zLjM2NiwyLjQtNS4wNDYsMy42MDMNCgkJQzExLjY2NCw4LjE4NywxMC44Myw4Ljc5LDkuOTk2LDkuMzljLTAuMDI0LDAtMC4wNDgsMC0wLjA2OCwwYy0wLjAzNy0wLjAzLTAuMDY5LTAuMDY2LTAuMTA1LTAuMDkzDQoJCUM3Ljc3MSw3LjgxOSw1LjcxOSw2LjMzOSwzLjY2Nyw0Ljg2MWMtMC40MjEtMC4zMDItMC44NDEtMC42MDgtMS4yNjItMC45MUMyLjM1NiwzLjkxOCwyLjMxMiwzLjg0NywyLjI1MSwzLjg4NA0KCQlDMi4xOTQsMy45MTgsMi4yMzEsMy45OTgsMi4yMjMsNC4wNjFjLTAuMDA0LDAuMDIxLDAsMC4wNDIsMCwwLjA2MmMwLDMuNDk4LDAsNi45OTUsMCwxMC40OTRjMCwwLjA3NSwwLjAwMywwLjE1NSwwLjAwOCwwLjIzDQoJCWMwLDAuMDQyLTAuMDA0LDAuMDgtMC4wMDQsMC4xMjJjLTAuNzY5LDAuMDk2LTEuNDY5LTAuMDEyLTEuOTUtMC43MzRjLTAuMTc1LTAuMjYzLTAuMjc2LTAuNTU2LTAuMjc2LTAuODg0DQoJCWMwLTMuOTA4LTAuMDA0LTcuODEyLDAuMDA0LTExLjcyMWMwLTAuNzk2LDAuNjIzLTEuNSwxLjM4OC0xLjYxM2MwLjEyMS0wLjAxNywwLjI0My0wLjAzMywwLjM0OCwwLjA1MQ0KCQljMC4wMjQsMC4wMjQsMC4wNDUsMC4wNDksMC4wNzMsMC4wNzFjMi42NzUsMi4wNTMsNS4zNDksNC4xMDUsOC4wMjQsNi4xNjNjMC4xMDUsMC4wOCwwLjE3NCwwLjA3NiwwLjI3OS0wLjAwNA0KCQljMi4xMzctMS42MzQsNC4yNzgtMy4yNjMsNi40MTQtNC44OTNDMTcuMDk4LDAuOTU2LDE3LjY3MywwLjUwOCwxOC4yNTEsMC4wNjN6Ii8+DQoJPHBhdGggZmlsbD0iI0U1RTVFNSIgZD0iTTE4LjI1MSwwLjA2M2MtMC41NzgsMC40NDQtMS4xNTMsMC44OTMtMS43MywxLjMzN2MtMi4xMzgsMS42MzQtNC4yNzgsMy4yNTktNi40MTUsNC44OTMNCgkJQzEwLDYuMzczLDkuOTM2LDYuMzc3LDkuODI3LDYuMjk3QzcuMTU2LDQuMjQxLDQuNDgxLDIuMTkyLDEuODA2LDAuMTM1QzEuNzc4LDAuMTE0LDEuNzU4LDAuMDg5LDEuNzMzLDAuMDYzDQoJCWMwLjA0OC0wLjA4NCwwLjEzNC0wLjA1NSwwLjIwMy0wLjA1NWM1LjM2OSwwLDEwLjc0NCwwLDE2LjExMywwQzE4LjExOCwwLjAwOSwxOC4xOTktMC4wMjEsMTguMjUxLDAuMDYzeiIvPg0KCTxwYXRoIGZpbGw9IiNFNUU1RTUiIGQ9Ik0yLjIyMywxNC44MzljLTAuMDA0LTAuMDc1LTAuMDA4LTAuMTUzLTAuMDA4LTAuMjI5YzAtMy40OTgsMC02Ljk5NiwwLTEwLjQ5NWMwLTAuMDIxLTAuMDA0LTAuMDQyLDAtMC4wNjINCgkJYzAuMDA4LTAuMDU5LTAuMDI5LTAuMTM4LDAuMDI4LTAuMTc2YzAuMDYxLTAuMDM3LDAuMTA5LDAuMDMzLDAuMTU0LDAuMDY3QzIuODE4LDQuMjQ0LDMuMjM4LDQuNTUxLDMuNjYsNC44NTINCgkJQzUuNzExLDYuMzMyLDcuNzYzLDcuODEsOS44MTQsOS4yODljMC4wMzcsMC4wMjcsMC4wNzMsMC4wNjIsMC4xMDUsMC4wOTJDOS45MDMsOS4zOTYsOS44ODMsOS40MSw5Ljg2Nyw5LjQyNw0KCQlDOS44NTQsOS40MzksOS44MzksOS40NTYsOS44MjcsOS40N2MtMC4wMzMsMC0wLjA2NSwwLjAwNy0wLjA4MSwwLjA0MUM5LjczMyw5LjUyMyw5LjcxNyw5LjU0LDkuNzA2LDkuNTU0DQoJCWMtMC4wMDUsMC4wMDctMC4wMTMsMC4wMTEtMC4wMTcsMC4wMmMwLjAwOC0wLjAwNSwwLjAxMi0wLjAxMywwLjAyLTAuMDE3QzkuNzIxLDkuNTQ0LDkuNzM4LDkuNTI3LDkuNzUsOS41MTUNCgkJYzAuMDMyLDAsMC4wNjQtMC4wMDksMC4wODEtMC4wNDFjMC4wMTItMC4wMTMsMC4wMjgtMC4wMywwLjA0MS0wLjA0M2MwLjA0MSwwLDAuMDgxLTAuMDA0LDAuMTIxLTAuMDA0DQoJCWMwLjU2MywwLjQwNywxLjEzLDAuODA5LDEuNjkyLDEuMjE2YzEuNjc0LDEuMjAyLDMuMzUsMi4zOTksNS4wMjEsMy42MWMwLjMsMC4yMTgsMC42MjcsMC40MDYsMC44OTQsMC42Nw0KCQljLTAuMDczLDAuMDcxLTAuMTYxLDAuMDI1LTAuMjQyLDAuMDM5YzAuMDA0LTAuMDk4LTAuMDc3LTAuMTIzLTAuMTM4LTAuMTY0Yy0wLjMwOC0wLjIyMy0wLjYyNC0wLjQzNi0wLjkyMi0wLjY2Ng0KCQljLTAuNTAyLTAuMzgyLTEuMDEyLTAuNzQ1LTEuNTIyLTEuMTE0Yy0wLjQyNi0wLjMwNy0wLjg0NS0wLjYyNS0xLjI4Mi0wLjkxNGMtMC4zODEtMC4yNTItMC43MzItMC41NTItMS4xMTMtMC44MDgNCgkJYy0wLjQyOS0wLjI4NS0wLjgzMy0wLjYwNC0xLjI1OC0wLjg5NGMtMC4zNTMtMC4yMzgtMC42OTctMC40OTMtMS4wNDEtMC43NDVjLTAuMDY5LTAuMDUtMC4xMjktMC4wNzEtMC4yMDItMC4wMjENCgkJYy0wLjE0NiwwLjEwOC0wLjMzMiwwLjE4LTAuNDU0LDAuMjk3Yy0wLjM0OCwwLjMzMi0wLjc3MiwwLjU0NS0xLjEzNywwLjg0N2MtMC40NjUsMC4zODEtMC45NjcsMC43MjEtMS40NjUsMS4wNjENCgkJYy0wLjgyNiwwLjU2NC0xLjYyNywxLjE3Ny0yLjQ0OCwxLjc0NmMtMC40OSwwLjM0LTAuOTc2LDAuNjg0LTEuNDQ1LDEuMDU3Yy0wLjEzLDAuMS0wLjMwNCwwLjE0Ni0wLjM4NCwwLjMxNA0KCQljLTAuMDgxLTAuMDEtMC4xNywwLjAyNC0wLjI0Ny0wLjAzYzEuNDQ4LTEuMDQ4LDIuODk3LTIuMDkyLDQuMzQyLTMuMTM5YzAuMTktMC4xMzgsMC40MDQtMC4yNDYsMC41NjItMC40MzENCgkJYzAuMDI4LTAuMDA5LDAuMDY1LTAuMDE0LDAuMDYxLTAuMDU1YzAtMC4wMDQtMC4wMDctMC4wMTMtMC4wMTItMC4wMTNjLTAuMDQxLTAuMDA1LTAuMDQ5LDAuMDMtMC4wNTcsMC4wNTkNCgkJYy0wLjE0NiwwLjAwOS0wLjIzNSwwLjEyNS0wLjM0NCwwLjIwMkM1LjMxMSwxMi42NTMsMy43NjUsMTMuNzQ2LDIuMjIzLDE0LjgzOXogTTkuMTgzLDkuOTM4YzAuMDEyLTAuMDEzLDAuMDI4LTAuMDI4LDAuMDQxLTAuMDQxDQoJCWMwLjAzMiwwLDAuMDY0LTAuMDA5LDAuMDgxLTAuMDQzYzAuMDEyLTAuMDEzLDAuMDI4LTAuMDI4LDAuMDQtMC4wNDFjMC4wMzIsMCwwLjA2NC0wLjAwOCwwLjA4MS0wLjA0Mg0KCQlDOS40Myw5Ljc2Myw5LjQzOCw5Ljc1OCw5LjQ0Miw5Ljc1QzkuNDM0LDkuNzU0LDkuNDMsOS43NjMsOS40MjIsOS43NjdjLTAuMDMzLDAtMC4wNjUsMC4wMDctMC4wODEsMC4wNDINCgkJQzkuMzI5LDkuODIsOS4zMTIsOS44MzgsOS4zMDEsOS44NTFjLTAuMDMzLDAtMC4wNjUsMC4wMDctMC4wODEsMC4wNDJDOS4yMDcsOS45MDksOS4xOTUsOS45MjEsOS4xODMsOS45MzgNCgkJQzkuMTc1LDkuOTQxLDkuMTY3LDkuOTQ1LDkuMTYzLDkuOTU1QzkuMTcxLDkuOTUxLDkuMTc5LDkuOTQ1LDkuMTgzLDkuOTM4eiBNOC42NTcsMTAuMzExYy0wLjAzMiwwLTAuMDY1LDAuMDA5LTAuMDgxLDAuMDQzDQoJCWMtMC4wMjQsMC4wMDQtMC4wNTcsMC4wMDQtMC4wNjEsMC4wNDFjMCwwLjAwOCwwLjAxNywwLjAyNSwwLjAyNCwwLjAyNWMwLjAzMy0wLjAwNCwwLjAzNy0wLjAzNCwwLjA0MS0wLjA1OQ0KCQlDOC42MTMsMTAuMzU3LDguNjQxLDEwLjM1NCw4LjY1NywxMC4zMTFjMC4wMTYtMC4wMDksMC4wMzItMC4wMjQsMC4wNDQtMC4wMzdjMC4wMzMsMCwwLjA2NS0wLjAwOCwwLjA4MS0wLjA0Mw0KCQljMC4wMTMtMC4wMTMsMC4wMjgtMC4wMjgsMC4wNDEtMC4wNDFjMC4wMzMsMCwwLjA2NS0wLjAwOCwwLjA4MS0wLjA0M2MwLjAwNC0wLjAwNywwLjAxMi0wLjAxMiwwLjAxNi0wLjAyDQoJCWMtMC4wMDgsMC4wMDQtMC4wMTIsMC4wMTMtMC4wMiwwLjAxN2MtMC4wMzIsMC0wLjA2NCwwLjAwOC0wLjA4MSwwLjA0MmMtMC4wMTIsMC4wMTItMC4wMjgsMC4wMjgtMC4wNDEsMC4wNDENCgkJYy0wLjAzMiwwLTAuMDY0LDAuMDA5LTAuMDgxLDAuMDQzQzguNjgxLDEwLjI4Niw4LjY2OSwxMC4yOTgsOC42NTcsMTAuMzExeiBNOC4xMzEsMTAuNjkyYy0wLjAzMiwwLTAuMDY0LDAuMDA4LTAuMDgxLDAuMDQyDQoJCWMtMC4wMzIsMC4wMDMtMC4wNjQsMC4wMDctMC4wNjEsMC4wNTVjMCwwLjAwNCwwLjAwOCwwLjAxMiwwLjAxMiwwLjAxMmMwLjA0NSwwLjAwMywwLjA0OC0wLjAyOSwwLjA1Mi0wLjA2Mw0KCQlDOC4wODcsMTAuNzM0LDguMTE1LDEwLjcyNyw4LjEzMSwxMC42OTJjMC4wMTctMC4wMDksMC4wMjgtMC4wMjQsMC4wNDQtMC4wMzhjMC4wMzMsMCwwLjA2NS0wLjAwOCwwLjA4MS0wLjA0Mg0KCQljMC4wMTItMC4wMTMsMC4wMjgtMC4wMjgsMC4wNC0wLjA0MmMwLjAzMywwLDAuMDY1LTAuMDA4LDAuMDgxLTAuMDQyYzAuMDA0LTAuMDA3LDAuMDEzLTAuMDEyLDAuMDE3LTAuMDIxDQoJCWMtMC4wMDgsMC4wMDMtMC4wMTIsMC4wMTQtMC4wMjEsMC4wMTdjLTAuMDMyLDAtMC4wNjQsMC4wMDgtMC4wODEsMC4wNDJjLTAuMDEyLDAuMDE0LTAuMDI5LDAuMDI4LTAuMDQxLDAuMDQyDQoJCWMtMC4wMzIsMC0wLjA2NCwwLjAwOC0wLjA4MSwwLjA0MkM4LjE1NSwxMC42NjQsOC4xNDMsMTAuNjc1LDguMTMxLDEwLjY5MnogTTcuNzI2LDEwLjk4OWMwLjAzMi0wLjAwNCwwLjA2NS0wLjAwOCwwLjA2MS0wLjA1NA0KCQljMC0wLjAwNS0wLjAwOC0wLjAxMy0wLjAxMi0wLjAxM2MtMC4wNDUtMC4wMDUtMC4wNDksMC4wMjktMC4wNTIsMC4wNjJjLTAuMDMzLDAtMC4wNjEsMC4wMDgtMC4wODEsMC4wNDINCgkJYy0wLjA1NywwLjAwNC0wLjA5NywwLjAzMy0wLjEyMiwwLjA4NGMtMC4wMjgsMC4wMDctMC4wNjUsMC4wMDctMC4wNjEsMC4wNTVjMCwwLjAwNCwwLjAwOCwwLjAxMywwLjAxMiwwLjAxMw0KCQljMC4wNCwwLjAwMywwLjA0OC0wLjAyOSwwLjA1Mi0wLjA2NGMwLjA1NywwLDAuMTEzLTAuMDAzLDAuMTIyLTAuMDgzQzcuNjgyLDExLjAyNyw3LjcxLDExLjAyLDcuNzI2LDEwLjk4OXogTTkuMDUzLDkuOTk3DQoJCWMtMC4wMDMsMC4wMTItMC4wMTIsMC4wMjQtMC4wMTYsMC4wMzJjMC4wMTIsMC4wMDYsMC4wMjQsMC4wMTgsMC4wMzIsMC4wMTRzMC4wMTItMC4wMjEsMC4wMTYtMC4wMzQNCgkJQzkuMDc0LDEwLjAwNSw5LjA2MiwxMCw5LjA1Myw5Ljk5N3ogTTcuOTE3LDEwLjg2NGMtMC4wMDQtMC4wMTMtMC4wMDgtMC4wMjktMC4wMTYtMC4wMjljLTAuMDA4LTAuMDA1LTAuMDI5LDAuMDA0LTAuMDMyLDAuMDEyDQoJCWMtMC4wMTIsMC4wMTgtMC4wMDQsMC4wMzcsMC4wMTYsMC4wMzdDNy44OTYsMTAuODg0LDcuOTA1LDEwLjg3Myw3LjkxNywxMC44NjR6IE05LjYsOS42N2MwLjAwNC0wLjAxMywwLjAwOC0wLjAyNSwwLjAxNy0wLjAzMw0KCQlDOS42MDQsOS42MzEsOS41OTEsOS42Miw5LjU4NCw5LjYyM0M5LjU3Niw5LjYyNyw5LjU3MSw5LjY0NSw5LjU2Nyw5LjY1N0M5LjU3Niw5LjY2Miw5LjU4OCw5LjY2Niw5LjYsOS42N3ogTTcuMzkxLDExLjIzNw0KCQljLTAuMDA4LTAuMDE0LTAuMDE3LTAuMDI1LTAuMDIxLTAuMDI5Yy0wLjAwOCwwLTAuMDI4LDAuMDA4LTAuMDI4LDAuMDE2Yy0wLjAwOCwwLjAyMSwwLjAwNCwwLjAzNywwLjAyNCwwLjAzNA0KCQlDNy4zNzQsMTEuMjU4LDcuMzgyLDExLjI0NSw3LjM5MSwxMS4yMzd6Ii8+DQoJPHBhdGggZmlsbD0iI0MwQzNDOCIgZD0iTTE3LjYsMTQuOTI4Yy0wLjI2Ny0wLjI2OS0wLjU5LTAuNDUyLTAuODk0LTAuNjcxYy0xLjY3Mi0xLjIwNS0zLjM0OC0yLjQwOC01LjAyMS0zLjYxDQoJCWMtMC41NjItMC40MDctMS4xMjktMC44MDktMS42OTItMS4yMTZjMC0wLjAxMy0wLjAwMy0wLjAzLTAuMDAzLTAuMDQxYzAuODMzLTAuNiwxLjY2Ny0xLjE5OCwyLjUtMS43OTcNCgkJYzEuNjg1LTEuMjAzLDMuMzY4LTIuNCw1LjA0Ny0zLjYwM2MwLjA1Mi0wLjAzOCwwLjEwNS0wLjA4NywwLjE3OS0wLjA4N2MwLDMuNjg3LDAsNy4zNzMsMCwxMS4wNjQNCgkJQzE3LjY4MSwxNC45NTIsMTcuNjQxLDE0Ljk0LDE3LjYsMTQuOTI4eiIvPg0KCTxwYXRoIGZpbGw9IiNFNUU1RTUiIGQ9Ik0yLjU0NywxNC45NjZjMC4wNzctMC4xNjgsMC4yNTQtMC4yMTQsMC4zODQtMC4zMTRjMC40NjktMC4zNjksMC45NTUtMC43MTYsMS40NDUtMS4wNTYNCgkJYzAuODIxLTAuNTc0LDEuNjIyLTEuMTgyLDIuNDQ4LTEuNzQ3YzAuNDk4LTAuMzQsMS0wLjY3OSwxLjQ2NS0xLjA2YzAuMzY4LTAuMzAzLDAuNzg5LTAuNTE2LDEuMTM3LTAuODQ4DQoJCWMwLjEyNS0wLjExNiwwLjMwNy0wLjE4OCwwLjQ1NC0wLjI5N2MwLjA2OS0wLjA1NSwwLjEyOS0wLjAzMywwLjIwMiwwLjAyMWMwLjM0NCwwLjI1MSwwLjY4OCwwLjUwNiwxLjA0MSwwLjc0Ng0KCQljMC40MjUsMC4yODgsMC44MjksMC42MTEsMS4yNTgsMC44OTJjMC4zODEsMC4yNTEsMC43MzIsMC41NTQsMS4xMTMsMC44MDljMC40MzgsMC4yODksMC44NTYsMC42MDcsMS4yODIsMC45MTMNCgkJYzAuNTExLDAuMzY5LDEuMDIzLDAuNzMzLDEuNTIyLDEuMTE1YzAuMzAzLDAuMjMsMC42MTQsMC40NDQsMC45MjIsMC42NjVjMC4wNTcsMC4wNDIsMC4xNDIsMC4wNjgsMC4xMzgsMC4xNjQNCgkJQzEyLjQyLDE0Ljk2Niw3LjQ4MywxNC45NjYsMi41NDcsMTQuOTY2eiIvPg0KCTxwYXRoIGZpbGw9IiNDMjBDMDAiIGQ9Ik0xNy43MjIsMTQuOTY2YzAtMy42ODgsMC03LjM3NCwwLTExLjA2NGMwLjE3NC0wLjE5NywwLjQtMC4zMTksMC42MDYtMC40NzUNCgkJYzAuNTEtMC4zODUsMS4wMjQtMC43NTgsMS41MzQtMS4xMzVjMC4wMzctMC4wMjksMC4wNzItMC4wNjIsMC4xMjUtMC4wNjJjMC4wMDQsMC4wNzEsMC4wMDgsMC4xMzgsMC4wMDgsMC4yMDkNCgkJYzAsMy41NjUsMCw3LjEzNCwwLjAwNSwxMC43YzAsMC4yNDMtMC4wMDksMC40ODYtMC4wNjUsMC43M2MtMC4xMDIsMC40NDYtMC4zNTksMC43NTctMC43OCwwLjkxMQ0KCQlDMTguNjg4LDE0Ljk0OCwxOC4yMDcsMTQuOTk0LDE3LjcyMiwxNC45NjZ6Ii8+DQoJPHBhdGggZmlsbD0iI0JFQkRCMyIgZD0iTTcuMjA0LDExLjM2NmMtMC4xNTgsMC4xODYtMC4zNzIsMC4yOTMtMC41NjIsMC40MzJjLTEuNDQ1LDEuMDQ4LTIuODk0LDIuMDk1LTQuMzQyLDMuMTM5DQoJCWMtMC4wMjksMC4wMDgtMC4wNTMsMC4wMTYtMC4wODEsMC4wMjVjMC0wLjA0MywwLjAwNC0wLjA4LDAuMDA0LTAuMTIzYzEuNTQ2LTEuMDkzLDMuMDg3LTIuMTg2LDQuNjMzLTMuMjgNCgkJYzAuMTA5LTAuMDc0LDAuMTk0LTAuMTk2LDAuMzQ0LTAuMkw3LjIwNCwxMS4zNjZ6Ii8+DQoJPHBhdGggZmlsbD0iI0M3QzVCQiIgZD0iTTkuOTkyLDkuMzljMCwwLjAxMSwwLDAuMDI4LDAuMDA0LDAuMDQxYy0wLjA0MSwwLTAuMDgxLDAuMDA1LTAuMTIxLDAuMDA1bDAsMA0KCQlDOS44OTEsOS40MTgsOS45MTIsOS40MDcsOS45MjgsOS4zOUM5Ljk0NCw5LjM5LDkuOTY4LDkuMzksOS45OTIsOS4zOXoiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNNy41MiwxMS4xMDdjMC4wMjQtMC4wNTIsMC4wNjQtMC4wOCwwLjEyMi0wLjA4NGwwLjAwNCwwLjAwNGMtMC4wMDgsMC4wOC0wLjA2NCwwLjA4NC0wLjEyMiwwLjA4NA0KCQlMNy41MiwxMS4xMDd6Ii8+DQoJPHBhdGggZmlsbD0iI0M0QzJCOCIgZD0iTTkuMDUzLDkuOTk3QzkuMDY1LDEwLDkuMDc4LDEwLjAwNSw5LjA4NiwxMC4wMDljLTAuMDA0LDAuMDEzLTAuMDA4LDAuMDMtMC4wMTYsMC4wMzQNCgkJcy0wLjAyLTAuMDA4LTAuMDMyLTAuMDE0QzkuMDQyLDEwLjAyMSw5LjA0NSwxMC4wMDksOS4wNTMsOS45OTd6Ii8+DQoJPHBhdGggZmlsbD0iI0JFQkRCMyIgZD0iTTcuNzIzLDEwLjk4MWMwLjAwMy0wLjAzNCwwLjAxMi0wLjA2MywwLjA1Mi0wLjA2M2MwLjAwNCwwLDAuMDEyLDAuMDA5LDAuMDEyLDAuMDEzDQoJCWMwLDAuMDQ3LTAuMDMyLDAuMDQ3LTAuMDYxLDAuMDU1QzcuNzI2LDEwLjk4OSw3LjcyMywxMC45ODEsNy43MjMsMTAuOTgxeiIvPg0KCTxwYXRoIGZpbGw9IiNCRUJEQjMiIGQ9Ik03LjkxNywxMC44NjRjLTAuMDA4LDAuMDA5LTAuMDIsMC4wMi0wLjAyOCwwLjAxN2MtMC4wMiwwLTAuMDI4LTAuMDIxLTAuMDE3LTAuMDM4DQoJCWMwLjAwNC0wLjAwOCwwLjAyNS0wLjAxMywwLjAzMy0wLjAxM0M3LjkwOCwxMC44MzUsNy45MDgsMTAuODU1LDcuOTE3LDEwLjg2NHoiLz4NCgk8cGF0aCBmaWxsPSIjQzdDNUJCIiBkPSJNOS42LDkuNjdDOS41ODgsOS42NjYsOS41NzYsOS42NjIsOS41NjcsOS42NTJDOS41NzEsOS42NDEsOS41NzYsOS42MjMsOS41ODQsOS42Mg0KCQljMC4wMDctMC4wMDQsMC4wMiwwLjAwNywwLjAzMiwwLjAxMUM5LjYwOCw5LjY0NSw5LjYwNCw5LjY1Nyw5LjYsOS42N3oiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNOC4wNTQsMTAuNzM3Yy0wLjAwNCwwLjAzNC0wLjAxMiwwLjA2My0wLjA1MiwwLjA2M2MtMC4wMDQsMC0wLjAxMi0wLjAwOC0wLjAxMi0wLjAxMg0KCQljMC0wLjA0OCwwLjAzMi0wLjA0OCwwLjA2MS0wLjA1NUw4LjA1NCwxMC43Mzd6Ii8+DQoJPHBhdGggZmlsbD0iI0MyQzBCNiIgZD0iTTguNTgsMTAuMzYxYy0wLjAwNCwwLjAyOS0wLjAwOCwwLjA1NS0wLjA0MSwwLjA1OWMtMC4wMDgsMC0wLjAyNC0wLjAxOC0wLjAyNC0wLjAyNQ0KCQljMC4wMDQtMC4wMzMsMC4wMzMtMC4wMzcsMC4wNjEtMC4wNDFDOC41NzYsMTAuMzU3LDguNTgsMTAuMzYxLDguNTgsMTAuMzYxeiIvPg0KCTxwYXRoIGZpbGw9IiNCRUJEQjMiIGQ9Ik03LjUyOCwxMS4xMTRjLTAuMDA4LDAuMDM1LTAuMDEyLDAuMDY0LTAuMDUzLDAuMDY0Yy0wLjAwMywwLTAuMDEyLTAuMDA5LTAuMDEyLTAuMDEzDQoJCWMtMC4wMDQtMC4wNDgsMC4wMzItMC4wNDgsMC4wNjEtMC4wNTVDNy41MiwxMS4xMDcsNy41MjgsMTEuMTE0LDcuNTI4LDExLjExNHoiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNNy4zOTEsMTEuMjM3Yy0wLjAwOCwwLjAwOC0wLjAxNywwLjAyMS0wLjAyNSwwLjAyMWMtMC4wMjQsMC4wMDMtMC4wMzItMC4wMTMtMC4wMjQtMC4wMzQNCgkJYzAuMDA0LTAuMDA4LDAuMDIxLTAuMDE2LDAuMDI4LTAuMDE2QzcuMzc0LDExLjIxMiw3LjM4MiwxMS4yMjksNy4zOTEsMTEuMjM3eiIvPg0KCTxwYXRoIGZpbGw9IiNCRUJEQjMiIGQ9Ik03LjE5NiwxMS4zNThjMC4wMDgtMC4wMzMsMC4wMTItMC4wNjIsMC4wNTctMC4wNTljMC4wMDQsMCwwLjAxMiwwLjAwOCwwLjAxMiwwLjAxMw0KCQljMC4wMDQsMC4wNDYtMC4wMzIsMC4wNDYtMC4wNjEsMC4wNTRMNy4xOTYsMTEuMzU4eiIvPg0KCTxwYXRoIGZpbGw9IiNDNEMyQjgiIGQ9Ik05LjMwNSw5Ljg1NEM5LjI4OCw5Ljg4OCw5LjI1Niw5Ljg5Niw5LjIyNCw5Ljg5Nkw5LjIyLDkuODkzQzkuMjQsOS44NjIsOS4yNjgsOS44NTQsOS4zMDUsOS44NTQNCgkJTDkuMzA1LDkuODU0eiIvPg0KCTxwYXRoIGZpbGw9IiNCRUJEQjMiIGQ9Ik03LjY0NiwxMS4wMjNjMC4wMTYtMC4wMzQsMC4wNDgtMC4wNDIsMC4wODEtMC4wNDJsMC4wMDQsMC4wMDRjLTAuMDE2LDAuMDM0LTAuMDQ4LDAuMDQyLTAuMDgxLDAuMDQyDQoJCUM3LjY0OSwxMS4wMzEsNy42NDYsMTEuMDIzLDcuNjQ2LDExLjAyM3oiLz4NCgk8cGF0aCBmaWxsPSIjQzJDMEI2IiBkPSJNOC44MTksMTAuMTg5YzAuMDE3LTAuMDM0LDAuMDQ5LTAuMDQzLDAuMDgxLTAuMDQzbDAuMDA0LDAuMDA1QzguODgzLDEwLjE4Miw4Ljg1NSwxMC4xODksOC44MTksMTAuMTg5DQoJCUw4LjgxOSwxMC4xODl6Ii8+DQoJPHBhdGggZmlsbD0iI0MyQzBCNiIgZD0iTTguNzc4LDEwLjIzYy0wLjAxNiwwLjAzNS0wLjA0OSwwLjA0My0wLjA4MSwwLjA0M2wwLDBDOC43MTQsMTAuMjM5LDguNzQyLDEwLjIzLDguNzc4LDEwLjIzTDguNzc4LDEwLjIzeg0KCQkiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNOC4yOTMsMTAuNTY2YzAuMDE2LTAuMDM0LDAuMDQ4LTAuMDQyLDAuMDgxLTAuMDQybDAuMDA0LDAuMDA0QzguMzU3LDEwLjU1OSw4LjMzLDEwLjU2Niw4LjI5MywxMC41NjYNCgkJTDguMjkzLDEwLjU2NnoiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNOC4yNTIsMTAuNjA4Yy0wLjAxNywwLjAzNC0wLjA0OSwwLjA0Mi0wLjA4MSwwLjA0MmwwLDBDOC4xODgsMTAuNjEyLDguMjE2LDEwLjYwOCw4LjI1MiwxMC42MDgNCgkJTDguMjUyLDEwLjYwOHoiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNOC4xMzEsMTAuNjkyYy0wLjAxNiwwLjAzNC0wLjA0OSwwLjA0Mi0wLjA4MSwwLjA0Mkw4LjA0NiwxMC43M0M4LjA2NiwxMC43LDguMDk0LDEwLjY5Miw4LjEzMSwxMC42OTINCgkJTDguMTMxLDEwLjY5MnoiLz4NCgk8cGF0aCBmaWxsPSIjQzdDNUJCIiBkPSJNOS44MzEsOS40NzdDOS44MTQsOS41MTEsOS43ODIsOS41Miw5Ljc1LDkuNTJMOS43NDYsOS41MTVDOS43NjYsOS40ODQsOS43OTQsOS40NzcsOS44MzEsOS40NzcNCgkJTDkuODMxLDkuNDc3eiIvPg0KCTxwYXRoIGZpbGw9IiNDNEMyQjgiIGQ9Ik05LjM0NSw5LjgxMmMwLjAxNy0wLjAzNCwwLjA0OS0wLjA0MiwwLjA4MS0wLjA0MmwwLDBDOS40MDksOS44MDUsOS4zODIsOS44MTIsOS4zNDUsOS44MTJMOS4zNDUsOS44MTJ6Ig0KCQkvPg0KCTxwYXRoIGZpbGw9IiNDMkMwQjYiIGQ9Ik04LjY1NywxMC4zMTRjLTAuMDE3LDAuMDM1LTAuMDQ5LDAuMDQzLTAuMDgxLDAuMDQzbC0wLjAwNC0wLjAwNEM4LjU5MiwxMC4zMjMsOC42MiwxMC4zMTQsOC42NTcsMTAuMzE0DQoJCUM4LjY1NywxMC4zMTEsOC42NTcsMTAuMzE0LDguNjU3LDEwLjMxNHoiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNOC4yNTIsMTAuNjA4YzAuMDEyLTAuMDE0LDAuMDI4LTAuMDI4LDAuMDQxLTAuMDQybDAuMDAzLDAuMDA0QzguMjgxLDEwLjU4NCw4LjI2OSwxMC41OTUsOC4yNTIsMTAuNjA4DQoJCUw4LjI1MiwxMC42MDh6Ii8+DQoJPHBhdGggZmlsbD0iI0MyQzBCNiIgZD0iTTguNjk3LDEwLjI3M2MtMC4wMTIsMC4wMTMtMC4wMjgsMC4wMjgtMC4wNCwwLjA0MWwtMC4wMDQtMC4wMDRDOC42NjksMTAuMjk4LDguNjgxLDEwLjI4Niw4LjY5NywxMC4yNzMNCgkJTDguNjk3LDEwLjI3M3oiLz4NCgk8cGF0aCBmaWxsPSIjQzRDMkI4IiBkPSJNOS4xODMsOS45MzhjMC4wMTItMC4wMTMsMC4wMjgtMC4wMjgsMC4wNDEtMC4wNDFMOS4yMjgsOS45QzkuMjExLDkuOTEzLDkuMiw5LjkyNSw5LjE4Myw5LjkzOA0KCQlMOS4xODMsOS45Mzh6Ii8+DQoJPHBhdGggZmlsbD0iI0MyQzBCNiIgZD0iTTguOSwxMC4xNDZjMC4wMDgtMC4wMDMsMC4wMTItMC4wMTIsMC4wMi0wLjAxNkM4LjkxMiwxMC4xMzUsOC45MDgsMTAuMTQ0LDguOSwxMC4xNDZMOC45LDEwLjE0NnoiLz4NCgk8cGF0aCBmaWxsPSIjQzRDMkI4IiBkPSJNOS40MjYsOS43NzFjMC4wMDgtMC4wMDQsMC4wMTItMC4wMTMsMC4wMjEtMC4wMTdDOS40MzgsOS43NTgsOS40MzQsOS43NjcsOS40MjYsOS43NzFMOS40MjYsOS43NzF6Ii8+DQoJPHBhdGggZmlsbD0iI0M3QzVCQiIgZD0iTTkuNzA5LDkuNTYxYy0wLjAwOCwwLjAwNC0wLjAxMiwwLjAxMy0wLjAyLDAuMDE4QzkuNjk3LDkuNTczLDkuNzAxLDkuNTY0LDkuNzA5LDkuNTYxTDkuNzA5LDkuNTYxeiIvPg0KCTxwYXRoIGZpbGw9IiNDN0M1QkIiIGQ9Ik05LjcwOSw5LjU2MUM5LjcyMSw5LjU0OCw5LjczOCw5LjUzMiw5Ljc1LDkuNTJsMC4wMDQsMC4wMDRDOS43MzgsOS41MzYsOS43MjYsOS41NDgsOS43MDksOS41NjENCgkJTDkuNzA5LDkuNTYxeiIvPg0KCTxwYXRoIGZpbGw9IiNDNEMyQjgiIGQ9Ik05LjMwNSw5Ljg1NGMwLjAxMi0wLjAxMywwLjAyOC0wLjAyOCwwLjA0LTAuMDQxbDAuMDA0LDAuMDA0QzkuMzMzLDkuODI5LDkuMzIxLDkuODQxLDkuMzA1LDkuODU0DQoJCUw5LjMwNSw5Ljg1NHoiLz4NCgk8cGF0aCBmaWxsPSIjQzdDNUJCIiBkPSJNOS44NzEsOS40MzZDOS44NTksOS40NDgsOS44NDMsOS40NjUsOS44MzEsOS40NzdMOS44MjcsOS40NzRDOS44NDMsOS40NjEsOS44NTQsOS40NDgsOS44NzEsOS40MzYNCgkJTDkuODcxLDkuNDM2eiIvPg0KCTxwYXRoIGZpbGw9IiNDNEMyQjgiIGQ9Ik05LjE4Myw5LjkzOEM5LjE3NSw5Ljk0MSw5LjE3MSw5Ljk1MSw5LjE2Myw5Ljk1NUM5LjE3MSw5Ljk1MSw5LjE3NSw5Ljk0MSw5LjE4Myw5LjkzOEw5LjE4Myw5LjkzOHoiLz4NCgk8cGF0aCBmaWxsPSIjQkVCREIzIiBkPSJNOC4zNzQsMTAuNTI0YzAuMDA4LTAuMDAzLDAuMDEyLTAuMDE0LDAuMDIxLTAuMDE3QzguMzg2LDEwLjUxMSw4LjM4MiwxMC41MjEsOC4zNzQsMTAuNTI0TDguMzc0LDEwLjUyNHoiDQoJCS8+DQoJPHBhdGggZmlsbD0iI0MyQzBCNiIgZD0iTTguODE5LDEwLjE4OWMtMC4wMTIsMC4wMTMtMC4wMjgsMC4wMjgtMC4wNDEsMC4wNDFsLTAuMDA0LTAuMDA0QzguNzkxLDEwLjIxNCw4LjgwMiwxMC4yMDIsOC44MTksMTAuMTg5DQoJCUw4LjgxOSwxMC4xODl6Ii8+DQoJPHBhdGggZmlsbD0iI0JFQkRCMyIgZD0iTTguMTcxLDEwLjY1Yy0wLjAxMiwwLjAxNC0wLjAyOCwwLjAyOC0wLjA0MSwwLjA0MmwtMC4wMDQtMC4wMDVDOC4xNDMsMTAuNjc1LDguMTU1LDEwLjY2NCw4LjE3MSwxMC42NQ0KCQlMOC4xNzEsMTAuNjV6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==');
+	background-repeat:no-repeat;
+	background-position:center;
+	width: 25px;
+    height: 17px;
+    display: inline-block;
+    /* margin-top: 4px; */
+    vertical-align: middle;
+	cursor:pointer;
+	
+}
+
+.gmailcolor{cursor:pointer}
+
+.append_div{
+    /* float: left; */
+    margin-left: 10px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-top: 7px;
+	font-size:12px
+}
+
+.append_div .search-result-box:hover{background-color:#fff}
+
+.cke_contents{
+font-family:OpenSans-Regular !important;
+}
+.mail_blocks .small_textbox:focus{
+border:1px solid #66afe9;
+}
+
+.giftpopup .cke_contents:focus{
+    border:1px solid #66afe9;
+}
+
+body .giftpopup .mail_blocks iframe .cke_editable:focus{
+	 border:1px solid #66afe9;
+}
+
+
+body .giftpopup .cke_button__textcolor{display:none}
+body .giftpopup .cke_button__cut{display:none}
+body .giftpopup .cke_button__copy{display:none}
+
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+body .giftpopup .inserted_field{}
+@media only screen  and (max-width: 1042px) and (min-width: 1025px){
+    .related_coupons .modal-body{padding-left: 10px;padding-right: 10px;}
+    .related_coupons .modal_terms_content{padding-left: 10px;padding-right: 10px;}
+}
+
+@media only screen  and (max-width: 1050px) and (min-width: 849px){
+    .modal_common_class .related_coupons {
+        font-family: OpenSans-Regular, arial;
+        transform: translate(0px, 20px)!important;
+        width: 98%;
+    }
+    .related_coupons .coup-wrap{padding:20px 15px;}
+}
+@media only screen  and (max-width: 848px) and (min-width: 769px){
+    .modal_common_class .modal-dialog{
+        width: 100%;
+        margin: 20px auto;
+    }
+
+    .modal_common_class .related_coupons{
+        width: 96% !important;
+        margin: 20px auto;
+    }
+    .modal_common_class .activate_coupons{
+        width: 94% !important;
+        margin: 20px auto;
+    }
+    .related_coupons .coup-title{font-size: 13px;}
+    .related_coupons .coup-img .coup-perc {
+        /* font-size: 18px; */
+        line-height: 18px;
+    }
+}
+@media only screen and (max-width:1024px) and (min-width:501px){
+    .related_coupons .modal-body{padding:0px;}
+    .related_coupons .modal_terms_content {padding:0px 2px; }
+}
+@media screen and (max-width: 500px){
+    .related_coupons .modal_terms_content{padding:0px 10px;}
+    .related_coupons .modal-body {padding: 0px;}
+    .related_coupons .coup-wrap{padding: 20px;margin:0 auto 20px auto;text-align: center;}
+	.related_coupons .coup-perc{font-size: 21px;}
+	.related_coupons .coup-title{font-size: 14px;margin-bottom: 0;text-align: left;}
+    .related_coupons .coup-exp,.related_coupons .coup-time{font-size: 10px;margin-bottom: 0;}
+    .related_coupons .coup-exp{text-align: left;}
+	.related_coupons .coup-sale{font-size: 20px;}
+	.related_coupons .redeem-coup a{max-width: 145px;padding: 10px 0;font-size: 12px;}
+	.related_coupons .redeem-coup{margin: 35px auto 0 auto;}
+}
+
+
+@media only screen and (max-width:768px){
+    .modal_common_class .modal-dialog{
+            width: 92%;margin: 20px auto;
+    }
+	
+	.modal_common_class.giftpopup .modal-dialog{  width: 92%;margin: 20px auto;
+    }
+    .modal_common_class{padding-right:0}
+    .giftpopup .modal-body {
+        padding: 0px 30px 10px 30px;
+    }
+    .modal_common_class .modal-header {
+        padding: 28px 30px 20px 30px;
+        border: none;
+    }
+    .related_coupons .coup-img .coup-perc {
+        font-size: 18px;
+        line-height: 18px;
+    }
+    /* .related_coupons .coup-title{font-size: 12px;} */
+
+    .chooseCouponBlock .byCode{
+        width: 30%!important;
+        margin-right: 20px;
+    }
+    .chooseCouponBlock .byType{
+        width: 65%!important;
+    }
+
+}
+
+@media only screen and (max-width:640px){
+#gifttofrnd .modal-content{
+background-size: 66%;
+}
+
+#sharefriend .modal-content{
+background-size: 84%;
+}
+
+.subname_pop {
+      width: 90%;
+    font-size: 14px;
+    clear: both;
+    display: block;
+}
+
+.sharediv {
+    padding-left: 0px;
+}
+}
+
+@media only screen and (max-width:480px){
+.giftpopup  .cke_toolbox{display: block;
+    overflow: auto;}
+
+
+.giftpopup .cke_toolbar {
+/*        float: none;
+    display: inline-block;*/
+}
+
+.giftpopup .cke_combo {
+    display: inline-block;
+     float: none;
+}
+}
+
+
+@media only screen and (max-width:375px){
+	.subname_pop {
+    width: 100%;margin-top:10px
+}
+
+#sharefriend .modal-content {
+    background-size: 94%;
+    background-position: 108% 11%;
+}
+
+#gifttofrnd .modal-content {
+    background-size: 94%;
+    background-position: 108% 7%;
+}
+/* .modal_common_class .couponhead {
+    font-size: 21px;
+} */
+
+
+}
+
+
+/* Giftpopup's Css Ends */
+
+/* Create Coupon Modal starts */
+
+.cart_page .modal_common_class.giftpopup .modal-header{background: transparent}
+
+.tooltip-inner.large{
+    /* width:250px; 
+    min-width:250px; 
+    max-width:250px;  */
+    line-height:22px; background-color:#fff; color:#333; border:1px solid #00abe1; border-radius:3px; box-shadow:2px 2px 5px rgba(0,0,0,0.4); text-align:left}
+
+.stepOne_enterCouponCode .tooltip-inner.large{
+    width:250px;
+}
+
+.custom .tooltip-arrow {
+	border-color: rgba(136, 183, 213, 0);
+	border-right-color: #88b7d5;
+	border-width: 30px;
+	margin-top: -30px;
+}
+
+.modal_create_coupon .modal-body{
+    padding: 0;
+}
+.modal_common_class.modal_create_coupon .modal-dialog{
+    width: 91%;
+}
+.modal_create_coupon .driveSelTab{
+    display: inline-block;
+    margin-right: -4px;
+    width: 36%;
+    float: none;
+}
+.modal_create_coupon .driveSelSecTabIndxTxt{
+    z-index: 99;
+    height: 30px;
+    width: 30px;
+    padding-top: 3px;
+}
+.modal_create_coupon .driveSelSecTabIndxTxtAct{
+    background: #03abda;
+}
+.modal_create_coupon .driveSelSecTabIndxTxtVis {
+    background: #00d532;
+}
+.modal_create_coupon .driveSelSecTabTxt{
+    display: inline-block;
+    margin-left: -4px;
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    padding: 0 5px;
+    font-size: 16px;
+    /* color: #00d532; */
+}
+.modal_create_coupon .driveSelSecTabTxtAct{
+    color:#333;
+    font-family: OpenSans-Semibold, arial;
+}
+.modal_create_coupon .driveSelSecTabCont{
+    position: relative;
+    text-align: center;
+    margin-bottom: 12px;
+}
+.modal_create_coupon .driveSelSecTabIndxBdr{
+    border-bottom: 6px solid #e2e5e7;
+    top: 16px;
+    left: 0;
+}
+.modal_create_coupon .driveSelSecTabIndx{
+    margin-top: 4px;
+}
+.modal_create_coupon .coupon_status_toggle{
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+.modal_create_coupon .coupon_status_text{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+/* Rounded toggle sliders starts*/
+.modal_create_coupon .switch {
+    position: relative;
+    display: inline-block;
+    width: 85px;
+    height: 30px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.modal_create_coupon .switch input {display:none;}
+
+.modal_create_coupon .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; 
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.modal_create_coupon .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 11px;
+    bottom: 5px;
+    background-color: #fff;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.modal_create_coupon input:checked + .slider {
+    background-color: #03abda;
+}
+
+.modal_create_coupon input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+.modal_create_coupon input:checked + .slider:before {
+    -webkit-transform: translateX(38px);
+    -ms-transform: translateX(38px);
+    transform: translateX(38px);
+}
+
+.modal_create_coupon .slider.round {
+    border-radius: 20px;
+}
+
+.modal_create_coupon .slider.round:before {
+    border-radius: 50%;
+}  
+.modal_create_coupon .main_col_head_txt{
+    font-size: 18px;
+}
+/* Rounded toggle sliders ends*/
+
+
+/* upload coupon logo starts */
+.upload_coupon_logo{
+    margin-bottom: 30px;
+}
+.upload_coupon_logo .logowrp {
+    color: #333;
+    /* min-height: 110px; */
+    border: 2px dashed #00abe1;
+    background: white;
+    width: 100%;
+}
+.upload_coupon_logo .logowrpLeft {
+    width: 50%;
+    padding: 32px 50px;
+    box-sizing: border-box;
+    position: relative;
+    background-color: #e5f6fc;
+	display:none
+}
+.upload_coupon_logo .logowrpRight {
+    width: 100%;
+	 background-color: #e5f6fc;
+	 padding: 18px 50px;
+}
+.upload_coupon_logo .dropzone {
+  background: none !important;
+    min-height: auto;
+    border: none;
+    padding: 0;
+    width: 70%;
+    float: left;
+}
+
+.upload_coupon_logo .dropzone .dz-message {
+    font-size: 14px;
+    text-align: left;
+    margin: 0 0 0 8%;
+}
+
+.uploadblue{color:#01aae1;font-size:15px}
+
+.upload_coupon_logo .logowrpLefttext {
+    font-size: 12px;
+    position: relative;
+    top: 20px;
+    margin-left: 70px;
+}
+.upload_coupon_logo .Logodivider {
+    background-color: #fff;
+    border-radius: 50% 0 0 50%;
+    height: 32px;
+    line-height: 34px;
+    padding-left: 12px;
+    position: absolute;
+    right: 0;
+    top: 35%;
+    width: 27px;
+    font-size: 0.8em;
+}
+.upload_coupon_logo .LogodividerMobile {
+    background-color: #fff;
+    border-radius: 50% 50% 0 0;
+    height: 32px;
+    line-height: 34px;
+    padding-left: 12px;
+    position: absolute;
+    right: 43%;
+    display: none;
+    top: 78%;
+    width: 29px;
+    box-sizing: content-box;
+    font-size: 0.8em;
+}
+.upload_coupon_logo .Instructiontext {
+    color: #999;
+    font-size: 11px;
+    margin-top: 3px;
+    text-transform: none;
+}
+/* upload coupon logo ends */
+
+#createCoupon .modal-body {
+    overflow: initial;
+}
+
+#createCoupon .modal-dialog {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.chooseCouponBlock {
+    padding: 1px 20px 40px 20px;
+}
+
+.chooseCouponBlockName {
+    font-family: OpenSans-Bold;
+    font-size: 16px;
+    color: #000
+}
+.chooseCouponBlock .accordionChooseCouponHeader.activeAccrodinToggle {
+    background-color: #ebf7fc;
+    border-bottom: 1px solid #ccc;
+}
+.chooseCouponBlock .accordionChooseCouponHeader {
+    /* min-height: 50px; */
+}
+
+.chooseCouponBlock .accordionChooseCouponMainBlk {
+    /* min-height: 416px; */
+    border: 1px solid #d7d7d7;
+    border-radius: 5px;
+}
+.chooseCouponBlock .accordionChooseCoupon:first-child .accordionChooseCouponHeader{
+    border-top:0;
+}
+.chooseCouponBlock .accordionChooseCouponHeader {
+    /* min-height: 50px; */
+    background: #f6f6f6;
+    border-top: 1px solid #ccc;
+    /* border-bottom: 1px solid #d7d7d7;
+    border-top: 1px solid #d7d7d7; */
+}
+
+/* .topNoneBrod{
+    border-top:none !important;
+}
+.bottomNoneBrod{
+    border-top:none !important;
+    border-bottom:none !important;
+} */
+
+/*sort by radio*/
+
+.chooseCouponRadioBtn label:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.chooseCouponRadioBtn .cr {
+    position: relative;
+    display: inline-block;
+    border: 2px solid #03abda;
+    /*border-radius: .25em;*/
+    width: 18px;
+    height: 18px;
+    float: left;
+    background: #fff;
+    margin-right: .5em;
+    margin-top: 15px;
+}
+
+.chooseCouponRadioBtn .cr {
+    border-radius: 50px;
+}
+
+.chooseCouponRadioBtn .cr .cr-icon {
+    position: absolute;
+    /*font-size: .9em;*/
+    font-size: 9px;
+    line-height: 0;
+    top: 8px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+    color: #05acd9;
+}
+
+.chooseCouponRadioBtn .cr .cr-icon {
+    /* margin-left: 0.05em; */
+}
+
+.chooseCouponRadioBtn label input[type="radio"] {
+    display: none;
+}
+
+.chooseCouponRadioBtn label input[type="radio"]+.cr>.cr-icon {
+    transform: scale(3) rotateZ(-20deg);
+    opacity: 0;
+    transition: all .3s ease-in;
+}
+
+.chooseCouponRadioBtn label input[type="radio"]:checked+.cr>.cr-icon {
+    transform: scale(1) rotateZ(0deg);
+    opacity: 1;
+}
+
+.chooseCouponRadioBtn label input[type="radio"]:disabled+.cr {
+    opacity: .5;
+}
+
+.chooseCouponRadioBtn .radBtn {
+    text-shadow: none !important;
+    font-weight: normal !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px;
+    display: block;
+    line-height: 50px;
+    /* padding: 10px 20px 10px 20px; */
+    cursor: pointer;
+    margin: 0 20px;
+    position: relative;
+}
+
+.chsRadioName {
+    font-size: 18px;
+    color: #000;
+    font-weight: normal;
+    margin-left: 25px;
+}
+
+.chooseCouponBlock .accordionChooseCouponBody {
+    padding: 30px 0px 60px 0px;
+    background: #fff;
+    position: relative;
+}
+
+.chooseCouponBlock .chooseCouponBdy {
+    margin: 0px 40px 0px 40px;
+}
+
+.chooseCouponBlock .byCode {
+    float: left;
+    width: 35%;
+    margin-right: 20px;
+}
+
+.chooseCouponBlock .byType {
+    float: left;
+    width: 60%;
+}
+
+.chooseCouponBlock .txtCodeHeading {
+    font-size: 15px;
+    color: #000;
+    margin-bottom: 15px;
+}
+
+.chooseCouponBlock .products {
+    margin-top: 0px;
+    padding: 4px 12px 6px 8px;
+    margin-bottom: 7px;
+}
+
+.chooseCouponBlock label.checkmark_box {
+    margin-top: 3px;
+    float:none;
+    display: inline-block;
+}
+
+.chooseCouponBlock .onlineCourse-color {
+    background: #f2c164;
+}
+
+.chooseCouponBlock .onlineCourse-color .checkmark_box {
+    background: #d5a448;
+}
+
+.chooseCouponBlock .productSel {
+    font-size: 12px;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.chooseCouponBlock .assessment-color {
+    background: #878fd7;
+}
+
+.chooseCouponBlock .assessment-color .checkmark_box {
+    background: #5c6586;
+}
+
+.chooseCouponBlock .communities-color {
+    background: #c4a39e;
+}
+
+.chooseCouponBlock .communities-color .checkmark_box {
+    background: #9e7d78;
+}
+
+.chooseCouponBlock .examEvents-color {
+    background: #d663a8;
+}
+
+.chooseCouponBlock .examEvents-color .checkmark_box {
+    background: #bd4a8f;
+}
+
+.chooseCouponBlock .applyClearBtn {
+    margin-top: 20px;
+    border-top: 1px solid #e2e2e2;
+}
+
+.chooseCouponBlock .btnsProducts {
+    padding: 20px 0px 0px 13px;
+}
+
+.chooseCouponBlock .btnsProducts .btn {
+    font-size: 14px;
+
+}
+
+.chooseCouponBlock .btnsProducts .btn.apply {
+    padding: 8px 40px;
+    background: #3db5e7;
+    color: #fff;
+}
+.chooseCouponBlock .btnsProducts .btn.apply:hover{
+    background-color: #2f83c9;
+    border-color: #3c8cd5;
+}
+.chooseCouponBlock .btnsProducts .btn.cancel {
+    padding: 8px 15px;
+    background: transparent;
+    color: #3db5e7;
+}
+
+.chooseCouponBlock .fromInputOrder {
+    /* float: left; */
+    width: 20%;
+    margin-right: 15px;
+    margin-bottom: 0;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.chooseCouponBlock .form-group {
+    position: relative;
+    margin-bottom: 0px;
+}
+
+.chooseCouponBlock .fromInputOrder .form-group input,
+.chooseCouponBlock .fromInputOrder .form-group .bootstrap-select button {
+    /* border: 1px solid #c2bcbc;
+    border-radius: 0px;
+    box-shadow: none;
+    height: 34px;
+    padding: 0px 10px;
+    position: relative;
+    font-size: 13px; */
+    border-radius: 0;
+}
+.chooseCouponBlock .btn-default:hover, .chooseCouponBlock .btn-default:active, .chooseCouponBlock .btn-default.active, .chooseCouponBlock .open>.dropdown-toggle.btn-default{
+    background-color: transparent;
+    border-color: #ccc;
+    box-shadow: none;
+}
+.chooseCouponBlock .dropdown-menu>li>a:hover, .chooseCouponBlock .dropdown-menu>li>a:focus{
+    background: #e5f6fc;
+}
+.chooseCouponBlock .inputBelwTxt {
+    display: block;
+    font-size: 11px;
+    color: #636365;
+}
+
+.chooseCouponBlock .fromInputOrder .form-group input.datePickerImg {
+    background-image: url(/EForms/images/onlineAppForm/form3090/datePicker.PNG);
+    background-repeat: no-repeat;
+    background-position: 98%;
+    background-position-y: center;
+}
+
+.learnDisRadio {
+    display: flex;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+}
+
+.chooseCouponBlock .learnDisRadio .chooseCouponRadioBtn .radBtn {
+    padding: 0px 10px 0px 0px;
+    margin: 0 20px 0 0px;
+}
+
+.chooseCouponBlock .input-group-addon {
+    background-color: #fff;
+    border-radius: 0px;
+    border-color: #c2bcbc;
+}
+
+.modal_create_coupon h4{font-size:24px}
+
+@media only screen and (max-width: 1200px) {
+    .chooseCouponBlock .fromInputOrder {
+        width: 30%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+	.dragdrop{display:none}
+	.upload_coupon_logo .dropzone{min-height:auto !important}
+}
+
+@media only screen and (max-width: 767px) {
+    .chooseCouponBlock .chooseCouponBdy {
+        margin: 0px 10px 0px 10px;
+    }
+    .chooseCouponBlock .byCode,
+    .chooseCouponBlock .byType {
+        float: none;
+        width: 100%!important;
+        margin-top: 10px;
+    }
+    .chooseCouponBlock .btnsProducts {
+        padding: 20px 0px 0px 0px;
+    }
+
+    .chooseCouponBlock .fromInputOrder {
+        width: 100%;
+    }
+    #createCoupon .modal-dialog {
+        width: 90%;
+        margin: 30px auto;
+    }
+    #createCoupon {
+        padding: 0px;
+             }
+    .chooseCouponBlock .accordionChooseCouponBody {
+        padding: 5px 0px 20px 0px;
+    }
+    .chooseCouponBlock .applyClearBtn {
+        margin-top: 5px;
+}
+
+.accordionChooseCouponBody .selectpicker{padding:6px 6px }
+#createCoupon .modal-dialog {
+    width: 90%;
+    margin: 30px auto;
+}
+
+.upload_coupon_logo .logowrp{min-height:auto}
+.upload_coupon_logo .logowrpRight {
+    padding: 20px 10px;
+}
+.create_coupon_tab_srapper .container-fluid{
+    padding-left: 0;
+    padding-right: 0;
+}
+.select_offer_type_container .chooseCouponBlock .accordionChooseCouponBody{
+    padding: 20px 20px 0px 20px!important;
+}
+.modal_create_coupon .main_col_head_txt{
+    font-size: 16px;
+}
+.chsRadioName{
+    font-size: 14px;
+}
+.chooseCouponByCode .form-group{
+    margin-bottom: 20px!important;
+}
+.modal_create_coupon .btn, .modal_create_coupon .form-control {
+    font-size:12px;
+}
+
+}
+
+
+@media only screen and (max-width: 640px) {
+	.modal_create_coupon .driveSelTab{width:50%}
+}
+
+
+
+
+
+@media only screen and (max-width: 480px) {
+.chooseCouponBlockName {
+        font-family: OpenSans-Bold;
+        font-size: 15px;
+}
+
+.modal_create_coupon .driveSelTab{width:44%}
+.driveSelSecTabIndxTxt{
+    display: block;
+    margin: 0 auto; 
+}
+.modal_create_coupon .driveSelSecTabCont{padding:0;margin-bottom: 20px;}
+.modal_create_coupon .driveSelSecTabTxt{
+    font-size: 12px;
+}
+}
+
+@media only screen and (max-width: 375px) {
+/* .modal_create_coupon .driveSelTab{width:35%} */
+
+.modal_create_coupon .dz-default.dz-message{display:block}
+.upload_coupon_logo .logowrpLeft {
+    width: 100%;
+}
+
+}
+
+@media only screen and (max-width: 330px) {
+	.modal_create_coupon .driveSelTab{width:45%}
+	.logowrpRight img{margin:0 auto}
+	.logowrpRight .pull-left{float: none !important;
+    width: auto;
+    text-align: center;}
+	
+	.modal_create_coupon .dropzone .dz-preview .dz-details .dz-filename:not(:hover){
+		width: 120px;
+		word-wrap: break-word;
+		white-space: normal;
+		text-overflow:unset
+	}
+}
+
+.radTp{
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+}
+.radBp{
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+}
+.modal_create_coupon .glyphicon-calendar{
+    background: url("/EForms/images/onlineAppForm/form3090/datePicker.PNG");
+    width: 16px;
+    height: 18px;
+    display: inline-block;
+}
+.modal_create_coupon .glyphicon-calendar:before{
+    content: "";
+}
+.searchBox_createCoupon .form-group{
+    padding:0;
+}
+.learnDisRadio .chsRadioName{
+    font-size: 13px;
+}
+.select_offer_type_container .chooseCouponBlock{
+    padding: 0px 0px 40px 0px;
+}
+.select_offer_type_container .chsRadioName{
+    font-size: 14px;
+    margin-left: 25px;
+}
+.select_offer_type_container .chooseCouponBlock .accordionChooseCouponBody{
+    padding: 20px 20px 50px 20px;
+    display: inline-block;
+    width: 100%;
+}
+.select_offer_type_body_wrapper{
+    display: inline-block;
+    width: 80%;
+}
+.discount_amt_txt{
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+.note_msg{
+    font-size: 12px;
+    color: #333333;
+    margin: 0;
+    padding-top: 4px;
+}
+.noborder_inputgroup {
+    border: 1px solid #ccc;
+}
+.noborder_inputgroup .form-control, .noborder_inputgroup .input-group-addon{
+    border: 1px solid transparent;
+    background-color: #fff;
+}
+.noborder_inputgroup:focus-within{
+    border: 1px solid #02abda;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    -o-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.select_offer_type_container .main_col_head_txt{
+    margin-top: 14px;
+}
+.modal_create_coupon .form-group{
+    margin-bottom: 30px;
+}
+.modal_create_coupon .validateText_container{
+    display: none;
+    position: absolute;
+    z-index: 9;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    border: 1px solid #00abe1;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    -moz-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    -o-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    background-color: white;
+    padding: 10px;
+    font-size: 12px;
+    width: 288px;
+    line-height: 25px;
+    color: #1d1e24;
+    border-radius: 4px;
+}
+.modal_create_coupon .validateText_container:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 10px;
+    left:-10px;
+    width: 18px;
+    height: 18px; 
+    background: #FFFFFF;
+    border-right:1px solid #00abe1;
+    border-bottom:1px solid #00abe1;
+    transform:rotate(135deg);
+    -moz-transform:rotate(135deg);
+    -webkit-transform:rotate(135deg);
+    -o-transform:rotate(135deg);
+    top: 38%;
+}
+.modal_create_coupon .validateText_container ul{
+    padding:0;
+    margin:0;
+    list-style-type: none;
+}
+.greenText{
+    color: #63cf21;
+}
+.redText{
+    color: #cc3333;
+}
+.modal.in .modal_create_coupon_dialog {
+    transform: translate(0px, 5%);
+}
+.chooseCouponByCode .form-group{
+    margin-bottom: 0px;
+}
+.chooseCouponByUserTypeInputs{
+    margin-top: 10px;
+}
+/* Create Coupon Modal ends */
+
+/* Customize Tooltip arrow starts */
+.couponinfo + .tooltip .tooltip-arrow {
+    top: 50%;
+    left: 6px !important;
+    margin-top: -5px;
+	position: absolute;
+	background: none;
+	border: none;
+}
+.couponinfo + .tooltip .tooltip-arrow:after, .couponinfo + .tooltip .tooltip-arrow:before {
+	right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.couponinfo + .tooltip .tooltip-arrow:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-right-color: #fff;
+	border-width: 5px;
+	margin-top: -5px;
+}
+.couponinfo + .tooltip .tooltip-arrow:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-right-color: #00abe1;
+	border-width: 6px;
+	margin-top: -6px;
+}
+/* Customize Tooltip arrow ends */
+
+
+@media only screen and (max-width: 991px) {
+    .modal_create_coupon .validateText_container{
+        top: -65px!important;
+        right: 0!important;
+        width: 251px!important;
+    }
+    .modal_create_coupon .validateText_container:after{
+        left: 0!important;
+        right: -84%!important;
+        margin: 0 auto;
+        bottom: -9px;
+        top: auto!important;
+        transform: rotate(43deg)!important;
+        -moz-transform: rotate(43deg)!important;
+        -webkit-transform: rotate(43deg)!important;
+        -o-transform: rotate(43deg)!important;
+    }
+    .select_offer_type_container .chooseCouponBlock .accordionChooseCouponBody{
+        padding: 20px 20px 0px 20px!important;
+    }
+}
+
+@media only screen and (max-width: 990px) {
+	.couponinfo + .tooltip .tooltip-arrow {
+    left:auto !important;right:6px;    margin-top: -1px;
+	}
+	.couponinfo + .tooltip .tooltip-arrow:after, .couponinfo + .tooltip .tooltip-arrow:before {
+	left: 100%;
+	}
+	.couponinfo + .tooltip .tooltip-arrow:after {
+	border-color: rgba(136, 183, 213, 0);
+	border-left-color: #fff;
+	border-width: 8px;
+	margin-top: -8px;
+}
+.couponinfo + .tooltip .tooltip-arrow:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-left-color: #00abe1;
+	border-width: 9px;
+	margin-top: -9px;
+}
+	
+}
+
+.accordionChooseCoupon .cust-radio {position: absolute;top: 50%;left: 0;height: 18px;width: 18px;background-color: #fff;border: 2px solid #2196F3;border-radius: 50%; transform: translateY(-50%); -moz-transform: translateY(-50%);-webkit-transform: translateY(-50%);-o-transform: translateY(-50%);}
+.accordionChooseCoupon .cust-checkbox {position: absolute;top: 46%;left: 0;height: 18px;width: 18px;background-color: #fff;border: 2px solid #2196F3;border-radius: 0;transform: translateY(-50%);-moz-transform: translateY(-50%);-webkit-transform: translateY(-50%);-o-transform: translateY(-50%);}
+.accordionChooseCoupon input:checked ~ .cust-radio {background-color: #2196F3;}
+.accordionChooseCoupon input:checked ~ .cust-checkbox {background-color: #2196F3;}
+.accordionChooseCoupon .cust-radio:after, .accordionChooseCoupon .cust-radio:before {content: "";position: absolute;display: none;}
+.accordionChooseCoupon .cust-checkbox:after, .accordionChooseCoupon .cust-checkbox:before {content: "";position: absolute;display: none;}
+.accordionChooseCoupon .cust-radio:after {top: 0;left: 0;width: 14px;height: 14px;border-radius: 50%;background: white;}
+.accordionChooseCoupon .cust-checkbox:after {top: 0;left: 0;width: 14px;height: 14px;background: white;}
+.accordionChooseCoupon .cust-radio:before {top: 3px;left: 3px;width: 8px;height: 8px;border-radius: 50%;background: #2196F3;z-index: 1;}
+.accordionChooseCoupon .cust-checkbox:before {top: -18px;font-family: 'Glyphicons Halflings';content: "\e013";left: 1px;width: 4px;font-size: 0.8em;color: #2196F3;height: 4px;/* border-radius: 50%; *//* background: #2196F3; */z-index: 1;}
+.accordionChooseCoupon input:checked ~ .cust-radio:before, .accordionChooseCoupon input:checked ~ .cust-radio:after{display: block;}
+.accordionChooseCoupon input:checked ~ .cust-checkbox:before, .accordionChooseCoupon input:checked ~ .cust-checkbox:after{display: block;}
+@font-face {
+	font-family: 'Glyphicons Halflings';
+	src: url('/EForms/fonts/glyphicons-halflings-regular.eot');
+	src: url('/EForms/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/EForms/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('/EForms/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg')
+}
+input, .export {
+	display: inline-block;
+}

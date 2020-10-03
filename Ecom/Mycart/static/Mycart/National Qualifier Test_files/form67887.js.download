@@ -1,0 +1,2781 @@
+$(document).ready(function(){
+	$('.selectpicker').selectpicker({
+   noneSelectedText:"---Select---"
+	});
+	
+});
+/*
+ bootstrap-datetimejs
+ */
+!function(a){"use strict";if("function"==typeof define&&define.amd)define(["jquery","moment"],a);else if("object"==typeof exports)a(require("jquery"),require("moment"));else{if("undefined"==typeof jQuery)throw"bootstrap-datetimepicker requires jQuery to be loaded first";if("undefined"==typeof moment)throw"bootstrap-datetimepicker requires Moment.js to be loaded first";a(jQuery,moment)}}(function(a,b){"use strict";if(!b)throw new Error("bootstrap-datetimepicker requires Moment.js to be loaded first");var c=function(c,d){var e,f,g,h,i,j,k,l={},m=!0,n=!1,o=!1,p=0,q=[{clsName:"days",navFnc:"M",navStep:1},{clsName:"months",navFnc:"y",navStep:1},{clsName:"years",navFnc:"y",navStep:10},{clsName:"decades",navFnc:"y",navStep:100}],r=["days","months","years","decades"],s=["top","bottom","auto"],t=["left","right","auto"],u=["default","top","bottom"],v={up:38,38:"up",down:40,40:"down",left:37,37:"left",right:39,39:"right",tab:9,9:"tab",escape:27,27:"escape",enter:13,13:"enter",pageUp:33,33:"pageUp",pageDown:34,34:"pageDown",shift:16,16:"shift",control:17,17:"control",space:32,32:"space",t:84,84:"t","delete":46,46:"delete"},w={},x=function(a){var c,e,f,g,h,i=!1;return void 0!==b.tz&&void 0!==d.timeZone&&null!==d.timeZone&&""!==d.timeZone&&(i=!0),void 0===a||null===a?c=i?b().tz(d.timeZone).startOf("d"):b().startOf("d"):i?(e=b().tz(d.timeZone).utcOffset(),f=b(a,j,d.useStrict).utcOffset(),f!==e?(g=b().tz(d.timeZone).format("Z"),h=b(a,j,d.useStrict).format("YYYY-MM-DD[T]HH:mm:ss")+g,c=b(h,j,d.useStrict).tz(d.timeZone)):c=b(a,j,d.useStrict).tz(d.timeZone)):c=b(a,j,d.useStrict),c},y=function(a){if("string"!=typeof a||a.length>1)throw new TypeError("isEnabled expects a single character string parameter");switch(a){case"y":return-1!==i.indexOf("Y");case"M":return-1!==i.indexOf("M");case"d":return-1!==i.toLowerCase().indexOf("d");case"h":case"H":return-1!==i.toLowerCase().indexOf("h");case"m":return-1!==i.indexOf("m");case"s":return-1!==i.indexOf("s");default:return!1}},z=function(){return y("h")||y("m")||y("s")},A=function(){return y("y")||y("M")||y("d")},B=function(){var b=a("<thead>").append(a("<tr>").append(a("<th>").addClass("prev").attr("data-action","previous").append(a("<span>").addClass(d.icons.previous))).append(a("<th>").addClass("picker-switch").attr("data-action","pickerSwitch").attr("colspan",d.calendarWeeks?"6":"5")).append(a("<th>").addClass("next").attr("data-action","next").append(a("<span>").addClass(d.icons.next)))),c=a("<tbody>").append(a("<tr>").append(a("<td>").attr("colspan",d.calendarWeeks?"8":"7")));return[a("<div>").addClass("datepicker-days").append(a("<table>").addClass("table-condensed").append(b).append(a("<tbody>"))),a("<div>").addClass("datepicker-months").append(a("<table>").addClass("table-condensed").append(b.clone()).append(c.clone())),a("<div>").addClass("datepicker-years").append(a("<table>").addClass("table-condensed").append(b.clone()).append(c.clone())),a("<div>").addClass("datepicker-decades").append(a("<table>").addClass("table-condensed").append(b.clone()).append(c.clone()))]},C=function(){var b=a("<tr>"),c=a("<tr>"),e=a("<tr>");return y("h")&&(b.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.incrementHour}).addClass("btn").attr("data-action","incrementHours").append(a("<span>").addClass(d.icons.up)))),c.append(a("<td>").append(a("<span>").addClass("timepicker-hour").attr({"data-time-component":"hours",title:d.tooltips.pickHour}).attr("data-action","showHours"))),e.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.decrementHour}).addClass("btn").attr("data-action","decrementHours").append(a("<span>").addClass(d.icons.down))))),y("m")&&(y("h")&&(b.append(a("<td>").addClass("separator")),c.append(a("<td>").addClass("separator").html(":")),e.append(a("<td>").addClass("separator"))),b.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.incrementMinute}).addClass("btn").attr("data-action","incrementMinutes").append(a("<span>").addClass(d.icons.up)))),c.append(a("<td>").append(a("<span>").addClass("timepicker-minute").attr({"data-time-component":"minutes",title:d.tooltips.pickMinute}).attr("data-action","showMinutes"))),e.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.decrementMinute}).addClass("btn").attr("data-action","decrementMinutes").append(a("<span>").addClass(d.icons.down))))),y("s")&&(y("m")&&(b.append(a("<td>").addClass("separator")),c.append(a("<td>").addClass("separator").html(":")),e.append(a("<td>").addClass("separator"))),b.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.incrementSecond}).addClass("btn").attr("data-action","incrementSeconds").append(a("<span>").addClass(d.icons.up)))),c.append(a("<td>").append(a("<span>").addClass("timepicker-second").attr({"data-time-component":"seconds",title:d.tooltips.pickSecond}).attr("data-action","showSeconds"))),e.append(a("<td>").append(a("<a>").attr({href:"#",tabindex:"-1",title:d.tooltips.decrementSecond}).addClass("btn").attr("data-action","decrementSeconds").append(a("<span>").addClass(d.icons.down))))),h||(b.append(a("<td>").addClass("separator")),c.append(a("<td>").append(a("<button>").addClass("btn btn-primary").attr({"data-action":"togglePeriod",tabindex:"-1",title:d.tooltips.togglePeriod}))),e.append(a("<td>").addClass("separator"))),a("<div>").addClass("timepicker-picker").append(a("<table>").addClass("table-condensed").append([b,c,e]))},D=function(){var b=a("<div>").addClass("timepicker-hours").append(a("<table>").addClass("table-condensed")),c=a("<div>").addClass("timepicker-minutes").append(a("<table>").addClass("table-condensed")),d=a("<div>").addClass("timepicker-seconds").append(a("<table>").addClass("table-condensed")),e=[C()];return y("h")&&e.push(b),y("m")&&e.push(c),y("s")&&e.push(d),e},E=function(){var b=[];return d.showTodayButton&&b.push(a("<td>").append(a("<a>").attr({"data-action":"today",title:d.tooltips.today}).append(a("<span>").addClass(d.icons.today)))),!d.sideBySide&&A()&&z()&&b.push(a("<td>").append(a("<a>").attr({"data-action":"togglePicker",title:d.tooltips.selectTime}).append(a("<span>").addClass(d.icons.time)))),d.showClear&&b.push(a("<td>").append(a("<a>").attr({"data-action":"clear",title:d.tooltips.clear}).append(a("<span>").addClass(d.icons.clear)))),d.showClose&&b.push(a("<td>").append(a("<a>").attr({"data-action":"close",title:d.tooltips.close}).append(a("<span>").addClass(d.icons.close)))),a("<table>").addClass("table-condensed").append(a("<tbody>").append(a("<tr>").append(b)))},F=function(){var b=a("<div>").addClass("bootstrap-datetimepicker-widget dropdown-menu"),c=a("<div>").addClass("datepicker").append(B()),e=a("<div>").addClass("timepicker").append(D()),f=a("<ul>").addClass("list-unstyled"),g=a("<li>").addClass("picker-switch"+(d.collapse?" accordion-toggle":"")).append(E());return d.inline&&b.removeClass("dropdown-menu"),h&&b.addClass("usetwentyfour"),y("s")&&!h&&b.addClass("wider"),d.sideBySide&&A()&&z()?(b.addClass("timepicker-sbs"),"top"===d.toolbarPlacement&&b.append(g),b.append(a("<div>").addClass("row").append(c.addClass("col-md-6")).append(e.addClass("col-md-6"))),"bottom"===d.toolbarPlacement&&b.append(g),b):("top"===d.toolbarPlacement&&f.append(g),A()&&f.append(a("<li>").addClass(d.collapse&&z()?"collapse in":"").append(c)),"default"===d.toolbarPlacement&&f.append(g),z()&&f.append(a("<li>").addClass(d.collapse&&A()?"collapse":"").append(e)),"bottom"===d.toolbarPlacement&&f.append(g),b.append(f))},G=function(){var b,e={};return b=c.is("input")||d.inline?c.data():c.find("input").data(),b.dateOptions&&b.dateOptions instanceof Object&&(e=a.extend(!0,e,b.dateOptions)),a.each(d,function(a){var c="date"+a.charAt(0).toUpperCase()+a.slice(1);void 0!==b[c]&&(e[a]=b[c])}),e},H=function(){var b,e=(n||c).position(),f=(n||c).offset(),g=d.widgetPositioning.vertical,h=d.widgetPositioning.horizontal;if(d.widgetParent)b=d.widgetParent.append(o);else if(c.is("input"))b=c.after(o).parent();else{if(d.inline)return void(b=c.append(o));b=c,c.children().first().after(o)}if("auto"===g&&(g=f.top+1.5*o.height()>=a(window).height()+a(window).scrollTop()&&o.height()+c.outerHeight()<f.top?"top":"bottom"),"auto"===h&&(h=b.width()<f.left+o.outerWidth()/2&&f.left+o.outerWidth()>a(window).width()?"right":"left"),"top"===g?o.addClass("top").removeClass("bottom"):o.addClass("bottom").removeClass("top"),"right"===h?o.addClass("pull-right"):o.removeClass("pull-right"),"relative"!==b.css("position")&&(b=b.parents().filter(function(){return"relative"===a(this).css("position")}).first()),0===b.length)throw new Error("datetimepicker component should be placed within a relative positioned container");o.css({top:"top"===g?"auto":e.top+c.outerHeight(),bottom:"top"===g?e.top+c.outerHeight():"auto",left:"left"===h?b===c?0:e.left:"auto",right:"left"===h?"auto":b.outerWidth()-c.outerWidth()-(b===c?0:e.left)})},I=function(a){"dp.change"===a.type&&(a.date&&a.date.isSame(a.oldDate)||!a.date&&!a.oldDate)||c.trigger(a)},J=function(a){"y"===a&&(a="YYYY"),I({type:"dp.update",change:a,viewDate:f.clone()})},K=function(a){o&&(a&&(k=Math.max(p,Math.min(3,k+a))),o.find(".datepicker > div").hide().filter(".datepicker-"+q[k].clsName).show())},L=function(){var b=a("<tr>"),c=f.clone().startOf("w").startOf("d");for(d.calendarWeeks===!0&&b.append(a("<th>").addClass("cw").text("#"));c.isBefore(f.clone().endOf("w"));)b.append(a("<th>").addClass("dow").text(c.format("dd"))),c.add(1,"d");o.find(".datepicker-days thead").append(b)},M=function(a){return d.disabledDates[a.format("YYYY-MM-DD")]===!0},N=function(a){return d.enabledDates[a.format("YYYY-MM-DD")]===!0},O=function(a){return d.disabledHours[a.format("H")]===!0},P=function(a){return d.enabledHours[a.format("H")]===!0},Q=function(b,c){if(!b.isValid())return!1;if(d.disabledDates&&"d"===c&&M(b))return!1;if(d.enabledDates&&"d"===c&&!N(b))return!1;if(d.minDate&&b.isBefore(d.minDate,c))return!1;if(d.maxDate&&b.isAfter(d.maxDate,c))return!1;if(d.daysOfWeekDisabled&&"d"===c&&-1!==d.daysOfWeekDisabled.indexOf(b.day()))return!1;if(d.disabledHours&&("h"===c||"m"===c||"s"===c)&&O(b))return!1;if(d.enabledHours&&("h"===c||"m"===c||"s"===c)&&!P(b))return!1;if(d.disabledTimeIntervals&&("h"===c||"m"===c||"s"===c)){var e=!1;if(a.each(d.disabledTimeIntervals,function(){return b.isBetween(this[0],this[1])?(e=!0,!1):void 0}),e)return!1}return!0},R=function(){for(var b=[],c=f.clone().startOf("y").startOf("d");c.isSame(f,"y");)b.push(a("<span>").attr("data-action","selectMonth").addClass("month").text(c.format("MMM"))),c.add(1,"M");o.find(".datepicker-months td").empty().append(b)},S=function(){var b=o.find(".datepicker-months"),c=b.find("th"),g=b.find("tbody").find("span");c.eq(0).find("span").attr("title",d.tooltips.prevYear),c.eq(1).attr("title",d.tooltips.selectYear),c.eq(2).find("span").attr("title",d.tooltips.nextYear),b.find(".disabled").removeClass("disabled"),Q(f.clone().subtract(1,"y"),"y")||c.eq(0).addClass("disabled"),c.eq(1).text(f.year()),Q(f.clone().add(1,"y"),"y")||c.eq(2).addClass("disabled"),g.removeClass("active"),e.isSame(f,"y")&&!m&&g.eq(e.month()).addClass("active"),g.each(function(b){Q(f.clone().month(b),"M")||a(this).addClass("disabled")})},T=function(){var a=o.find(".datepicker-years"),b=a.find("th"),c=f.clone().subtract(5,"y"),g=f.clone().add(6,"y"),h="";for(b.eq(0).find("span").attr("title",d.tooltips.prevDecade),b.eq(1).attr("title",d.tooltips.selectDecade),b.eq(2).find("span").attr("title",d.tooltips.nextDecade),a.find(".disabled").removeClass("disabled"),d.minDate&&d.minDate.isAfter(c,"y")&&b.eq(0).addClass("disabled"),b.eq(1).text(c.year()+"-"+g.year()),d.maxDate&&d.maxDate.isBefore(g,"y")&&b.eq(2).addClass("disabled");!c.isAfter(g,"y");)h+='<span data-action="selectYear" class="year'+(c.isSame(e,"y")&&!m?" active":"")+(Q(c,"y")?"":" disabled")+'">'+c.year()+"</span>",c.add(1,"y");a.find("td").html(h)},U=function(){var a=o.find(".datepicker-decades"),c=a.find("th"),g=b({y:f.year()-f.year()%100-1}),h=g.clone().add(100,"y"),i=g.clone(),j="";for(c.eq(0).find("span").attr("title",d.tooltips.prevCentury),c.eq(2).find("span").attr("title",d.tooltips.nextCentury),a.find(".disabled").removeClass("disabled"),(g.isSame(b({y:1900}))||d.minDate&&d.minDate.isAfter(g,"y"))&&c.eq(0).addClass("disabled"),c.eq(1).text(g.year()+"-"+h.year()),(g.isSame(b({y:2e3}))||d.maxDate&&d.maxDate.isBefore(h,"y"))&&c.eq(2).addClass("disabled");!g.isAfter(h,"y");)j+='<span data-action="selectDecade" class="decade'+(g.isSame(e,"y")?" active":"")+(Q(g,"y")?"":" disabled")+'" data-selection="'+(g.year()+6)+'">'+(g.year()+1)+" - "+(g.year()+12)+"</span>",g.add(12,"y");j+="<span></span><span></span><span></span>",a.find("td").html(j),c.eq(1).text(i.year()+1+"-"+g.year())},V=function(){var b,c,g,h,i=o.find(".datepicker-days"),j=i.find("th"),k=[];if(A()){for(j.eq(0).find("span").attr("title",d.tooltips.prevMonth),j.eq(1).attr("title",d.tooltips.selectMonth),j.eq(2).find("span").attr("title",d.tooltips.nextMonth),i.find(".disabled").removeClass("disabled"),j.eq(1).text(f.format(d.dayViewHeaderFormat)),Q(f.clone().subtract(1,"M"),"M")||j.eq(0).addClass("disabled"),Q(f.clone().add(1,"M"),"M")||j.eq(2).addClass("disabled"),b=f.clone().startOf("M").startOf("w").startOf("d"),h=0;42>h;h++)0===b.weekday()&&(c=a("<tr>"),d.calendarWeeks&&c.append('<td class="cw">'+b.week()+"</td>"),k.push(c)),g="",b.isBefore(f,"M")&&(g+=" old"),b.isAfter(f,"M")&&(g+=" new"),b.isSame(e,"d")&&!m&&(g+=" active"),Q(b,"d")||(g+=" disabled"),b.isSame(x(),"d")&&(g+=" today"),(0===b.day()||6===b.day())&&(g+=" weekend"),c.append('<td data-action="selectDay" data-day="'+b.format("L")+'" class="day'+g+'">'+b.date()+"</td>"),b.add(1,"d");i.find("tbody").empty().append(k),S(),T(),U()}},W=function(){var b=o.find(".timepicker-hours table"),c=f.clone().startOf("d"),d=[],e=a("<tr>");for(f.hour()>11&&!h&&c.hour(12);c.isSame(f,"d")&&(h||f.hour()<12&&c.hour()<12||f.hour()>11);)c.hour()%4===0&&(e=a("<tr>"),d.push(e)),e.append('<td data-action="selectHour" class="hour'+(Q(c,"h")?"":" disabled")+'">'+c.format(h?"HH":"hh")+"</td>"),c.add(1,"h");b.empty().append(d)},X=function(){for(var b=o.find(".timepicker-minutes table"),c=f.clone().startOf("h"),e=[],g=a("<tr>"),h=1===d.stepping?5:d.stepping;f.isSame(c,"h");)c.minute()%(4*h)===0&&(g=a("<tr>"),e.push(g)),g.append('<td data-action="selectMinute" class="minute'+(Q(c,"m")?"":" disabled")+'">'+c.format("mm")+"</td>"),c.add(h,"m");b.empty().append(e)},Y=function(){for(var b=o.find(".timepicker-seconds table"),c=f.clone().startOf("m"),d=[],e=a("<tr>");f.isSame(c,"m");)c.second()%20===0&&(e=a("<tr>"),d.push(e)),e.append('<td data-action="selectSecond" class="second'+(Q(c,"s")?"":" disabled")+'">'+c.format("ss")+"</td>"),c.add(5,"s");b.empty().append(d)},Z=function(){var a,b,c=o.find(".timepicker span[data-time-component]");h||(a=o.find(".timepicker [data-action=togglePeriod]"),b=e.clone().add(e.hours()>=12?-12:12,"h"),a.text(e.format("A")),Q(b,"h")?a.removeClass("disabled"):a.addClass("disabled")),c.filter("[data-time-component=hours]").text(e.format(h?"HH":"hh")),c.filter("[data-time-component=minutes]").text(e.format("mm")),c.filter("[data-time-component=seconds]").text(e.format("ss")),W(),X(),Y()},$=function(){o&&(V(),Z())},_=function(a){var b=m?null:e;return a?(a=a.clone().locale(d.locale),1!==d.stepping&&a.minutes(Math.round(a.minutes()/d.stepping)*d.stepping%60).seconds(0),void(Q(a)?(e=a,f=e.clone(),g.val(e.format(i)),c.data("date",e.format(i)),m=!1,$(),I({type:"dp.change",date:e.clone(),oldDate:b})):(d.keepInvalid||g.val(m?"":e.format(i)),I({type:"dp.error",date:a})))):(m=!0,g.val(""),c.data("date",""),I({type:"dp.change",date:!1,oldDate:b}),void $())},aa=function(){var b=!1;return o?(o.find(".collapse").each(function(){var c=a(this).data("collapse");return c&&c.transitioning?(b=!0,!1):!0}),b?l:(n&&n.hasClass("btn")&&n.toggleClass("active"),o.hide(),a(window).off("resize",H),o.off("click","[data-action]"),o.off("mousedown",!1),o.remove(),o=!1,I({type:"dp.hide",date:e.clone()}),g.blur(),l)):l},ba=function(){_(null)},ca={next:function(){var a=q[k].navFnc;f.add(q[k].navStep,a),V(),J(a)},previous:function(){var a=q[k].navFnc;f.subtract(q[k].navStep,a),V(),J(a)},pickerSwitch:function(){K(1)},selectMonth:function(b){var c=a(b.target).closest("tbody").find("span").index(a(b.target));f.month(c),k===p?(_(e.clone().year(f.year()).month(f.month())),d.inline||aa()):(K(-1),V()),J("M")},selectYear:function(b){var c=parseInt(a(b.target).text(),10)||0;f.year(c),k===p?(_(e.clone().year(f.year())),d.inline||aa()):(K(-1),V()),J("YYYY")},selectDecade:function(b){var c=parseInt(a(b.target).data("selection"),10)||0;f.year(c),k===p?(_(e.clone().year(f.year())),d.inline||aa()):(K(-1),V()),J("YYYY")},selectDay:function(b){var c=f.clone();a(b.target).is(".old")&&c.subtract(1,"M"),a(b.target).is(".new")&&c.add(1,"M"),_(c.date(parseInt(a(b.target).text(),10))),z()||d.keepOpen||d.inline||aa()},incrementHours:function(){var a=e.clone().add(1,"h");Q(a,"h")&&_(a)},incrementMinutes:function(){var a=e.clone().add(d.stepping,"m");Q(a,"m")&&_(a)},incrementSeconds:function(){var a=e.clone().add(1,"s");Q(a,"s")&&_(a)},decrementHours:function(){var a=e.clone().subtract(1,"h");Q(a,"h")&&_(a)},decrementMinutes:function(){var a=e.clone().subtract(d.stepping,"m");Q(a,"m")&&_(a)},decrementSeconds:function(){var a=e.clone().subtract(1,"s");Q(a,"s")&&_(a)},togglePeriod:function(){_(e.clone().add(e.hours()>=12?-12:12,"h"))},togglePicker:function(b){var c,e=a(b.target),f=e.closest("ul"),g=f.find(".in"),h=f.find(".collapse:not(.in)");if(g&&g.length){if(c=g.data("collapse"),c&&c.transitioning)return;g.collapse?(g.collapse("hide"),h.collapse("show")):(g.removeClass("in"),h.addClass("in")),e.is("span")?e.toggleClass(d.icons.time+" "+d.icons.date):e.find("span").toggleClass(d.icons.time+" "+d.icons.date)}},showPicker:function(){o.find(".timepicker > div:not(.timepicker-picker)").hide(),o.find(".timepicker .timepicker-picker").show()},showHours:function(){o.find(".timepicker .timepicker-picker").hide(),o.find(".timepicker .timepicker-hours").show()},showMinutes:function(){o.find(".timepicker .timepicker-picker").hide(),o.find(".timepicker .timepicker-minutes").show()},showSeconds:function(){o.find(".timepicker .timepicker-picker").hide(),o.find(".timepicker .timepicker-seconds").show()},selectHour:function(b){var c=parseInt(a(b.target).text(),10);h||(e.hours()>=12?12!==c&&(c+=12):12===c&&(c=0)),_(e.clone().hours(c)),ca.showPicker.call(l)},selectMinute:function(b){_(e.clone().minutes(parseInt(a(b.target).text(),10))),ca.showPicker.call(l)},selectSecond:function(b){_(e.clone().seconds(parseInt(a(b.target).text(),10))),ca.showPicker.call(l)},clear:ba,today:function(){var a=x();Q(a,"d")&&_(a)},close:aa},da=function(b){return a(b.currentTarget).is(".disabled")?!1:(ca[a(b.currentTarget).data("action")].apply(l,arguments),!1)},ea=function(){var b,c={year:function(a){return a.month(0).date(1).hours(0).seconds(0).minutes(0)},month:function(a){return a.date(1).hours(0).seconds(0).minutes(0)},day:function(a){return a.hours(0).seconds(0).minutes(0)},hour:function(a){return a.seconds(0).minutes(0)},minute:function(a){return a.seconds(0)}};return g.prop("disabled")||!d.ignoreReadonly&&g.prop("readonly")||o?l:(void 0!==g.val()&&0!==g.val().trim().length?_(ga(g.val().trim())):d.useCurrent&&m&&(g.is("input")&&0===g.val().trim().length||d.inline)&&(b=x(),"string"==typeof d.useCurrent&&(b=c[d.useCurrent](b)),_(b)),o=F(),L(),R(),o.find(".timepicker-hours").hide(),o.find(".timepicker-minutes").hide(),o.find(".timepicker-seconds").hide(),$(),K(),a(window).on("resize",H),o.on("click","[data-action]",da),o.on("mousedown",!1),n&&n.hasClass("btn")&&n.toggleClass("active"),o.show(),H(),d.focusOnShow&&!g.is(":focus")&&g.focus(),I({type:"dp.show"}),l)},fa=function(){return o?aa():ea()},ga=function(a){return a=void 0===d.parseInputDate?b.isMoment(a)||a instanceof Date?b(a):x(a):d.parseInputDate(a),a.locale(d.locale),a},ha=function(a){var b,c,e,f,g=null,h=[],i={},j=a.which,k="p";w[j]=k;for(b in w)w.hasOwnProperty(b)&&w[b]===k&&(h.push(b),parseInt(b,10)!==j&&(i[b]=!0));for(b in d.keyBinds)if(d.keyBinds.hasOwnProperty(b)&&"function"==typeof d.keyBinds[b]&&(e=b.split(" "),e.length===h.length&&v[j]===e[e.length-1])){for(f=!0,c=e.length-2;c>=0;c--)if(!(v[e[c]]in i)){f=!1;break}if(f){g=d.keyBinds[b];break}}g&&(g.call(l,o),a.stopPropagation(),a.preventDefault())},ia=function(a){w[a.which]="r",a.stopPropagation(),a.preventDefault()},ja=function(b){var c=a(b.target).val().trim(),d=c?ga(c):null;return _(d),b.stopImmediatePropagation(),!1},ka=function(){g.on({change:ja,blur:d.debug?"":aa,keydown:ha,keyup:ia,focus:d.allowInputToggle?ea:""}),c.is("input")?g.on({focus:ea}):n&&(n.on("click",fa),n.on("mousedown",!1))},la=function(){g.off({change:ja,blur:blur,keydown:ha,keyup:ia,focus:d.allowInputToggle?aa:""}),c.is("input")?g.off({focus:ea}):n&&(n.off("click",fa),n.off("mousedown",!1))},ma=function(b){var c={};return a.each(b,function(){var a=ga(this);a.isValid()&&(c[a.format("YYYY-MM-DD")]=!0)}),Object.keys(c).length?c:!1},na=function(b){var c={};return a.each(b,function(){c[this]=!0}),Object.keys(c).length?c:!1},oa=function(){var a=d.format||"L LT";i=a.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,function(a){var b=e.localeData().longDateFormat(a)||a;return b.replace(/(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g,function(a){return e.localeData().longDateFormat(a)||a})}),j=d.extraFormats?d.extraFormats.slice():[],j.indexOf(a)<0&&j.indexOf(i)<0&&j.push(i),h=i.toLowerCase().indexOf("a")<1&&i.replace(/\[.*?\]/g,"").indexOf("h")<1,y("y")&&(p=2),y("M")&&(p=1),y("d")&&(p=0),k=Math.max(p,k),m||_(e)};if(l.destroy=function(){aa(),la(),c.removeData("DateTimePicker"),c.removeData("date")},l.toggle=fa,l.show=ea,l.hide=aa,l.disable=function(){return aa(),n&&n.hasClass("btn")&&n.addClass("disabled"),g.prop("disabled",!0),l},l.enable=function(){return n&&n.hasClass("btn")&&n.removeClass("disabled"),g.prop("disabled",!1),l},l.ignoreReadonly=function(a){if(0===arguments.length)return d.ignoreReadonly;if("boolean"!=typeof a)throw new TypeError("ignoreReadonly () expects a boolean parameter");return d.ignoreReadonly=a,l},l.options=function(b){if(0===arguments.length)return a.extend(!0,{},d);if(!(b instanceof Object))throw new TypeError("options() options parameter should be an object");return a.extend(!0,d,b),a.each(d,function(a,b){if(void 0===l[a])throw new TypeError("option "+a+" is not recognized!");l[a](b)}),l},l.date=function(a){if(0===arguments.length)return m?null:e.clone();if(!(null===a||"string"==typeof a||b.isMoment(a)||a instanceof Date))throw new TypeError("date() parameter must be one of [null, string, moment or Date]");return _(null===a?null:ga(a)),l},l.format=function(a){if(0===arguments.length)return d.format;if("string"!=typeof a&&("boolean"!=typeof a||a!==!1))throw new TypeError("format() expects a sting or boolean:false parameter "+a);return d.format=a,i&&oa(),l},l.timeZone=function(a){return 0===arguments.length?d.timeZone:(d.timeZone=a,l)},l.dayViewHeaderFormat=function(a){if(0===arguments.length)return d.dayViewHeaderFormat;if("string"!=typeof a)throw new TypeError("dayViewHeaderFormat() expects a string parameter");return d.dayViewHeaderFormat=a,l},l.extraFormats=function(a){if(0===arguments.length)return d.extraFormats;if(a!==!1&&!(a instanceof Array))throw new TypeError("extraFormats() expects an array or false parameter");return d.extraFormats=a,j&&oa(),l},l.disabledDates=function(b){if(0===arguments.length)return d.disabledDates?a.extend({},d.disabledDates):d.disabledDates;if(!b)return d.disabledDates=!1,$(),l;if(!(b instanceof Array))throw new TypeError("disabledDates() expects an array parameter");return d.disabledDates=ma(b),d.enabledDates=!1,$(),l},l.enabledDates=function(b){if(0===arguments.length)return d.enabledDates?a.extend({},d.enabledDates):d.enabledDates;if(!b)return d.enabledDates=!1,$(),l;if(!(b instanceof Array))throw new TypeError("enabledDates() expects an array parameter");return d.enabledDates=ma(b),d.disabledDates=!1,$(),l},l.daysOfWeekDisabled=function(a){if(0===arguments.length)return d.daysOfWeekDisabled.splice(0);if("boolean"==typeof a&&!a)return d.daysOfWeekDisabled=!1,$(),l;if(!(a instanceof Array))throw new TypeError("daysOfWeekDisabled() expects an array parameter");if(d.daysOfWeekDisabled=a.reduce(function(a,b){return b=parseInt(b,10),b>6||0>b||isNaN(b)?a:(-1===a.indexOf(b)&&a.push(b),a)},[]).sort(),d.useCurrent&&!d.keepInvalid){for(var b=0;!Q(e,"d");){if(e.add(1,"d"),7===b)throw"Tried 7 times to find a valid date";b++}_(e)}return $(),l},l.maxDate=function(a){if(0===arguments.length)return d.maxDate?d.maxDate.clone():d.maxDate;if("boolean"==typeof a&&a===!1)return d.maxDate=!1,$(),l;"string"==typeof a&&("now"===a||"moment"===a)&&(a=x());var b=ga(a);if(!b.isValid())throw new TypeError("maxDate() Could not parse date parameter: "+a);if(d.minDate&&b.isBefore(d.minDate))throw new TypeError("maxDate() date parameter is before options.minDate: "+b.format(i));return d.maxDate=b,d.useCurrent&&!d.keepInvalid&&e.isAfter(a)&&_(d.maxDate),f.isAfter(b)&&(f=b.clone().subtract(d.stepping,"m")),$(),l},l.minDate=function(a){if(0===arguments.length)return d.minDate?d.minDate.clone():d.minDate;if("boolean"==typeof a&&a===!1)return d.minDate=!1,$(),l;"string"==typeof a&&("now"===a||"moment"===a)&&(a=x());var b=ga(a);if(!b.isValid())throw new TypeError("minDate() Could not parse date parameter: "+a);if(d.maxDate&&b.isAfter(d.maxDate))throw new TypeError("minDate() date parameter is after options.maxDate: "+b.format(i));return d.minDate=b,d.useCurrent&&!d.keepInvalid&&e.isBefore(a)&&_(d.minDate),f.isBefore(b)&&(f=b.clone().add(d.stepping,"m")),$(),l},l.defaultDate=function(a){if(0===arguments.length)return d.defaultDate?d.defaultDate.clone():d.defaultDate;if(!a)return d.defaultDate=!1,l;"string"==typeof a&&("now"===a||"moment"===a)&&(a=x());var b=ga(a);if(!b.isValid())throw new TypeError("defaultDate() Could not parse date parameter: "+a);if(!Q(b))throw new TypeError("defaultDate() date passed is invalid according to component setup validations");return d.defaultDate=b,(d.defaultDate&&d.inline||""===g.val().trim())&&_(d.defaultDate),l},l.locale=function(a){if(0===arguments.length)return d.locale;if(!b.localeData(a))throw new TypeError("locale() locale "+a+" is not loaded from moment locales!");return d.locale=a,e.locale(d.locale),f.locale(d.locale),i&&oa(),o&&(aa(),ea()),l},l.stepping=function(a){return 0===arguments.length?d.stepping:(a=parseInt(a,10),(isNaN(a)||1>a)&&(a=1),d.stepping=a,l)},l.useCurrent=function(a){var b=["year","month","day","hour","minute"];if(0===arguments.length)return d.useCurrent;if("boolean"!=typeof a&&"string"!=typeof a)throw new TypeError("useCurrent() expects a boolean or string parameter");if("string"==typeof a&&-1===b.indexOf(a.toLowerCase()))throw new TypeError("useCurrent() expects a string parameter of "+b.join(", "));return d.useCurrent=a,l},l.collapse=function(a){if(0===arguments.length)return d.collapse;if("boolean"!=typeof a)throw new TypeError("collapse() expects a boolean parameter");return d.collapse===a?l:(d.collapse=a,o&&(aa(),ea()),l)},l.icons=function(b){if(0===arguments.length)return a.extend({},d.icons);if(!(b instanceof Object))throw new TypeError("icons() expects parameter to be an Object");return a.extend(d.icons,b),o&&(aa(),ea()),l},l.tooltips=function(b){if(0===arguments.length)return a.extend({},d.tooltips);if(!(b instanceof Object))throw new TypeError("tooltips() expects parameter to be an Object");return a.extend(d.tooltips,b),o&&(aa(),ea()),l},l.useStrict=function(a){if(0===arguments.length)return d.useStrict;if("boolean"!=typeof a)throw new TypeError("useStrict() expects a boolean parameter");return d.useStrict=a,l},l.sideBySide=function(a){if(0===arguments.length)return d.sideBySide;if("boolean"!=typeof a)throw new TypeError("sideBySide() expects a boolean parameter");return d.sideBySide=a,o&&(aa(),ea()),l},l.viewMode=function(a){if(0===arguments.length)return d.viewMode;if("string"!=typeof a)throw new TypeError("viewMode() expects a string parameter");if(-1===r.indexOf(a))throw new TypeError("viewMode() parameter must be one of ("+r.join(", ")+") value");return d.viewMode=a,k=Math.max(r.indexOf(a),p),K(),l},l.toolbarPlacement=function(a){if(0===arguments.length)return d.toolbarPlacement;if("string"!=typeof a)throw new TypeError("toolbarPlacement() expects a string parameter");if(-1===u.indexOf(a))throw new TypeError("toolbarPlacement() parameter must be one of ("+u.join(", ")+") value");return d.toolbarPlacement=a,o&&(aa(),ea()),l},l.widgetPositioning=function(b){if(0===arguments.length)return a.extend({},d.widgetPositioning);if("[object Object]"!=={}.toString.call(b))throw new TypeError("widgetPositioning() expects an object variable");if(b.horizontal){if("string"!=typeof b.horizontal)throw new TypeError("widgetPositioning() horizontal variable must be a string");if(b.horizontal=b.horizontal.toLowerCase(),-1===t.indexOf(b.horizontal))throw new TypeError("widgetPositioning() expects horizontal parameter to be one of ("+t.join(", ")+")");d.widgetPositioning.horizontal=b.horizontal}if(b.vertical){if("string"!=typeof b.vertical)throw new TypeError("widgetPositioning() vertical variable must be a string");if(b.vertical=b.vertical.toLowerCase(),-1===s.indexOf(b.vertical))throw new TypeError("widgetPositioning() expects vertical parameter to be one of ("+s.join(", ")+")");d.widgetPositioning.vertical=b.vertical}return $(),l},l.calendarWeeks=function(a){if(0===arguments.length)return d.calendarWeeks;if("boolean"!=typeof a)throw new TypeError("calendarWeeks() expects parameter to be a boolean value");return d.calendarWeeks=a,$(),l},l.showTodayButton=function(a){if(0===arguments.length)return d.showTodayButton;if("boolean"!=typeof a)throw new TypeError("showTodayButton() expects a boolean parameter");return d.showTodayButton=a,o&&(aa(),ea()),l},l.showClear=function(a){if(0===arguments.length)return d.showClear;if("boolean"!=typeof a)throw new TypeError("showClear() expects a boolean parameter");return d.showClear=a,o&&(aa(),ea()),l},l.widgetParent=function(b){if(0===arguments.length)return d.widgetParent;if("string"==typeof b&&(b=a(b)),null!==b&&"string"!=typeof b&&!(b instanceof a))throw new TypeError("widgetParent() expects a string or a jQuery object parameter");return d.widgetParent=b,o&&(aa(),ea()),l},l.keepOpen=function(a){if(0===arguments.length)return d.keepOpen;if("boolean"!=typeof a)throw new TypeError("keepOpen() expects a boolean parameter");return d.keepOpen=a,l},l.focusOnShow=function(a){if(0===arguments.length)return d.focusOnShow;if("boolean"!=typeof a)throw new TypeError("focusOnShow() expects a boolean parameter");return d.focusOnShow=a,l},l.inline=function(a){if(0===arguments.length)return d.inline;if("boolean"!=typeof a)throw new TypeError("inline() expects a boolean parameter");return d.inline=a,l},l.clear=function(){return ba(),l},l.keyBinds=function(a){return d.keyBinds=a,l},l.getMoment=function(a){return x(a)},l.debug=function(a){if("boolean"!=typeof a)throw new TypeError("debug() expects a boolean parameter");return d.debug=a,l},l.allowInputToggle=function(a){if(0===arguments.length)return d.allowInputToggle;if("boolean"!=typeof a)throw new TypeError("allowInputToggle() expects a boolean parameter");return d.allowInputToggle=a,l},l.showClose=function(a){if(0===arguments.length)return d.showClose;if("boolean"!=typeof a)throw new TypeError("showClose() expects a boolean parameter");return d.showClose=a,l},l.keepInvalid=function(a){if(0===arguments.length)return d.keepInvalid;if("boolean"!=typeof a)throw new TypeError("keepInvalid() expects a boolean parameter");return d.keepInvalid=a,l},l.datepickerInput=function(a){if(0===arguments.length)return d.datepickerInput;if("string"!=typeof a)throw new TypeError("datepickerInput() expects a string parameter");return d.datepickerInput=a,l},l.parseInputDate=function(a){if(0===arguments.length)return d.parseInputDate;
+if("function"!=typeof a)throw new TypeError("parseInputDate() sholud be as function");return d.parseInputDate=a,l},l.disabledTimeIntervals=function(b){if(0===arguments.length)return d.disabledTimeIntervals?a.extend({},d.disabledTimeIntervals):d.disabledTimeIntervals;if(!b)return d.disabledTimeIntervals=!1,$(),l;if(!(b instanceof Array))throw new TypeError("disabledTimeIntervals() expects an array parameter");return d.disabledTimeIntervals=b,$(),l},l.disabledHours=function(b){if(0===arguments.length)return d.disabledHours?a.extend({},d.disabledHours):d.disabledHours;if(!b)return d.disabledHours=!1,$(),l;if(!(b instanceof Array))throw new TypeError("disabledHours() expects an array parameter");if(d.disabledHours=na(b),d.enabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var c=0;!Q(e,"h");){if(e.add(1,"h"),24===c)throw"Tried 24 times to find a valid date";c++}_(e)}return $(),l},l.enabledHours=function(b){if(0===arguments.length)return d.enabledHours?a.extend({},d.enabledHours):d.enabledHours;if(!b)return d.enabledHours=!1,$(),l;if(!(b instanceof Array))throw new TypeError("enabledHours() expects an array parameter");if(d.enabledHours=na(b),d.disabledHours=!1,d.useCurrent&&!d.keepInvalid){for(var c=0;!Q(e,"h");){if(e.add(1,"h"),24===c)throw"Tried 24 times to find a valid date";c++}_(e)}return $(),l},l.viewDate=function(a){if(0===arguments.length)return f.clone();if(!a)return f=e.clone(),l;if(!("string"==typeof a||b.isMoment(a)||a instanceof Date))throw new TypeError("viewDate() parameter must be one of [string, moment or Date]");return f=ga(a),J(),l},c.is("input"))g=c;else if(g=c.find(d.datepickerInput),0===g.size())g=c.find("input");else if(!g.is("input"))throw new Error('CSS class "'+d.datepickerInput+'" cannot be applied to non input element');if(c.hasClass("input-group")&&(n=0===c.find(".datepickerbutton").size()?c.find(".input-group-addon"):c.find(".datepickerbutton")),!d.inline&&!g.is("input"))throw new Error("Could not initialize DateTimePicker without an input element");return e=x(),f=e.clone(),a.extend(!0,d,G()),l.options(d),oa(),ka(),g.prop("disabled")&&l.disable(),g.is("input")&&0!==g.val().trim().length?_(ga(g.val().trim())):d.defaultDate&&void 0===g.attr("placeholder")&&_(d.defaultDate),d.inline&&ea(),l};a.fn.datetimepicker=function(b){return this.each(function(){var d=a(this);d.data("DateTimePicker")||(b=a.extend(!0,{},a.fn.datetimepicker.defaults,b),d.data("DateTimePicker",c(d,b)))})},a.fn.datetimepicker.defaults={timeZone:"Etc/UTC",format:!1,dayViewHeaderFormat:"MMMM YYYY",extraFormats:!1,stepping:1,minDate:!1,maxDate:!1,useCurrent:!0,collapse:!0,locale:b.locale(),defaultDate:!1,disabledDates:!1,enabledDates:!1,icons:{time:"glyphicon glyphicon-time",date:"glyphicon glyphicon-calendar",up:"glyphicon glyphicon-chevron-up",down:"glyphicon glyphicon-chevron-down",previous:"glyphicon glyphicon-chevron-left",next:"glyphicon glyphicon-chevron-right",today:"glyphicon glyphicon-screenshot",clear:"glyphicon glyphicon-trash",close:"glyphicon glyphicon-remove"},tooltips:{today:"Go to today",clear:"Clear selection",close:"Close the picker",selectMonth:"Select Month",prevMonth:"Previous Month",nextMonth:"Next Month",selectYear:"Select Year",prevYear:"Previous Year",nextYear:"Next Year",selectDecade:"Select Decade",prevDecade:"Previous Decade",nextDecade:"Next Decade",prevCentury:"Previous Century",nextCentury:"Next Century",pickHour:"Pick Hour",incrementHour:"Increment Hour",decrementHour:"Decrement Hour",pickMinute:"Pick Minute",incrementMinute:"Increment Minute",decrementMinute:"Decrement Minute",pickSecond:"Pick Second",incrementSecond:"Increment Second",decrementSecond:"Decrement Second",togglePeriod:"Toggle Period",selectTime:"Select Time"},useStrict:!1,sideBySide:!1,daysOfWeekDisabled:!1,calendarWeeks:!1,viewMode:"days",toolbarPlacement:"default",showTodayButton:!1,showClear:!1,showClose:!1,widgetPositioning:{horizontal:"auto",vertical:"auto"},widgetParent:null,ignoreReadonly:!1,keepOpen:!1,focusOnShow:!0,inline:!1,keepInvalid:!1,datepickerInput:".datepickerinput",keyBinds:{up:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().subtract(7,"d")):this.date(b.clone().add(this.stepping(),"m"))}},down:function(a){if(!a)return void this.show();var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().add(7,"d")):this.date(b.clone().subtract(this.stepping(),"m"))},"control up":function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().subtract(1,"y")):this.date(b.clone().add(1,"h"))}},"control down":function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")?this.date(b.clone().add(1,"y")):this.date(b.clone().subtract(1,"h"))}},left:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().subtract(1,"d"))}},right:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().add(1,"d"))}},pageUp:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().subtract(1,"M"))}},pageDown:function(a){if(a){var b=this.date()||this.getMoment();a.find(".datepicker").is(":visible")&&this.date(b.clone().add(1,"M"))}},enter:function(){this.hide()},escape:function(){this.hide()},"control space":function(a){a.find(".timepicker").is(":visible")&&a.find('.btn[data-action="togglePeriod"]').click()},t:function(){this.date(this.getMoment())},"delete":function(){this.clear()}},debug:!1,allowInputToggle:!1,disabledTimeIntervals:!1,disabledHours:!1,enabledHours:!1,viewDate:!1}});
+
+
+
+
+/********************End bootstrap-datetimejs*******************/
+
+
+/************************** Custom Code *******************************/
+if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+$(document).ready(function(){
+	$('.selectpicker').selectpicker({
+   noneSelectedText:"---Select---"
+	});
+});
+}
+var flag = "N";
+var validate =true;
+
+function logout(){
+	if(typeof window.fnLogoutBeforeLogout == 'function') {
+		fnLogoutBeforeLogout();
+	}
+var formId = document.getElementById('formId').value;
+var orgId = document.getElementById('orgId').value;
+orgId=1016;
+formId=67887;
+window.history.forward();
+window.location.href="/EForms/configuredHtml/"+orgId+"/"+formId+"/login.html";
+} 
+
+function fnEditApplication(){
+document.loginForm.action="/EForms/editApplication.do?orgId=1016&formId=67887";
+document.loginForm.method="POST";
+document.loginForm.submit();
+}
+
+jQuery(function(){
+//jQuery('#container-11').tabs();
+jQuery('.check').on('click',
+function(){
+if(validate){
+var xTab = 26;
+var buttonid = jQuery(this).attr("id");
+var ntab = buttonid.slice(-1);
+var tabIndx = (parseInt(xTab)+parseInt(ntab))
+var currfrag = "fragment-" + tabIndx;
+var curTab1 = "tab"+ (ntab-1);
+var nextfrag = "fragment-" + (++tabIndx);
+var nexTab = "tab"+(ntab);
+$(".tabs-nav .js-tab[tab-index=" +(ntab-2)+"]").removeClass('active');
+$(".tabs-nav .js-tab[tab-index=" +(ntab-1)+"]").addClass("active");
+$('#'+nextfrag).css('display','inline-block');
+$('#'+currfrag).css('display','none');
+if($('#tabDropdown').is(":visible"))
+{
+	$(".js-tab[tab-index=" +(ntab-1)+"]").addClass('active').removeClass("hidden");
+	$(".js-tab[tab-index=" +(ntab-2)+"]").addClass('hidden').removeClass("active");
+	$(".tabDropdowns .dropdown-menu .js-tab[tab-index=" +(ntab-2)+"]").removeClass('hidden active');
+	$(".tabDropdowns .dropdown-menu .js-tab[tab-index=" +(ntab-1)+"]").addClass("hidden active");
+}
+
+return false;
+}
+//else{
+//}
+});
+
+});
+
+function Passing(){
+if(document.getElementById("txtYearOfPassing").value !=''){
+var splittedYOP=document.getElementById("txtYearOfPassing").value.split("/");
+var yearOfYOP=Number(splittedYOP[1]);
+if(yearOfYOP<2018 || yearOfYOP>2022)
+{
+alert("Year of passing must be from 2018 to 2022");
+$("#txtYearOfPassing").val("");
+return false;
+}
+}
+}
+/**********************validation and submission***********************/
+
+function doValidate(submitType,button_id) {
+var tab1_Validation=false; 
+var loc= location.href;
+tab1_Validation = eval('validatePersonalDetails()');
+	
+	if(tab1_Validation)	
+	{	
+		if(eval(checkDuplicate()))
+			{ 
+					eval('saveData(submitType,button_id)');
+			}
+			else
+			if(loc.indexOf('editApplication')>-1){
+				eval('saveData(submitType,button_id)');
+	  }
+			else
+			{
+				alert("You are already registered with same details.");
+				validate=false;
+				return false;
+			} 
+	}
+}
+
+function checkDuplicate()
+{
+var VariableToPass=$("#txtUid").val();
+var params = [VariableToPass];
+var urlToken=document.location.search;
+				if(urlToken!="")
+				{
+if(validateChkDuplicate(params)==true)
+{
+return true;
+}
+else
+{
+return false;
+}
+				}
+				else{
+					return true;
+				}
+}
+
+/************Registration validation and methods***********/
+
+function mobile_no_check(id)
+{
+	if($("#"+id).val() != "")
+	{
+		if(trim($("#"+id).val()).length < 10 )
+		{
+			alert("Please enter 10 digit Mobile Number.");
+			$("#"+id).focus();
+			$("#"+id).val("");
+			validate=false;
+			return false;
+		}
+		var contact = $("#"+id).val();
+		if((contact.charAt(0)>=0)&&(contact.charAt(0)<=5))
+		{
+			alert("Mobile number cannot begin with 0,1,2,3,4,5 or an alphabet.");
+			$("#"+id).focus();
+			$("#"+id).val("");
+			validate=false;
+			return false;
+		}
+		else
+		{
+			validate = true;
+		}
+		return validate;
+	} 
+}
+
+
+function drop_select_if(id)
+{
+	$(id).parent().find('.errortxt').css('display', 'inline');
+	$(id).next().addClass('borderredcolor1');
+	$(id).next().find('button').addClass('borderredcolor');
+}
+function drop_select_else(id)
+{
+	$(id).parent().find('.errortxt').css('display', 'none');
+	$(id).next().removeClass('borderredcolor1');
+	$(id).next().find('button').removeClass('borderredcolor');
+}
+
+function upload_check()
+{
+	$('.crop_btn').on('click',function(){
+		setUploadMessage();
+	});
+}
+
+function upload_check1()
+{
+	$('.crop_btn').on('click',function(){
+		setUploadMessage1();
+	});
+}
+
+
+function setUploadMessage(){
+	var uploadedMessage = 'Uploaded';
+	var fieldsArray = new Array('txtPhotoPath','txtSignaturePath');
+
+		if($('#txtFileName').val().indexOf(fieldsArray[0]) > -1 && $('#txtFileName').val().indexOf(fieldsArray[1]) > -1){
+			$('#'+fieldsArray[0]+'_span').html(uploadedMessage);
+			$('#'+fieldsArray[0]+'_span').css({'color':'#008000','font-weight':'bold'});
+			$('[name="' + fieldsArray[0] + '_R"]').attr('disabled',true);
+	}
+	return true;
+}
+
+function setUploadMessage1(){
+	var uploadedMessage = 'Uploaded';
+	var fieldsArray = new Array('txtResumePath');
+
+		if($('#txtFileName').val().indexOf(fieldsArray[0]) > -1){
+			$('#'+fieldsArray[0]+'_span').html(uploadedMessage);
+			$('#'+fieldsArray[0]+'_span').css({'color':'#008000','font-weight':'bold'});
+			$('[name="' + fieldsArray[0] + '_R"]').attr('disabled',true);
+	}
+	return true;
+} 
+
+function scrollToDiv(divId)
+{
+	$('html, body').stop().animate({
+		scrollTop: $("#"+divId).offset().top
+	}, 100);
+} 
+
+function formatDate(date) {
+    var getDateValue = date.split("/");
+    var month = getDateValue[1];
+    var day   = getDateValue[0];
+    var year  = getDateValue[2];
+    return [month, day, year].join('/');
+}
+
+function NoError(errordiv)
+{
+	$("."+errordiv).hide();
+}
+/*****************End of Registration validation*****************/
+/*****************Application validation*****************/
+/**************tab2 validation*******************/
+function validatePersonalDetails(){
+
+trimSpacesFromAllTextBox();
+
+if ($("#txtUid").val() == '') {
+	alert("User Id is required");
+	validate=false;
+	return false;
+}
+else{
+	validate=true;  
+}
+
+/*if($("#tcsEmp").val() == '') {
+	$('#tcsEmp').focus();
+	drop_select_if('tcsEmp');
+	validate=false;
+	return false;
+	} 
+	else{
+		drop_select_else('tcsEmp');
+	validate=true; 
+}
+
+var isAssessmentDisabled = $("input[name=txtAssessmentDate]").attr('disabled');
+//var strIsPast = $("#past").css("display");
+var strIsPast = "block";
+var strIsFuture = $("#future").css("display");
+if( isAssessmentDisabled != "disabled" ) {
+	var o = document.getElementById('one');
+	var t = document.getElementById('two');
+	var th = document.getElementById('three');
+	var f = document.getElementById('four');
+	if( strIsPast == "block" ) { 
+		if ((o.checked == false ) && (t.checked == false ) && (th.checked == false )){
+			$("#assessmentDatePast").show();
+			$('#one').focus();
+			validate=false;
+			return false;
+		} else {
+			$("#assessmentDatePast").hide();
+			validate=true;
+		} 
+	}	
+	if( strIsFuture == "block" ) { 	
+		if ((th.checked == false ) && (f.checked == false )){
+			$("#assessmentDateFuture").show();
+			$('#three').focus();
+			validate=false;
+			return false;
+		}  else {
+			$("#assessmentDateFuture").hide();
+			validate=true;
+		} 
+	} 
+}*/
+
+var strProductCodeVal = $("#txtVariantCode").val().trim();		
+/*if( strProductCodeVal == "IONQUALIFIERCCQTNEGSJEP04122019" || strProductCodeVal == "IONQUALIFIERCCQTNEGACJEP04122019" || strProductCodeVal == "IONQUALIFIERCCQTMGJEP04122019" || strProductCodeVal == "IONQUALIFIERCCQTEGJEP04122019" ) {
+	var th = document.getElementById('three');
+	var f = document.getElementById('four');
+	var strIsFuture = $("#future").css("display");
+	if( strIsFuture == "block" ) { 	
+		if ((th.checked == false ) && (f.checked == false )){
+			$("#assessmentDateFuture").show();
+			$('#three').focus();
+			validate=false;
+			return false;
+		}  else {
+			$("#assessmentDateFuture").hide();
+			validate=true;
+		} 
+	}	
+}*/ 
+
+if ($("#txtAppFirstName").val() == '') {
+	
+	input_if('txtAppFirstName');
+	$('#txtAppFirstName').focus();
+	validate=false;
+	return false;
+	} 
+	else{
+		input_else('txtAppFirstName');
+	validate=true; 
+}
+
+if ($("#txtAppLastName").val() == '') {
+	
+	input_if('txtAppLastName');
+	$('#txtAppLastName').focus();
+	
+	validate=false;
+	return false;
+	} 
+	else{
+		input_else('txtAppLastName');
+	validate=true; 
+}
+/*
+if ($("#txtGender").val() == '') {
+	$('#txtGender').focus();
+	drop_select_if('txtGender');
+	validate=false;
+	return false;
+	} 
+	else{
+		drop_select_else('txtGender');
+	validate=true; 
+}*/
+
+/*
+if ($("#appDob").val() == '' ) {
+
+	$('#appDob').focus();
+	input_if('appDob');
+	$('#appDob').parent().parent().find('.errortxt').css('display', 'inline');
+	validate=false;
+	return false;
+	} 
+	else{
+		input_else('appDob');
+		$('#appDob').parent().parent().find('.errortxt').css('display', 'none');
+	validate=true; 
+}
+
+ */
+ if ($("#txtEmail").val() == '') {
+
+	$('#txtEmail').focus();
+	input_if('txtEmail');
+	validate=false;
+	return false;
+} 
+else{
+	input_else('txtEmail');
+	validate=true; 
+}
+
+if($("#txtEmail").val() != ''){
+	if(!validateEmail($('#txtEmail').val(),false)){
+
+	//$('#txtEmail').parent().find('.errortxt').html('The Email Address format is invalid. The valid Email Address format is name@org.com or name@org.co.in');
+		//$('#txtEmail').parent().find('.errortxt').css('display','inline');
+		alert('The Email Address format is invalid. The valid Email Address format is name@org.com or name@org.co.in');
+		$('#txtEmail').focus();
+		validate=false;
+		return false;
+	}
+	else{
+		$('#txtEmail').parent().find('.errortxt').html('Please enter Active Email Address.');
+		$('#txtEmail').parent().find('.errortxt').css('display','none');
+		validate=true;
+	}
+}
+if ($("#appDob").val() == '' ) 
+{
+		$('#appDob').focus();
+		input_if('appDob');
+		$('#appDob').parent().parent().find('.errortxt').css('display', 'inline');
+		validate=false;
+		return false;
+	} 
+	else
+	{
+		input_else('appDob');
+		$('#appDob').parent().parent().find('.errortxt').css('display', 'none');
+		validate=true; 
+}
+
+
+if($("#appDob").val() != '' ) 
+{
+	var d = new Date();
+	var month = d.getMonth()+1;
+	var day   = d.getDate();
+	var output = ((''+day).length<2 ? '0' : '') + day + '/' + ((''+month).length<2 ? '0' : '') + month + '/' + d.getFullYear() ;
+	
+	var dob = formatDate($("#appDob").val());
+	var today = formatDate(output);
+	dob = new Date(dob)
+	today = new Date(today)
+	var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+	//alert($("#appDob").val()+" / "+output+" / "+age+' years old');
+	$("#txtAge").val(age);
+	if(age < 18 || age > 28)
+	{
+		alert("You must be at least 18 to 28 years old");
+		$('#appDob').focus();
+		validate=false;
+		return false;
+	}
+	else
+	{
+		input_else('appDob');
+		validate=true; 
+	}	
+}
+
+if($("#txtResState").val() == '') 
+{
+	$('#txtResState').focus();
+	drop_select_if('txtResState');
+	validate=false;
+	return false;
+	} 
+	else{
+		drop_select_else('txtResState');
+		validate=true; 
+}
+
+if($("#txtResCity").val() == '') 
+{
+	$('#txtResCity').focus();
+	drop_select_if('txtResCity');
+	validate=false;
+	return false;
+	} 
+	else
+	{
+		drop_select_else('txtResCity');
+		validate=true; 
+}
+
+if($("#txtMobileNo").val() == '') {
+
+$('#txtMobileNo').focus();
+input_if('txtMobileNo');
+validate=false;
+return false;
+} 
+else{
+	input_else('txtMobileNo');
+validate=true; 
+}
+
+if($("#txtDiplomaDegree").val() == '') 
+{
+	$('#txtDiplomaDegree').focus();
+	drop_select_if('txtDiplomaDegree');
+	validate=false;
+	return false;
+	} 
+	else{
+		drop_select_else('txtDiplomaDegree');
+	validate=true; 
+}
+
+if($("#txtDiplomaDegree").val() == 'Others'){
+	if ($("#txtOtherDiploma").val() == '') {
+
+		$('#txtOtherDiploma').focus();
+		input_if('txtOtherDiploma');
+		validate=false;
+		return false;
+		} 
+		else{
+			input_else('txtOtherDiploma');
+		validate=true; 
+	}
+}
+
+if ($("#txtBranch").val() == '') {
+
+	$('#txtBranch').focus();
+	drop_select_if('txtBranch');
+	validate=false;
+	return false;
+	} 
+	else{
+		drop_select_else('txtBranch');
+	validate=true; 
+}
+
+if($("#txtBranch").val() == 'Others'){
+	if ($("#txtOtherBranch").val() == '') {
+		$('#txtOtherBranch').focus();
+		input_if('txtOtherBranch');
+		validate=false;
+		return false;
+	} else {
+		input_else('txtOtherBranch');
+		validate=true; 
+	}
+}
+if ($("#txtYearOfPassing").val() == '') 
+{
+	$('#txtYearOfPassing').focus();
+	input_if('txtYearOfPassing');
+	$('#txtYearOfPassing').parent().parent().find('.errortxt').css('display', 'inline');
+	validate=false;
+	return false;
+} 
+else
+{
+	input_else('txtYearOfPassing');
+		$('#txtYearOfPassing').parent().parent().find('.errortxt').css('display', 'none');
+	validate=true; 
+}
+
+	if($("#txtCollege").val() == "") 
+	{
+		$('#txtCollege').focus();
+		drop_select_if('txtCollege');
+		validate=false;
+		return false;
+	} else {
+		drop_select_else('txtCollege');
+		validate=true;  
+	}
+	
+	if($("#txtCollege").val() == "OTHER")
+	{
+		if($("#txtOtherInst").val() == "") 
+		{	
+			$("#txtOtherInst").focus();
+			input_if('txtOtherInst');
+			validate=false;
+			return false;
+		} 
+		else
+		{
+			input_else('txtOtherInst');
+			validate=true; 
+		}
+	}
+
+
+if($("#txtExamMode").val() == '') {
+	//drop_select_if('txtExamMode');
+	$('#modeexamYes').focus();
+	$(".modexam").show();
+	validate=false;
+	return false;
+	} 
+	else{
+	//drop_select_else('txtExamMode');
+	$(".modexam").hide();
+	validate=true; 
+}
+
+if($("#txtExamMode").val() == "In - Centre")
+{
+	if ($("#txtStateCenterChoice1").val() == '') {
+			$('#txtStateCenterChoice1').focus();
+			drop_select_if('txtStateCenterChoice1');
+			validate=false;
+			return false;
+		} else{
+			drop_select_else('txtStateCenterChoice1');
+			validate=true; 
+	}
+	if ($("#CenterChoice1").val() == '') {
+		$('#CenterChoice1').focus();
+		drop_select_if('CenterChoice1');
+		validate=false;
+		return false;
+		} 
+		else{
+			drop_select_else('CenterChoice1');
+		validate=true; 
+	}
+}
+
+if(eval(validateuploaddocuments()))
+{
+	validate=true; 
+}else{
+
+	validate=false;
+	return false;
+}
+
+if($("#txtCorpChoice").val() == '') {
+		$('#apply_tcs_program1').focus();
+		//drop_select_if('txtCorpChoice');
+		$(".prglang").show();
+		validate=false;
+		return false;
+	} 
+	else{
+		//drop_select_else('txtCorpChoice');
+		$(".prglang").hide();
+		validate=true; 
+}
+
+var strSelectedGrade = "";
+var strSelectedGradeView = "";
+var intIndex = 1;
+$('.tests').each(function(){
+if($(this).is(":checked")){
+strSelectedGrade+= $(this).val()+ ", ";
+intIndex++;
+}
+});
+if(strSelectedGrade != " ")
+{
+strSelectedGrade = strSelectedGrade.trim();
+var lastChar = strSelectedGrade.slice(-1);
+if(lastChar == ',') {
+	strSelectedGrade = strSelectedGrade.slice(0, -1);
+}
+$("#txtLang").val(strSelectedGrade);
+}
+
+if(document.getElementById("acceptanceCHK").checked==false)
+{
+	$('#AgreeText').show();
+	validate="false";
+	return false;
+}
+else
+{
+	$('#AgreeText').hide();
+	validate=true;
+}
+document.getElementById('txtAppName').value = $('#txtAppFirstName').val()+" "+$('#txtAppLastName').val();
+
+if ($("#txtUid").val() == '') {
+	alert("User Id is required");
+	validate=false;
+	return false;
+}
+else
+{
+	validate=true; 
+}
+
+if($('#txtOtpStatusEmail').val() != $('#txtEmail').val() || $('#txtOtpStatusMobile').val() != $('#txtMobileNo').val())
+{
+	alert("Kindly validate your mobile number OR email address by clicking on Generate OTP button");
+	validate=false;
+	return false;
+}
+else
+{
+	validate=true; 
+}	
+
+
+return true;
+}
+
+function City2(selId){
+	if ($("#CenterChoice1").val() == $("#CenterChoice2").val() ){
+		alert("City already selected Please Choose Different City");
+		$('#'+selId+' option:contains("---Select---")').prop('selected',true);
+		$(this.id).focus("");
+		return false;
+	} 
+}
+
+
+/************  Functions **********/
+function trimSpacesFromAllTextBox() {
+var inputs = document.getElementsByTagName('input');
+for (var k = 0; k < inputs.length; k++) {
+var input = inputs[k]
+if (input.type != 'text')
+continue;
+input.value = trim(input.value);
+}
+}
+
+
+function saveData(submitType,button_id)
+{
+	$('#app_status').val("Submitted");
+	if ($("#txtUid").val() == '') 
+	{
+		alert("User Id is required");
+		validate=false;
+		return false;
+	}
+	else
+	{
+		validate=true; 
+	}
+	if(document.getElementById("adminFlag").value!="Y")
+	{
+		eval(validateIonCaptcha("submitForm","Submit"));
+	}
+	else if(document.getElementById("adminFlag").value=="Y")
+	{ 
+		eval(validateIonCaptcha("saveFormData","Submit"));
+	}
+}
+
+function drop_value()
+{
+	if($('#txtCenterChoice2').val()==$('#txtCenterChoice1').val())
+	{
+		alert('You have already selected this center.');
+		$('#txtCenterChoice2').val("");
+		$('#txtCenterChoice2').selectpicker("refresh");
+	}
+}
+
+function validateuploaddocuments()
+{
+	var uploadCheck1;
+	var uploadCheck2;
+	var stringToSplit;
+	var separator;
+	stringToSplit=document.getElementById("txtFileName").value;
+	separator='||';
+	elementToSearch1='txtPhotoPath';
+	elementToSearch2='txtSignaturePath';
+	elementToSearch3='txtResumePath';
+	
+	uploadCheck1=splituploadDocsString(stringToSplit, separator,elementToSearch1);
+	uploadCheck2=splituploadDocsString(stringToSplit, separator,elementToSearch2);
+	uploadCheck3=splituploadDocsString(stringToSplit, separator,elementToSearch3);
+	
+	if(uploadCheck1==0)
+	{
+		//alert("Please upload recent Passport sized colour photograph.");
+		$('#txtPhotoPath_span').html('Please upload a recent photograph.').css('color','red');
+		$('#modeexamYes').focus();
+		validate=false;
+		return false;
+	}
+	else{
+		$('#txtPhotoPath_span').html('').css('color','white');
+	}
+	return true;
+	
+	/*if(uploadCheck2==0)
+	{
+    	alert("Upload your scanned  signature.");
+		$('#modeexamYes').focus();
+		$('#txtPhotoPath_span').html('Please upload your scanned signature.').css('color','red');
+		validate=false;
+		return false;
+	}
+	else{
+		$('#txtPhotoPath_span').html('').css('color','white');
+	}
+	
+	if(uploadCheck3==0)
+	{
+ 	alert("Please upload recent Passport sized colour photograph.");
+		$('#txtResumePath_span').html('upload recent Resume.').css('color','red');
+		validate=false;
+		return false;
+	}
+	else{
+		$('#txtResumePath_span').html('').css('color','white');
+	}*/
+}
+
+
+
+function splituploadDocsString(stringToSplit, separator,elementToSearch) 
+{
+	var arrayOfStrings = stringToSplit.split(separator);
+	var a=0;
+	for (var i=0; i < arrayOfStrings.length; i++)
+	{
+		if(elementToSearch==arrayOfStrings[i])
+		{
+			a=a+1;
+		}
+	}
+	return a;
+}
+
+function postM(){
+	var formSubmitted = 'formSubmitted';
+	var data='data';
+	parent.postMessage([{action:"communicateWithMicrosite"},{actionIdentifier : 'formSubmitted'},{data:'data'}],'*');
+}
+
+function fnHideEmptyFields()
+{ 
+	var urlToken=document.location.search;
+	urlToken=urlToken.split('=');
+	seqNo=urlToken[1];
+	if($('#app_status_div').html()=='Submitted' && seqNo!='DisplayProfileAfterLogin&orgId')
+	{
+		//$('#edit').show();
+		//$('#formstatus').html("Your Application form has been submitted Successfully");
+		//$('#formstatus').hide();
+		setTimeout(function(){  	
+			//$('#myModal').modal('show');
+		}, 1500);
+	}
+	if($('#app_status_div').html()=='Submitted' && seqNo=='DisplayProfile&orgId')
+	{
+		$('#edit').hide();
+		$('#formstatus').hide();
+		setTimeout(function(){  	
+			//$('#myModal2').modal('show');
+		}, 3000);
+	}
+	
+	if($('#app_status_div').html()=='Submitted' && seqNo!='DisplayProfile&orgId')
+	{
+		postM();
+		console.log("after postM");
+	}
+	
+	
+	if($('#app_status_div').html()=='Registered')
+	{
+		$('#app_status_div').hide();
+	}
+	
+	if($('#payment_status_div').html()=='S')
+	{
+		$('#edit').show();
+		$('#PaymentModal').modal('show');
+		$('#payment_status_div').html('Successful');
+	}
+	if($('#app_status_div').html()!='Submitted')
+	{
+		$('#formstatus').hide();
+	}
+	 $('.responsive-tabs').bootstrapResponsiveTabs({ minTabWidth: 180, maxTabWidth: 325 });
+	
+}
+
+function CheckAgree()
+{
+	if(document.getElementById('acceptanceCHK').checked==false)
+	{
+		document.getElementById('acceptanceCHK').checked=true;
+	}
+	else
+	{
+	document.getElementById('acceptanceCHK').checked=false;
+	}
+}
+
+
+function addExpRow(id, maxsize, columnarray, suffix) {
+for (var a = 1; a <= maxsize; a++) {
+if (document.getElementById(id + a).style.display == '') {
+for (var columnid = 0; columnarray != null
+&& columnid < columnarray.length; columnid++) {
+if (0 == document.getElementById(columnarray[columnid] + a).value.length) {
+if (suffix != null) {
+alert("Please completely fill row " + a + " of "
++ suffix + ".");
+// return false;
+} else {
+alert("Please first fill all rows of " + suffix + ".");
+// return false;
+}
+return;
+}
+}
+} else {
+break;
+}
+}
+if (a == (maxsize + 1))
+alert("You cannot add any more details. Please click on Delete last row if any Language details needs to be replaced.");
+else {
+if (document.getElementById(id + a).style.display == 'none') {
+document.getElementById(id + a).style.display = '';
+}
+}
+
+}
+function deleteExpRow(id, id_array, maxsize) {
+a = maxsize;
+while (a > 1) {
+if (document.getElementById(id + a).style.display == '') {
+document.getElementById(id + a).style.display = 'none';
+document.getElementById(id_array[0]+a).value = '';
+for (var index = 1; index <= id_array.length; index++) {
+//	document.getElementById(id_array[index]+a).value = '';
+	if(a<=3 && a>1)
+	{
+		for(var i=a*3; i>((a*3)-3) ;i--)
+		{
+			$('#txtLangType'+i).attr('checked', false);
+		}
+	}
+}
+break;
+}
+
+a--;
+}
+$('.selectpicker').selectpicker('refresh');
+
+}
+
+
+function DateTime(filedname)
+{
+	moment('01/12/2016', 'DD/MM/YYYY').format();
+	$("#" + filedname).datetimepicker({
+		showTodayButton:true,
+		showClear:true,
+		showClose:true,
+		ignoreReadonly: true,
+		toolbarPlacement:'top',
+		format: 'DD/MM/YYYY',
+		maxDate:new Date('12/31/2002'),
+		minDate:new Date('01/01/1992')}); //new Date('MM/DD/YYYY');
+		document.getElementById(filedname).focus();
+} 
+
+function DateTime1(filedname)
+{
+	//var curr_year	=	new Date().getFullYear();
+	//var next_year	=	parseInt(curr_year) + 1;
+	//var prev_year	=	parseInt(curr_year) - 1;
+	moment('01/12/2016', 'DD/MM/YYYY').format();
+	$("#" + filedname).datetimepicker({
+		showTodayButton:true,
+		showClear:true,
+		showClose:true,
+		ignoreReadonly: true,
+		toolbarPlacement:'top',  
+		format: 'MM/YYYY',
+		maxDate:new Date('12/31/2022'),
+		minDate:new Date('01/01/2000')
+		}); //new Date('MM/DD/YYYY');
+		document.getElementById(filedname).focus();
+}
+ 
+
+
+/*24-07-2017*/
+function Year_Check(id,id1,statement){
+	if($('#'+id1).val()!="" && $('#'+id).val()!="")
+		{
+			var AppliYear = '';
+			var dateString = $('#'+id1).val();
+			if(dateString.includes('/'))
+			{
+			var AppliDob=dateString.split('/');
+			AppliYear = AppliDob[2];
+			}
+			else{
+				AppliYear = dateString;
+			}
+			var EdateString = $('#'+id).val();
+			if(AppliYear>=EdateString){
+				alert(""+statement);
+				$('#'+id).val("");
+				$('#'+id).focus();
+			} 
+		}
+}
+
+
+function showDistrict(id){
+var selbox1 = null;
+
+ /*if (id == "txtState")
+{
+	if(document.getElementById('txtState').value!="")
+	{ 
+		selbox1 = document.getElementById('txtDistrict1');
+		selbox1.options.length = 1;
+	}
+}*/
+ 
+if (selbox1 != null){
+if(document.getElementById(id).value== "ANDHRA PRADESH"){var myArray1=["---Select---","Anantapur","Chittoor","Cuddaph","East Godavari","Guntur","Krishna","Kurnool","Prakasam","Nellore","Srikakulam","Visakhapatnam","Vizianagaram","West Godavari"]; myArray1.sort(); for (var i = 1; i < myArray1.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray1[i], myArray1[i]);} }
+if(document.getElementById(id).value== "ARUNACHAL PRADESH"){var myArray2=["---Select---","Anjaw","Changlang","East Kameng","East Siang","Lohit","Longding","Lower Subansiri","Papum Pare","Tawang","Tirap","Lower Dibang Valley","Upper Siang","Upper Subansiri","West Kameng","West Siang","Upper Dibang Valley","Kurung Kumey"]; myArray2.sort(); for (var i = 1; i < myArray2.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray2[i], myArray2[i]);} }
+if(document.getElementById(id).value== "ASSAM"){var myArray3=["---Select---","Barpeta","Bongaigaon","Cachar","Darrang","Dhemaji","Dhubri","Dibrugarh","Goalpara","Golaghat","Hailakandi","Jorhat","Kamrup","Karbi Anglong","Karimganj","Kokrajhar","Lakhimpur","Marigaon","Nagaon","Nalbari","Dima Hasao","Sivasagar","Sonitpur","Tinsukia","Kamrup Metro","Udalguri","Baksa","Chirang"]; myArray3.sort(); for (var i = 1; i < myArray3.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray3[i], myArray3[i]);} }
+if(document.getElementById(id).value== "BIHAR"){var myArray4=["---Select---","Araria","Arwal","Aurangabad","Banka","Begusarai","Bhagalpur","Bhojpur","Buxar","Darbhanga","East Champaran","Gaya","Gopalganj","Jamui","Jehanabad","Khagaria","Kishanganj","Kaimur","Katihar","Lakhisarai","Madhubani","Munger","Madhepura","Muzaffarpur","Nalanda","Nawada","Patna","Purnia","Rohtas","Saharsa","Samastipur","Sheohar","Sheikhpura","Saran","Sitamarhi","Supaul","Siwan","Vaishali","West Champaran"];  myArray4.sort(); for (var i = 1; i < myArray4.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray4[i], myArray4[i]);} }
+if(document.getElementById(id).value== "CHHATTISGARH"){var myArray5=["---Select---","Balod","Baloda Bazar","Balrampur","Bastar","Bemetara","Bijapur","Bilaspur","Dantewada","Dhamtari","Durg","Gariaband","Jashpur","Janjgir-Champa","Kondagaon","Korba","Koriya","Kanker","Kabirdham","Mahasamund","Mungeli","Narayanpur","Raigarh","Rajnandgaon","Raipur","Surajpur","Sukma","Surguja"];  myArray5.sort(); for (var i = 1; i < myArray5.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray5[i], myArray5[i]);} }
+if(document.getElementById(id).value== "GOA"){var myArray6=["---Select---","North Goa","South Goa"]; myArray6.sort(); for (var i = 1; i < myArray6.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray6[i], myArray6[i]);} }
+if(document.getElementById(id).value== "GUJARAT"){var myArray7=["---Select---","Ahmedabad","Amreli","Anand","Aravalli","Banaskantha","Bharuch","Bhavnagar","Botad","Chhota Udaipur","Dahod","Dang","Devbhoomi Dwarka","Gandhinagar","Gir Somnath","Jamnagar","Junagadh","Kheda","Kutch","Mahisagar","Mehsana","Morbi","Narmada","Navsari","Panchmahal","Patan","Porbandar","Rajkot","Sabarkantha","Surat","Surendranagar","Tapi","Vadodara","Valsad"];  myArray7.sort(); for (var i = 1; i < myArray7.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray7[i], myArray7[i]);} }
+if(document.getElementById(id).value== "HARYANA"){var myArray8=["---Select---","Ambala","Bhiwani","Faridabad","Fatehabad","Gurgaon","Hisar","Jhajjar","Jind","Kaithal","Karnal","Kurukshetra","Mahendragarh","Mewat","Palwal","Panchkula","Panipat","Rewari","Rohtak","Sirsa","Sonipat","Yamuna Nagar"];  myArray8.sort(); for (var i = 1; i < myArray8.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray8[i], myArray8[i]);} }
+if(document.getElementById(id).value== "HIMACHAL PRADESH"){var myArray9=["---Select---","Bilaspur","Chamba","Hamirpur","Kangra","Kinnaur","Kullu","Lahaul and Spiti","Mandi","Shimla","Sirmaur","Solan","Una"];  myArray9.sort(); for (var i = 1; i < myArray9.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray9[i], myArray9[i]);} }
+if(document.getElementById(id).value== "JAMMU AND KASHMIR"){var myArray10=["---Select---","Jammu","Doda","Kishtwar","Rajouri","Reasi","Udhampur","Ramban","Kathua","Samba","Poonch","Srinagar","Anantnag","Kulgam","Pulwama","Shopian","Budgam","Ganderbal","Bandipora","Baramulla","Kupwara","Kargil","Leh"];  myArray10.sort(); for (var i = 1; i < myArray10.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray10[i], myArray10[i]);} }
+if(document.getElementById(id).value== "JHARKHAND"){var myArray11=["---Select---","Garhwa","Palamu","Latehar","Chatra","Hazaribagh","Koderma","Giridih","Ramgarh","Bokaro","Dhanbad","Lohardaga","Gumla","Simdega","Ranchi","Khunti","West Singhbhum","Saraikela Kharsawan","East Singhbhum","Jamtara","Deoghar","Dumka","Pakur","Godda","Sahebganj"];  myArray11.sort(); for (var i = 1; i < myArray11.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray11[i], myArray11[i]);} }
+if(document.getElementById(id).value== "KARNATAKA"){var myArray12=["---Select---","Chamarajanagar","Chikamagalur","Dakshina Kannada","Hassan","Kodagu","Mandya","Mysore","Udupi","Bellary","Bidar","Gulbarga","Koppal","Raichur","Yadgir","Bagalkot","Belgaum","Bijapur","Dharwad","Gadag","Haveri","Uttara Kannada","Bangalore Urban","Bangalore Rural","Chikkaballapur","Chitradurga","Davanagere","Kolar","Ramanagara","Shimoga","Tumakuru"];  myArray12.sort(); for (var i = 1; i < myArray12.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray12[i], myArray12[i]);} }
+if(document.getElementById(id).value== "KERALA"){var myArray13=["---Select---","Alappuzha","Ernakulam","Idukki","Kannur","Kasaragod","Kollam","Kottayam","Kozhikode","Malappuram","Palakkad","Pathanamthitta","Thiruvananthapuram","Thrissur","Wayanad"];  myArray13.sort(); for (var i = 1; i < myArray13.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray13[i], myArray13[i]);} }
+if(document.getElementById(id).value== "MADHYA PRADESH"){var myArray14=["---Select---","Bhopal","Raisen","Rajgarh","Sehore","Vidisha","Morena","Sheopur","Bhind","Ashoknagar","Shivpuri","Datia","Guna","Gwalior","Alirajpur","Barwani","Burhanpur","Dhar","Indore","Jhabua","Khandwa","Khargone (West Nimar)","Balaghat","Chhindwara","Jabalpur","Katni","Mandla","Narsinghpur","Seoni","Betul","Harda","Hoshangabad","Rewa","Satna","Sidhi","Singrauli","Chhatarpur","Damoh","Panna","Sagar","Tikamgarh","Anuppur","Shahdol","Umaria","Dindori","Agar Malwa","Dewas","Mandsaur","Neemuch","Ratlam","Shajapur","Ujjain"];  myArray14.sort(); for (var i = 1; i < myArray14.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray14[i], myArray14[i]);} }
+if(document.getElementById(id).value== "MAHARASHTRA"){var myArray15=["---Select---","Ahmednagar","Akola","Amravati","Aurangabad","Beed","Bhandara","Buldhana","Chandrapur","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai City","Mumbai Suburban","Nagpur","Nanded","Nandurbar","Nashik","Osmanabad","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindhudurg","Solapur","Thane","Wardha","Washim","Yavatmal","Palghar"];  myArray15.sort(); for (var i = 1; i < myArray15.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray15[i], myArray15[i]);} }
+if(document.getElementById(id).value== "MANIPUR"){var myArray16=["---Select---","Bishnupur","Churachandpur","Chandel","Imphal East","Senapati","Tamenglong","Thoubal","Ukhrul","Imphal West"];  myArray16.sort(); for (var i = 1; i < myArray16.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray16[i], myArray16[i]);} }
+if(document.getElementById(id).value== "MEGHALAYA"){var myArray17=["---Select---","Jowai","Khliehriat","Shillong","Nongstoin","Mawkyrwat","Nongpoh","Resubelpara","Williamnagar","Baghmara","Tura","Ampati"];  myArray17.sort(); for (var i = 1; i < myArray17.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray17[i], myArray17[i]);} }
+if(document.getElementById(id).value== "MIZORAM"){var myArray18=["---Select---","Aizawl","Kolasib","Lawngtlai","Lunglei","Mamit","Saiha","Serchhip","Champhai"];  myArray18.sort(); for (var i = 1; i < myArray18.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray18[i], myArray18[i]);} }
+if(document.getElementById(id).value== "NAGALAND"){var myArray19=["---Select---","Dimapur","Kiphire","Kohima","Longleng","Mokokchung","Mon","Peren","Phek","Tuensang","Wokha","Zunheboto"];  myArray19.sort(); for (var i = 1; i < myArray19.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray19[i], myArray19[i]);} }
+if(document.getElementById(id).value== "ODISHA"){var myArray20=["---Select---","Angul","Bargarh","Bhadrak","Balasore","Balangir","Boudh","Cuttack","Deogarh","Dhenkanal","Gajapati","Ganjam","Jagatsinghapur","Jajpur","Jharsuguda","Kalahandi","Kandhamal","Kendrapara","Keonjhar","Khurda","Koraput","Malkangiri","Mayurbhanj","Nuapada","Nabarangpur","Nayagarh","Puri","Rayagada","Sambalpur","Subarnapur","Sundargarh"];  myArray20.sort(); for (var i = 1; i < myArray20.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray20[i], myArray20[i]);}}
+if(document.getElementById(id).value== "PONDICHERRY"){var myArray21=["---Select---","Karaikal","Mahe","Puducherry","Yanam"];  myArray21.sort(); for (var i = 1; i < myArray21.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray21[i], myArray21[i]);} }
+if(document.getElementById(id).value== "RAJASTHAN"){var myArray22=["---Select---","Ajmer","Alwar","Banswara","Baran","Barmer","Bharatpur","Bhilwara","Bikaner","Bundi","Chittorgarh","Churu","Dausa","Dholpur","Dungarpur","Hanumangarh","Jaipur","Jaisalmer","Jalor","Jhalawar","Jhunjhunu","Jodhpur","Karauli","Kota","Nagaur","Pali","Pratapgarh","Rajsamand","Sawai Madhopur","Sikar","Sirohi","Sri Ganganagar","Tonk","Udaipur"];  myArray22.sort(); for (var i = 1; i < myArray22.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray22[i], myArray22[i]);} }
+if(document.getElementById(id).value== "SIKKIM"){var myArray23=["---Select---","East Sikkim","North Sikkim","South Sikkim","West Sikkim"];  myArray23.sort(); for (var i = 1; i < myArray23.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray23[i], myArray23[i]);} }
+if(document.getElementById(id).value== "TAMIL NADU"){var myArray24=["---Select---","Ariyalur","Chennai","Coimbatore","Cuddalore","Dharmapuri","Dindigul","Erode","Kanchipuram","Kanniyakumari","Karur","Krishnagiri","Madurai","Nagapattinam","Namakkal","The Nilgiris","Perambalur","Pudukkottai","Ramanathapuram","Salem","Sivagangai","Thanjavur","Theni","Thoothukudi","Tiruchirappalli","Thirunelveli","Tiruppur","Thiruvallur","Tiruvannamalai","Thiruvarur","Vellore","Villupuram","Virudhunagar"];  myArray24.sort(); for (var i = 1; i < myArray24.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray24[i], myArray24[i]);} }
+if(document.getElementById(id).value== "TELANGANA"){var myArray25=["---Select---","Adilabad","Hyderabad","Karimnagar","Khammam","Mahbubnagar","Medak","Nalgonda","Nizamabad","Rangareddy","Warangal"];  myArray25.sort(); for (var i = 1; i < myArray25.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray25[i], myArray25[i]);} }
+if(document.getElementById(id).value== "UTTAR PRADESH"){var myArray26=["---Select---","Agra","Aligarh","Allahabad","Ambedkar Nagar","Auraiya","Azamgarh","Bagpat","Bahraich","Ballia","Balrampur","Banda","Barabanki","Bareilly","Basti","Bijnor","Budaun","Bulandshahr","Chandauli","Chitrakoot","Deoria","Etah","Etawah","Faizabad","Farrukhabad","Fatehpur","Firozabad","Gautam Buddha Nagar","Ghaziabad","Ghazipur","Gonda","Gorakhpur","Hamirpur","Hardoi","Hathras","Jalaun","Jaunpur","Jhansi","Jyotiba Phule Nagar","Kannauj","Kanpur Dehat","Kanpur Nagar","Kaushambi","Kheri","Kushinagar","Lalitpur","Lucknow","Mahoba","Maharajganj","Mainpuri","Mathura","Mau","Meerut","Mirzapur","Moradabad","Muzaffarnagar","Pilibhit","Pratapgarh","RaeBareli","Rampur","Saharanpur","Sant Kabir Nagar","Sant Ravidas Nagar","Shahjahanpur","Shravasti","Siddharthnagar","Sitapur","Sonbhadra","Sultanpur","Unnao","Varanasi","Manyavar Kanshiram Nagar","Prabuddha Nagar","Panchsheel Nagar","Bhim Nagar","Chhatrapati Shahuji Maharaj Nagar"];  myArray26.sort(); for (var i = 1; i < myArray26.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray26[i], myArray26[i]);} }
+if(document.getElementById(id).value== "UTTARAKHAND"){var myArray27=["---Select---","Almora","Bageshwar","Chamoli","Champawat","Dehradun","Pauri Garhwal","Haridwar","Nainital","Pithoragarh","Rudraprayag","Tehri Garhwal","Udham Singh Nagar","Uttarkashi"];  myArray27.sort(); for (var i = 1; i < myArray27.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray27[i], myArray27[i]);} }
+if(document.getElementById(id).value== "TRIPURA"){var myArray28=["---Select---","Dhalai","North Tripura","South Tripura","West Tripura","Gomati","Khowai","Sepahijala","Unakoti"];  myArray28.sort(); for (var i = 1; i < myArray28.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray28[i], myArray28[i]);} }
+if(document.getElementById(id).value== "WEST BENGAL"){var myArray29=["---Select---","Bankura","Bardhaman","Birbhum","East Midnapore - Purba Medinipur","Hooghly","Purulia","West Midnapore - Paschim Medinipur","Cooch Behar","Darjeeling","Alipurduar","Jalpaiguri","Malda","North Dinajpur - Uttar Dinajpur","South Dinajpur - Dakshin Dinajpur","Howrah","Kolkata","Murshidabad","Nadia","North 24 Parganas - Uttar 24 Parganas","South 24 Parganas - Dakshin 24 Parganas"];  myArray29.sort(); for (var i = 1; i < myArray29.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray29[i], myArray29[i]);} }
+if(document.getElementById(id).value== "ANDAMAN AND NICOBAR ISLANDS"){var myArray30=["---Select---","North and Middle Andaman","Nicobar","South Andaman"];  myArray30.sort(); for (var i = 1; i < myArray30.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray30[i], myArray30[i]);} }
+if(document.getElementById(id).value== "CHANDIGARH"){var myArray31=["---Select---","Chandigarh"];  myArray31.sort(); for (var i = 1; i < myArray31.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray31[i], myArray31[i]);} }
+if(document.getElementById(id).value== "DADRA AND NAGAR HAVELI"){var myArray32=["---Select---","Dadra and Nagar Haveli"];  myArray32.sort(); for (var i = 1; i < myArray32.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray32[i], myArray32[i]);} }
+if(document.getElementById(id).value== "DAMAN AND DIU"){var myArray33=["---Select---","Daman","Diu"];  myArray33.sort(); for (var i = 1; i < myArray33.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray33[i], myArray33[i]);} }
+if(document.getElementById(id).value== "Lakshadweep"){var myArray34=["---Select---","Lakshadweep"];  myArray34.sort(); for (var i = 1; i < myArray34.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray34[i], myArray34[i]);} }
+if(document.getElementById(id).value== "DELHI"){var myArray35=["---Select---","Central Delhi","East Delhi","New Delhi","North Delhi","North East Delhi","North West Delhi","South Delhi","South West Delhi","West Delhi","Shahdara","South East Delhi"];  myArray35.sort(); for (var i = 1; i < myArray35.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray35[i], myArray35[i]);} }
+if(document.getElementById(id).value== "PUDUCHERRY"){var myArray36=["---Select---","Karaikal","Mahe","Pondicherry","Yanam"];  myArray36.sort(); for (var i = 1; i < myArray36.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray36[i], myArray36[i]);} }
+if(document.getElementById(id).value== "PUNJAB"){var myArray37=["---Select---","Amritsar","Barnala","Bathinda","Firozpur","Faridkot","Fatehgarh Sahib","Fazilka[7]","Gurdaspur","Hoshiarpur","Jalandhar","Kapurthala","Ludhiana","Mansa","Moga","Sri Muktsar Sahib","Pathankot","Patiala","Rupnagar","Sahibzada Ajit Singh Nagar","Sangrur","Shahid Bhagat Singh Nagar","Tarn Taran"];  myArray37.sort(); for (var i = 1; i < myArray37.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray37[i], myArray37[i]);} }
+
+if(document.getElementById(id).value== "LAKSHADWEEP"){var myArray38=["---Select---","LAKSHADWEEP"];  myArray38.sort(); for (var i = 1; i < myArray38.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray38[i], myArray38[i]);} }
+}
+//$('#txtDistrict1').selectpicker('refresh');
+}
+ 
+
+/**************************doTaskInEdit************************************/
+function doTaskInEdit()
+{ 
+	if($('input:input')){$('input:input').attr('oncopy','return false').attr('onpaste','return false').attr('autocomplete','off');}
+	var product_name	=	$("#txtCcqtStream").val()
+	$("#txtCcqtStream_h5").text($("#txtCcqtStream").val());
+	var pro_name	=	$("#txtCcqtStream_h5").text();
+	if(pro_name.indexOf("TGQT") != -1){
+		$('#ctHeading').text("TCS iON Qualifier - TGQT selected variant");
+		$('#ctLabel').text("TCS iON Qualifier - TGQT Stream");
+	} else {
+		$('#ctHeading').text("TCS iON Qualifier - CCQT selected variant");
+		$('#ctLabel').text("TCS iON Qualifier - CCQT Stream");
+	}
+	
+	/*
+	Degree / Branch Array
+	*/
+	var sci_array		=	["Master of Science - M.Sc.","Bachelor of Science - B.Sc.","Master of Computer Applications - M.C.A.","Bachelor of Computer Applications - B.C.A.","Bachelor of Pharmacy - B.Pharm.","Master of Pharmacy - M.Pharm."];
+	var sci_role_array	=	["Physics","Chemistry","Biology","Computer Science","Information Technology","Others"];
+	
+	var art_com_array	=	["Master of Arts - M.A.","Bachelor of Arts - B.A.","Master of Commerce - M.Com.","Bachelor of Commerce - B.Com."];
+	var art_com_role_array = ["Economics","Accountancy","Statistics","Political Science","History","Sociology","Psychology","Geography","Philosophy","Human Resources","Operations","Marketing","Pharma","Others"];
+	
+	var engg_array		=	["Master of Engineering - M.E.","Bachelor of Engineering - B.E.","Master of Technology - M.Tech.","Bachelor of Technology - B.Tech."];
+	var engg_role_array = ["Chemical","Civil","Electrical","Mechanical","Computer Science","Information Technology","Instrumentation","Electronics","Electronics and Telecom","Production","Industrial","Metallurgy","Aeronautical","Others"];
+	
+	var mgmt_array		=	["Master of Business Administration - MBA","Bachelor of Business Administration - BBA", "Post Graduate Diploma in Management - PGDM"];
+	var mgmt_role_array = ["Marketing","Finance","Operations","Human Resources","Business Management","Others"];
+	
+	/*
+		Science
+	*/
+	if(product_name == "TCS iON Qualifier - TGQT - Non Engineering Graduates - Science" || product_name == "TCS iON Qualifier - CCQT - Science Graduates"  || product_name == "TCS iON Qualifier - CCQT - Science Graduates")
+	{
+		$('#txtDiplomaDegree').empty();
+		//$('#txtDiplomaDegree').append($("<option></option>").text("---Select---").val(""));
+		
+		$('#txtBranch').empty();
+		//$('#txtBranch').append($("<option></option>").text("---Select---").val(""));
+		for(var p=0; p < sci_array.length; p++){
+			$('#txtDiplomaDegree').append($("<option></option>").val(sci_array[p]).attr('title',sci_array[p]).text(sci_array[p]));
+		}
+		//$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+		//$('#txtDiplomaDegree').append($("<option></option>").text("NA").val("NA"));
+		$('#txtDiplomaDegree').selectpicker('refresh');
+		
+		for(var r=0; r < sci_role_array.length; r++){
+			$('#txtBranch').append($("<option></option>").val(sci_role_array[r]).attr('title',sci_role_array[r]).text(sci_role_array[r]));
+		}
+		//$('#txtBranch').append($("<option></option>").text("NA").val("NA"));
+		$('#txtBranch').selectpicker('refresh');
+	}
+	
+	/*
+		Arts & Commerce
+	*/
+	if(product_name == "TCS iON Qualifier - TGQT - Non Engineering Graduates - Arts & Commerce" || product_name == "TCS iON Qualifier - CCQT - Arts and Commerce Graduates"  || product_name == "TCS iON Qualifier - CCQT - Arts and Commerce Graduates")
+	{
+		$('#txtDiplomaDegree').empty();
+		$('#txtDiplomaDegree').append($("<option></option>").text("---Select---").val(""));
+		
+		$('#txtBranch').empty();
+		$('#txtBranch').append($("<option></option>").text("---Select---").val(""));
+		for(var p=0; p < art_com_array.length; p++){
+			$('#txtDiplomaDegree').append($("<option></option>").val(art_com_array[p]).attr('title',art_com_array[p]).text(art_com_array[p]));
+		}
+		//$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+		//$('#txtDiplomaDegree').append($("<option></option>").text("NA").val("NA"));
+		$('#txtDiplomaDegree').selectpicker('refresh');
+		
+		for(var r=0; r < art_com_role_array.length; r++){
+			$('#txtBranch').append($("<option></option>").val(art_com_role_array[r]).attr('title',art_com_role_array[r]).text(art_com_role_array[r]));
+		}
+		//$('#txtBranch').append($("<option></option>").text("NA").val("NA"));
+		$('#txtBranch').selectpicker('refresh');
+	}
+	
+	/*
+		Engineering
+	*/
+	if(product_name == "TCS iON Qualifier - CCQT - Engineering Graduates" || product_name == "TCS iON Qualifier - TGQT - Engineering Graduates" || product_name == "TCS iON Qualifier - CCQT - Engineering Graduates")
+	{
+		$('#txtDiplomaDegree').empty();
+		$('#txtDiplomaDegree').append($("<option></option>").text("---Select---").val(""));
+		
+		$('#txtBranch').empty();
+		$('#txtBranch').append($("<option></option>").text("---Select---").val(""));
+		for(var p=0; p < engg_array.length; p++){
+			$('#txtDiplomaDegree').append($("<option></option>").val(engg_array[p]).attr('title',engg_array[p]).text(engg_array[p]));
+		}
+		//$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+		//$('#txtDiplomaDegree').append($("<option></option>").text("NA").val("NA"));
+		$('#txtDiplomaDegree').selectpicker('refresh');
+		
+		for(var r=0; r < engg_role_array.length; r++){
+			$('#txtBranch').append($("<option></option>").val(engg_role_array[r]).attr('title',engg_role_array[r]).text(engg_role_array[r]));
+		}
+		//$('#txtBranch').append($("<option></option>").text("NA").val("NA"));
+		$('#txtBranch').selectpicker('refresh');
+	}
+	
+	/*
+	Management
+	*/
+	if(product_name == "TCS iON Qualifier - TGQT - Management Graduates" || product_name == "TCS iON Qualifier - CCQT - Management Graduates"  || product_name == "TCS iON Qualifier - CCQT - Management Graduates")
+	{
+		$('#txtDiplomaDegree').empty();
+		$('#txtDiplomaDegree').append($("<option></option>").text("---Select---").val(""));
+		
+		$('#txtBranch').empty();
+		$('#txtBranch').append($("<option></option>").text("---Select---").val(""));
+		for(var p=0; p < mgmt_array.length; p++){
+			$('#txtDiplomaDegree').append($("<option></option>").val(mgmt_array[p]).attr('title',mgmt_array[p]).text(mgmt_array[p]));
+		}
+		//$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+		//$('#txtDiplomaDegree').append($("<option></option>").text("NA").val("NA"));
+		$('#txtDiplomaDegree').selectpicker('refresh');
+		
+		for(var r=0; r < mgmt_role_array.length; r++){
+			$('#txtBranch').append($("<option></option>").val(mgmt_role_array[r]).attr('title',mgmt_role_array[r]).text(mgmt_role_array[r]));
+		}
+		//$('#txtBranch').append($("<option></option>").text("NA").val("NA"));
+		$('#txtBranch').selectpicker('refresh');
+	}
+	
+	if(product_name == "TCS iON Qualifier - TGQT - Under Graduates")
+	{
+		$('#txtDiplomaDegree').empty();
+		$('#txtDiplomaDegree').append($("<option></option>").text("---Select---").val(""));
+		
+		$('#txtBranch').empty();
+		$('#txtBranch').append($("<option></option>").text("---Select---").val(""));
+		
+		//$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+		$('#txtDiplomaDegree').append($("<option></option>").text("NA").val("NA"));
+		$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+		$('#txtDiplomaDegree').selectpicker('refresh');		
+		
+		$('#txtBranch').append($("<option></option>").text("NA").val("NA"));
+		$('#txtBranch').append($("<option></option>").text("Others").val("Others"));
+		$('#txtBranch').selectpicker('refresh');
+	}	
+	
+	pref_City('txtStateCenterChoice1');
+	$('#CenterChoice1').val($('#txtCenterChoice1').val());
+	pref_City('txtStateCenterChoice2');
+	$('#CenterChoice2').val($('#txtCenterChoice2').val());
+	//showDistrict('txtState');
+	//$('#txtDistrict1').val($('#txtDistrict').val());
+	
+	$('input[id$="_txtbox"]').each(function(i){
+		var ID = this.id;
+		var ID1 = ID.split('_');
+		$('#'+ID).hide();
+		data_id_add(ID1[0]);
+
+	});
+	$('#show1').hide();
+	$('#show2').hide();
+	$('#show3').hide();
+		
+	if($("#txtItCertification").val() == 'Yes')
+	{
+		$(".showSubIt").show();
+	}
+	else
+	{
+		$(".showSubIt").hide();
+		$("#txtItCertname").val("");
+		$("#txtItCertYear").val("");
+		$('#txtItCertYear').selectpicker('refresh');
+	}
+	
+	if($("#txtNonItCertification").val() == 'Yes - "Business English Certificate (BEC)" Certified')
+	{
+		$(".showSubNonIt1").show();
+		$(".certyear").show();
+		$("#txtNonItCertname").val("");
+		$(".nametext").hide();
+	}
+	else if($("#txtNonItCertification").val() == 'Yes - Others')
+	{
+		$(".showSubNonIt").show();
+		$("#txtNonItCertname1").val("");
+		$('#txtNonItCertname1').selectpicker('refresh');
+		$(".showSubNonIt1").hide();
+	}
+	else if($("#txtNonItCertification").val() == 'No')
+	{
+		console.log("This is from edit");
+		$("#txtNonItCertname1").val("");
+		$('#txtNonItCertname1').selectpicker('refresh');
+		$("#txtNonItCertYear").val("");
+		$('#txtNonItCertYear').selectpicker('refresh');
+		$("#txtNonItCertname").val("");
+		$(".showSubNonIt1").hide();
+	}
+	else
+	{
+		$("#txtNonItCertname").val("");
+		$("#txtNonItCertYear").val("");
+		$('#txtNonItCertYear').selectpicker('refresh');
+		$("#txtNonItCertname1").val("");
+		$('#txtNonItCertname1').selectpicker('refresh');
+		$(".showSubNonIt").hide();
+		$(".showSubNonIt1").hide();
+	}
+	
+	if($('#txtDiplomaDegree').val()=='Others'){
+		$('#DiplomaOther').show();	
+	}else{
+		
+		$('#DiplomaOther').hide();
+	}
+	
+	setTimeout(function(){	
+		if($('#txtBranch').val()=='Others'){
+			$('#branchOther').show();	
+		} else {		
+			$('#branchOther').hide();
+		}
+		
+		console.log('State -> ' + $("#txtStateNew").val());
+		console.log('City -> ' + $("#txtCity").val());
+		console.log('College -> ' + $("#txtCollege").val()); 
+		
+		$("#txtState1 option:eq(0)").val($("#txtStateNew").val());
+		$("#txtState1 option:eq(0)").text($("#txtStateNew").val());
+		$("button[data-id=txtState1] span:eq(0)").text($("#txtStateNew").val());
+		//$("#txtState1").attr("disabled","disabled");
+
+		$("#txtCity1 option:eq(0)").val($("#txtCity").val());
+		$("#txtCity1 option:eq(0)").text($("#txtCity").val());
+		$("button[data-id=txtCity1] span:eq(0)").text($("#txtCity").val());
+		//$("#txtCity1").attr("disabled","disabled");
+		
+		//$("#txtCollege1 option:eq(0)").val($("#txtCollege").val());
+		//$("#txtCollege1 option:eq(0)").text($("#txtCollege").val());
+		//$("button[data-id=txtCollege1] span:eq(0)").text($("#txtCollege").val());
+		//$("#txtCollege1").attr("disabled","disabled");
+		
+		$('.selectpicker').selectpicker('refresh');
+		
+						 	
+		var strProductCodeHtml = $("#txtVariantCode").val().trim();		
+		var strAssessmentDate = $("#txtExtra7").val().trim();
+		
+		if( strProductCodeHtml == "IONQUALIFIERCCQTNEGSJEP04122019" || strProductCodeHtml == "IONQUALIFIERCCQTNEGACJEP04122019" || strProductCodeHtml == "IONQUALIFIERCCQTMGJEP04122019" || strProductCodeHtml == "IONQUALIFIERCCQTEGJEP04122019" ) {
+			console.log('1. Edit: Special value pack product');
+			calculateAssessmentDate(); 
+			   
+			var GivenDate = '2019-12-22';         
+			var CurrentDate = new Date();
+			CurrentDate.setHours(0, 0, 0);
+			GivenDate = new Date(GivenDate); 
+			GivenDate.setHours(0, 0, 0);
+			console.log('2. Edit: Current date   ==>> ' + CurrentDate);
+			console.log('3. Edit: Match date   ==>> ' + GivenDate);
+			if(GivenDate.toDateString() == CurrentDate.toDateString()) {
+				console.log('4. Edit: Given date is same as the current date');
+				console.log('5. Edit: Show new 1 assessment dates');
+				$("#future input[name=txtAssessmentDate][value='"+strAssessmentDate+"']").attr('checked', true);
+				$("#future input[name=txtAssessmentDate]").attr('disabled', true);				
+			} else if(CurrentDate > GivenDate) {
+				console.log('4. Edit: current date is greater than the given date');
+				console.log('5. Edit: Show new 2 assessment dates');
+				$("#future input[name=txtAssessmentDate][value='"+strAssessmentDate+"']").attr('checked', true);
+				$("#future input[name=txtAssessmentDate]").attr('disabled', true);
+			} else if(CurrentDate < GivenDate) {
+				console.log('4. Edit: CurrentDate date is less than the given date');
+				console.log('5. Edit: Show old assessment dates');				
+				$("#past input[name=txtAssessmentDate][value='"+strAssessmentDate+"']").attr('checked', true);
+				$("#past input[name=txtAssessmentDate]").attr('disabled', true);
+			}	
+			 
+			//$("#productSpecific").show();
+			//$("#assessmentDiv").show();
+		} else {
+			console.log('1. Edit: Other CCQT product');
+			//$("#productSpecific").hide();
+			//$("#assessmentDiv").hide();
+		}			
+	},1000);
+	
+	$('#addrow').hide();
+	$('#deleterow').hide();
+	$(".otpsection").hide();
+	if($("#txtExamMode").val() == "In - Centre")
+	{
+		$(".prefincenter").show();
+		$("#modeexamNo").prop("checked", true);
+	}
+	else
+	{
+		$(".prefincenter").hide();
+		$("#modeexamYes").prop("checked", true);
+	}
+		
+	if($("#txtCorpChoice").val() == "Yes")
+	{
+		$(".langPref").show();
+		$(".langPref1").show();
+		$('#togBtn').prop('checked', true);
+		$("#apply_tcs_program1").prop("checked", true);
+	}
+	else
+	{
+		$(".langPref").hide();
+		$(".langPref1").hide();
+		$('#togBtn').prop('checked', false);
+		$("#apply_tcs_program2").prop("checked", true);
+	}
+	
+	var str = $("#txtLang").val();
+	var hasProgramming = str.indexOf('Programming') != -1;
+	var hasProgramming1 = str.indexOf('Programming1') != -1;
+	var hasProgramming2 = str.indexOf('Programming2') != -1;
+	if(hasProgramming){
+	$('#togBtn').prop('checked', true);
+	}
+	if(hasProgramming1){
+	$('#checkbox2').prop('checked', true);
+	}
+	if(hasProgramming2){
+	$('#checkbox3').prop('checked', true);
+	}
+	
+	$('#txtDiplomaDegree').val($("#txtExtra1").val());
+	$('#txtBranch').val($("#txtExtra2").val());
+	$('#txtResState').val($("#txtExtra4").val());
+	$("#txtResState").change();
+	
+	if($("#txtCollege").val() == 'OTHER')
+	{
+		$("#instOther").show();
+	}
+	else
+	{
+		$("#instOther").hide();
+		$("#txtOtherInst").val("");
+	}
+	
+	setTimeout(function(){	
+		$('#txtResCity').val($("#txtExtra5").val());
+		$('#txtResCity').selectpicker('refresh');
+		
+		if($("#txtCorpChoice").val() == "Yes")
+		{
+			$('#checkbox1').prop('checked', true);
+			$("#checkbox1").attr("disabled", true);
+		}
+		else
+		{
+			$('#checkbox1').prop('checked', false);
+			$("#checkbox1").attr("disabled", true);
+		}
+		
+		//$('#txtStateCenterChoice1').val($("#txtExtra8").val());
+		//$("#txtStateCenterChoice1").change();
+		
+	},2000);
+	
+	$("input:disabled").css('background-color','#eee');
+	$("select:disabled").css('background-color','#eee');
+	
+	$("#txtAppFirstName").addClass("bgdisable");
+	$("#txtAppLastName").addClass("bgdisable");
+	$("#txtEmail").addClass("bgdisable");
+	$("#txtMobileNo").addClass("bgdisable");
+	
+	SeatCountStateCity('PreferenceCity');
+	
+	setTimeout(function(){	
+		$('#CenterChoice1').val($('#txtCenterChoice1').val());
+		$('#CenterChoice1').selectpicker('refresh');
+	},3000);
+}
+
+function data_id_add(id)
+{
+	$('[data-id="'+id+'"]').addClass('responsive-drop-pointer responsive-drop-readonly');
+	$('[data-id="'+id+'"]').children('span').eq(1).hide();
+}
+
+function Adhar_No(id)
+{
+	if($("#"+id).val()!='')
+	{
+		var ID =$("#"+id).val();
+		if(ID.length<12)
+		{
+			alert("Aadhar Number cannot be less than 12 digit.");
+			$("#"+id).val("");
+		}
+	}
+}
+
+/****************** End doTaskInEdit ********************/
+
+/**************************ForgotPwd code***********************************/
+function validateIonCaptchaForgot1(button_id){
+
+	if(document.getElementById("txtemail_add").value == '')
+	{
+		alert("Please enter Email Address.");
+		return false;
+	}
+	if(document.getElementById("txtcontact_no").value == '')
+	{
+		alert("Please enter Mobile No.");
+		return false;
+	}
+    var a=document.getElementById('captchaService_imageKey').value;
+    var b=document.getElementById('captchaService_answer').value;
+
+	var formId=67887;
+	var orgId=1016;
+	init_captcha();
+    if (b == '') 
+	{
+      alert("Please enter the Captcha.");
+      return false;
+    }
+	else if(b!='')
+	{
+		var appSeqNo='0'; 
+		var RollNo10th='0'; 
+		var RollNo12th='0';
+
+
+		if(document.getElementById('txtemail_add').value!=''){
+			RollNo10th = document.getElementById('txtemail_add').value;
+		}
+
+		if(document.getElementById('txtcontact_no').value!='')
+		{
+			RollNo12th = document.getElementById('txtcontact_no').value;
+		}
+
+		var paradetails="txtemail_add,txtcontct_no,a,b,c,d";
+
+
+    	var http_request=fnGetXMLHttpObject();
+    	if(http_request!=null)
+		{
+
+			var pValidationServlet = "";
+           	var pValidationServlet ="/EForms/eformactivationservlet";
+			var actionId="ForgotPwd";
+			var arrayArg = new Array(formId,orgId,RollNo10th,RollNo12th,'0','0','0',paradetails,http_request);
+			var argNum=8;
+
+			var parameterString= "actionId=" + actionId + "&argnum="+ argNum+"&captchaService_imageKey="+a+"&captchaService_answer="+b+"&appId=30";
+
+			var parameters = new Array();
+
+			for (var i=0; i < arrayArg.length; i++){
+				if(arrayArg[i] != ''){
+					parameterString += "&" + "args" +(i+1) +"=" + encodeURI(arrayArg[i]);
+				}
+			}
+
+			http_request.open('POST',pValidationServlet,true);  
+			http_request.onreadystatechange = function() {  fnPwdN1(http_request,button_id); }; 	 	                    
+			http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+			http_request.send(parameterString);
+		}
+
+    }  
+	else
+	{
+		alert("Please enter correct text shown in image");
+		document.getElementById('captchaService_answer').value='';
+		init_captcha();
+		document.getElementById(button_id).removeAttribute("disabled");
+		return false;
+	}
+
+}
+
+function fnPwdN1(http_request,button_id){
+if (http_request.readyState == 4){
+		if (http_request.status == 200) {
+			if(http_request.responseText != null){
+				check=http_request.responseText;
+
+				if(check == 'Invalid Captcha' && check != null){
+					document.getElementById("myDiv").style.display="inline";
+					document.getElementById("myDiv").innerHTML='Please enter a valid captcha.';
+				}
+				else if(check == 'wrong details' && check != null)
+				{
+					document.getElementById("myDiv").style.display="inline";
+					document.getElementById("myDiv").innerHTML='You have entered wrong details.';
+				}
+				else if(check == 'mail triggered' && check != null)
+				{
+					document.getElementById("myDiv").style.display="inline";
+					document.getElementById("myDiv").innerHTML='You will receive a mail shortly with your password.';
+				}
+				else{
+					document.getElementById("myDiv").style.display="inline";
+					document.getElementById("myDiv").innerHTML='Please try again later.';
+				}
+				//document.getElementById(button_id).removeAttribute("disabled"); 
+				clicked="true";
+
+			}
+		}
+	}
+}
+/**************************end ForgotPwd code***********************************/
+
+var counter=0;
+function chkdecimal(id){
+	var a=document.getElementById(id).value;
+	counter=0;
+	var length=a.length;
+	for (var i=0; i<length; i++){
+			if(a.charAt(i)=='.'){
+					counter++;
+				}
+			}
+	if(counter>1){
+				alert('Incorrect Format of Percentage');
+		document.getElementById(id).value='';
+}
+} 
+
+
+
+function checkPerc(a)
+{
+if(0==Number(document.getElementById(a).value)||Number(document.getElementById(a).value)>100)
+return alert("Please enter correct Percentage (%)."),document.getElementById(a).value="",document.getElementById(a).focus(),validate=!1,!1;
+if(validate=!0,Number(document.getElementById(a).value)<10&&alert("Please make sure you enter the marks in percentage and not as per CGPA."),""!=document.getElementById(a).value&&/^[0-9.]+$/.test(document.getElementById(a).value))
+{var b=/^[0-9]{1,2}\.[0-9]{1,2}$/,c=document.getElementById(a).value;if(c.indexOf(".")!=-1){if(0==b.test(c))return alert("Please enter Percentage (%) Upto 2 Decimal Places."),document.getElementById(a).value="",document.getElementById(a).focus(),validate=!1,!1;validate=!0}
+
+var d=c.indexOf("0");if(0==d)return alert("Aggregate Percentage (%) cannot start with zero. Please enter correct percentage."),document.getElementById(a).value="",document.getElementById(a).focus(),validate=!1,!1;
+if(validate=!0,document.getElementById(a).value>100)return alert("Please enter correct Percentage."),document.getElementById(a).value="",document.getElementById(a).focus(),validate=!1,!1;
+validate=!0} validate=true;}
+
+
+
+
+
+function fnDownload(id){
+window.open(document.getElementById(id+"_div").innerHTML,"","status=yes,height=400,width=800,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes,top=100; left=100; ");
+}
+
+
+function viewpgefunc()
+{
+	if($("#txtCorpChoice_div").text() == "Yes")
+	{
+		$(".langPref").show();
+		$(".langPref1").show();
+		$('#checkbox1').prop('checked', true);
+		$("#checkbox1").attr("disabled", true);
+	}
+	else
+	{
+		$(".langPref").hide();
+		$(".langPref1").hide();
+		$('#checkbox1').prop('checked', false);
+		$("#checkbox1").attr("disabled", true);
+	}
+	
+	if($("#txtExamMode_div").text() == "In - Centre")
+	{
+		$(".citypref1").show();
+	}
+	else
+	{
+		$(".citypref1").hide();
+	}
+	
+}
+
+function customfeatures()
+{
+	$("#txtCorpChoice").val("Yes");
+	if($("#txtCorpChoice").val() == "Yes")
+	{
+		$('#checkbox1').prop('checked', true);
+		$("#checkbox1").attr("disabled", true);
+	}
+	else
+	{
+		$('#checkbox1').prop('checked', false);
+		$("#checkbox1").attr("disabled", false);
+	}
+	SeatCountStateCity('PreferenceState');
+}
+
+
+function GetData()
+{	
+	//loadState();
+	document.forms[0].reset();
+	var urlToken=document.location.search;
+	if(urlToken!="")
+	{
+	urlToken=urlToken.split('=');
+	var seqNo1 = urlToken[1].split('&');
+	var seqNo = seqNo1[0];
+	var code1=urlToken[2].split('&');
+	var code = code1[0];
+	$('#txtUid').val(seqNo+""+code);
+	$('#txtVariantCode').val(code);
+	}
+	var actionId = "GetdataFromHub3"; 
+	//setVariant()
+	//fnStartLoader1();
+	var argNum = 5; 
+    var orgid="1016";
+	var	arrayArg = new Array(seqNo,'2151',orgid,'admin.tcssupport@icmp.com','1057353');
+	var xmlhttp; 
+
+
+			if (window.XMLHttpRequest) 
+				{ 
+			     	xmlhttp=new XMLHttpRequest(); 
+				} 
+			else 
+				{ 
+					xmlhttp=new ActiveXObject("Microsoft.XMLHTTP"); 
+				} 
+				var parameterString="actionId=" + actionId + "&argnum=" + argNum ; 
+				var parameters = new Array(); 
+				for(var i = 0;i< arrayArg.length; i++) 
+				{ 
+					if(arrayArg[i]!=='') 
+						{ 	
+							arrayArg[i]=arrayArg[i];
+							parameterString += "&" + "args" + (i+1) + "=" + encodeURI(arrayArg[i]); 
+						} 
+						
+					
+				}  
+				parameterString+="&"+"Orgs"+"="+orgid;
+					xmlhttp.open("POST","https://learning.tcsionhub.in//EForms/eformactivationservlet?" + parameterString,true); 
+					xmlhttp.send(); 
+					xmlhttp.onreadystatechange=function() 
+					{ 
+					if (xmlhttp.readyState==4 && xmlhttp.status==200) 
+					{ 
+						var jsonstring= xmlhttp.responseText.toString();
+						if(jsonstring.substring(0,5)=='Error')
+						{
+								//alert(jsonstring);
+						}
+						else
+						{
+						var response = jsonstring;
+						//alert(response);
+						if(response=="[]")
+
+						{
+						//alert("No Record Found");
+						
+						}
+					
+
+						if(response!='["Incorrect Data"]')
+						{
+						jsonObj="";
+						var obj = JSON.parse(response);
+						
+					response= '{"data":'+response + '}';
+						jsonObj =  jQuery.parseJSON(response);	
+						
+				var count = Object.keys(obj).length
+
+			  for(var i=0;i<count;i++){
+			
+                    
+			
+				document.getElementById('txtAppName').value = jsonObj.data[i]["First Name"]+" "+ jsonObj.data[i]["Last Name"];
+				document.getElementById('txtAppFirstName').value = jsonObj.data[i]["First Name"];
+				document.getElementById('txtAppLastName').value = jsonObj.data[i]["Last Name"];
+				document.getElementById('txtMobileNo').value = jsonObj.data[i]["Phone Number"];
+				document.getElementById('txtEmail').value = jsonObj.data[i]["Email Id"];
+}
+						}
+
+					} 
+					}
+					}
+}
+
+function setVariant() 
+{	
+	/* 
+	Array: Product Code, product name, TGQT / CCQT, Degree/Diploma, Branch
+	*/
+	var array = [
+	/*["IONQUALIFIERTGQTUG17062019","TCS iON Qualifier - TGQT - Under Graduates","TGQT",["NA"],["NA"]],*/
+	/*["IONQUALIFIERTGQTNEGS17062019","TCS iON Qualifier - TGQT - Non Engineering Graduates - Science","TGQT",["Master of Science - M.Sc.","Bachelor of Science - B.Sc.","Master of Computer Applications - M.C.A.","Bachelor of Computer Applications - B.C.A."],["Physics","Chemistry","Biology","Computer Science","Information Technology"]],
+	["IONQUALIFIERTGQTNEGAC17062019","TCS iON Qualifier - TGQT - Non Engineering Graduates - Arts & Commerce","TGQT",["Master of Arts - M.A.","Bachelor of Arts - B.A.","Master of Commerce - M.Com.","Bachelor of Commerce - B.Com.","Bachelor of Business Administration - B.B.A."],["Economics","Accountancy","Statistics","Political Science","History","Sociology","Psychology","Geography","Philosophy","Human Resources","Operations","Marketing","Pharma"]],
+	["IONQUALIFIERTGQTMG17062019","TCS iON Qualifier - TGQT - Management Graduates","TGQT",["Master of Business Administration - MBA","Post Graduate Diploma in Management - PGDM"],["Marketing","Finance","Operations","Human Resources","Business Management"]],	
+	["IONQUALIFIERTGQTEG17062019","TCS iON Qualifier - TGQT - Engineering Graduates","TGQT",["Master of Engineering - M.E.","Bachelor of Engineering - B.E.","Master of Technology - M.Tech.","Bachelor of Technology - B.Tech."],["Chemical","Civil","Electrical","Mechanical","Computer Science","Information Technology","Instrumentation","Electronics","Electronics and Telecom","Production","Industrial","Metallurgy","Aeronautical"]],*/
+	["IONQUALIFIERCCQTNEGS17062019","TCS iON Qualifier - CCQT - Science Graduates","CCQT",["Master of Science - M.Sc.","Bachelor of Science - B.Sc.","Master of Computer Applications - M.C.A.","Bachelor of Computer Applications - B.C.A.","Bachelor of Pharmacy - B.Pharm.","Master of Pharmacy - M.Pharm."],["Physics","Chemistry","Biology","Computer Science","Information Technology","Human Anatomy & Physiology","Biochemistry","Pharmaceutical Maths & Biostatistics","Pharmaceutical Biotechnology","Industrial pharmacy","Drug regulatory affairs","Pharmaceutical chemistry","Pharmacognosy","Pharmacology","Others"]],
+	["IONQUALIFIERCCQTNEGAC17062019","TCS iON Qualifier - CCQT - Arts and Commerce Graduates","CCQT",["Master of Arts - M.A.","Bachelor of Arts - B.A.","Master of Commerce - M.Com.","Bachelor of Commerce - B.Com."],["Economics","Accountancy","Statistics","Political Science","History","Sociology","Psychology","Geography","Philosophy","Human Resources","Operations","Marketing","Pharma","Others"]],
+	["IONQUALIFIERCCQTMG17062019","TCS iON Qualifier - CCQT - Management Graduates","CCQT",["Master of Business Administration - MBA","Bachelor of Business Administration - BBA","Post Graduate Diploma in Management - PGDM"],["Marketing","Finance","Operations","Human Resources","Business Management","Others"]],	
+	["IONQUALIFIERCCQTEG17062019","TCS iON Qualifier - CCQT - Engineering Graduates","CCQT",["Master of Engineering - M.E.","Bachelor of Engineering - B.E.","Master of Technology - M.Tech.","Bachelor of Technology - B.Tech."],["Chemical","Civil","Electrical","Mechanical","Computer Science","Information Technology","Instrumentation","Electronics","Electronics and Telecom","Production","Industrial","Metallurgy","Aeronautical","Others"]],
+	["IONQUALIFIERCCQTNEGSJEP04122019","TCS iON Qualifier - CCQT - Science Graduates","CCQT",["Master of Science - M.Sc.","Bachelor of Science - B.Sc.","Master of Computer Applications - M.C.A.","Bachelor of Computer Applications - B.C.A.","Bachelor of Pharmacy - B.Pharm.","Master of Pharmacy - M.Pharm."],["Physics","Chemistry","Biology","Computer Science","Information Technology","Human Anatomy & Physiology","Biochemistry","Pharmaceutical Maths & Biostatistics","Pharmaceutical Biotechnology","Industrial pharmacy","Drug regulatory affairs","Pharmaceutical chemistry","Pharmacognosy","Pharmacology","Others"]],	
+	["IONQUALIFIERCCQTNEGACJEP04122019","TCS iON Qualifier - CCQT - Arts and Commerce Graduates","CCQT",["Master of Arts - M.A.","Bachelor of Arts - B.A.","Master of Commerce - M.Com.","Bachelor of Commerce - B.Com."],["Economics","Accountancy","Statistics","Political Science","History","Sociology","Psychology","Geography","Philosophy","Human Resources","Operations","Marketing","Pharma","Others"]],
+	["IONQUALIFIERCCQTMGJEP04122019","TCS iON Qualifier - CCQT - Management Graduates","CCQT",["Master of Business Administration - MBA","Bachelor of Business Administration - BBA","Post Graduate Diploma in Management - PGDM"],["Marketing","Finance","Operations","Human Resources","Business Management","Others"]],
+	["IONQUALIFIERCCQTEGJEP04122019","TCS iON Qualifier - CCQT - Engineering Graduates","CCQT",["Master of Engineering - M.E.","Bachelor of Engineering - B.E.","Master of Technology - M.Tech.","Bachelor of Technology - B.Tech."],["Chemical","Civil","Electrical","Mechanical","Computer Science","Information Technology","Instrumentation","Electronics","Electronics and Telecom","Production","Industrial","Metallurgy","Aeronautical"]],
+	["IONQUALIFIERDUMMY17062019","CCQT - Dummy for Eform Test","CCQT",["Sample Option"]]
+	];
+	$('#txtDiplomaDegree').empty();
+	$('#txtDiplomaDegree').append($("<option></option>").text("---Select---").val(""));
+	   
+	$('#txtBranch').empty(); 
+	$('#txtBranch').append($("<option></option>").text("---Select---").val(""));
+	for(var i=0; i<array.length;i++)
+	{
+		if($('#txtVariantCode').val()==array[i][0])
+		{
+			$('#txtCcqtStream').val(array[i][1]);
+			$('#txtCcqtStream_h5').text(array[i][1]);
+			if(array[i][2] == "TGQT"){
+				$('#ctHeading').text("TCS iON Qualifier - TGQT selected variant");
+				$('#ctLabel').text("TCS iON Qualifier - TGQT Stream");
+			} else {
+				$('#ctHeading').text("TCS iON Qualifier - CCQT selected variant");
+				$('#ctLabel').text("TCS iON Qualifier - CCQT Stream");
+			}
+			
+			for(var p=0; p < array[i][3].length; p++){
+				$('#txtDiplomaDegree').append($("<option></option>").val(array[i][3][p]).attr('title',array[i][3][p]).text(array[i][3][p]));
+			}
+			//$('#txtDiplomaDegree').append($("<option></option>").text("Others").val("Others"));
+			//$('#txtDiplomaDegree').append($("<option></option>").text("NA").val("NA"));
+			
+			for(var p=0; p < array[i][4].length; p++){
+				$('#txtBranch').append($("<option></option>").val(array[i][4][p]).attr('title',array[i][4][p]).text(array[i][4][p]));
+			}
+			//$('#txtBranch').append($("<option></option>").text("NA").val("NA"));
+		}
+		
+	
+	}
+	
+	$('#txtDiplomaDegree').selectpicker('refresh');
+	$('#txtBranch').selectpicker('refresh');
+	
+	
+	
+}
+
+function DegreeR() {
+ //setVariant();
+ var PopupVal = ["Physics","Chemistry","Biology","Computer Science","Information Technology"];
+var RemoveVal=["Human Anatomy & Physiology","Biochemistry","Pharmaceutical Maths & Biostatistics","Pharmaceutical Biotechnology","Industrial pharmacy","Drug regulatory affairs","Pharmaceutical chemistry","Pharmacognosy","Pharmacology"]
+setTimeout(function(){
+	if($('#txtDiplomaDegree').val()=="Master of Science - M.Sc." || $('#txtDiplomaDegree').val()=="Bachelor of Science - B.Sc."|| $('#txtDiplomaDegree').val()=="Master of Computer Applications - M.C.A." || $('#txtDiplomaDegree').val()=="Bachelor of Computer Applications - B.C.A.")
+	{
+		//$("#txtBranch option[value='Human Anatomy & Physiology']").remove();
+		$('#txtBranch').selectpicker('refresh');
+		for(var i=0 ; i<RemoveVal.length;i++ ){
+			const currRemEleme = RemoveVal[i];
+			$("#txtBranch option[value='"+ currRemEleme +"']").remove();
+		}
+		for(var j=0 ; j<PopupVal.length;j++ ){
+			const currPopEleme = PopupVal[j];
+			if($("#txtBranch option[value='"+ currPopEleme +"']").length == 0){
+				$('#txtBranch').append($("<option></option>").text(currPopEleme).val(currPopEleme))
+			}
+		}
+		$('#txtBranch').selectpicker('refresh');
+	}
+	if(($('#txtDiplomaDegree').val()=="Bachelor of Pharmacy - B.Pharm." || $('#txtDiplomaDegree').val()=="Master of Pharmacy - M.Pharm.")){
+		for(var i=0 ; i<PopupVal.length;i++ ){
+			const currPopEleme = PopupVal[i];
+			$("#txtBranch option[value='"+ currPopEleme +"']").remove();
+		}
+		for(var j=0 ; j<RemoveVal.length;j++ ){
+			const currRemEleme = RemoveVal[j];
+			if($("#txtBranch option[value='"+ currRemEleme +"']").length == 0){
+				$('#txtBranch').append($("<option></option>").text(currRemEleme).val(currRemEleme))
+			}
+			
+		}
+		$('#txtBranch').selectpicker('refresh');
+	}
+},100);
+}
+
+function showItNonit(showcls,showId)
+{
+	$('#fragment-28').css('display','inline-block');
+	var selVal = $("#"+showId).val();
+	if(selVal == 'Yes' || selVal == "Yes - Others")
+	{
+		$("."+showcls).show();
+		$("."+showcls+" .form-control").val("");
+		if(showcls == 'showSubIt')
+		{
+			$("#txtItCertYear").val("");
+			$('#txtItCertYear').selectpicker('refresh');
+			$('#txtItCertYear').selectpicker({
+		   noneSelectedText:"---Select---"
+			});
+			
+		}
+		if(showcls == 'showSubNonIt')
+		{
+			$("#txtNonItCertYear").val("");
+			$('#txtNonItCertYear').selectpicker('refresh');
+			$('#txtNonItCertYear').selectpicker({
+		   noneSelectedText:"---Select---"
+			});
+			$("#txtNonItCertname1").val("");
+			$('#txtNonItCertname1').selectpicker('refresh');
+			$(".showSubNonIt1").hide();
+		}		
+	}
+	else if(selVal == 'Yes - "Business English Certificate (BEC)" Certified')
+	{
+		$(".showSubNonIt1").show();
+		$(".certyear").show();
+		$("#txtNonItCertname").val("");
+		$("#txtNonItCertYear").val("");
+		$("#txtNonItCertname1").val("");
+		$('#txtNonItCertYear').selectpicker('refresh');
+		$('#txtItCertYear').selectpicker({
+		   noneSelectedText:"---Select---"
+			});
+		$('#txtNonItCertname1').selectpicker('refresh');
+		$(".nametext").hide();
+	}
+	else if(selVal == "No" || selVal == "")
+	{
+		console.log("This is from function");
+		if(showcls == 'showSubIt')
+		{
+			$("."+showcls).hide();
+			$("#txtItCertname").val("");
+			$("#txtItCertYear").val("");
+			$('#txtItCertYear').selectpicker('refresh');
+		}
+		if(showcls == 'showSubNonIt')
+		{
+			console.log("This is from function NonIt");
+			$("#txtNonItCertname1").val("");
+			$('#txtNonItCertname1').selectpicker('refresh');
+			$("#txtNonItCertname").val("");
+			$("#txtNonItCertYear").val("");
+			$('#txtNonItCertYear').selectpicker('refresh');
+			$(".showSubNonIt").hide();
+			$(".showSubNonIt1").hide();
+		}	
+	}
+	
+	if(selVal == '')
+	{
+		$("."+showcls+" .form-control").val("");
+		if(showcls == 'showSubIt')
+		{
+			$("#txtItCertYear").val("");
+			$('#txtItCertYear').selectpicker('refresh');
+		}
+		if(showcls == 'showSubNonIt')
+		{
+			$("#txtNonItCertYear").val("");
+			$('#txtNonItCertYear').selectpicker('refresh');
+			$('#txtNonItCertname1').selectpicker('refresh');
+		}	
+	}
+}
+	
+function DobDDMMYYYY()
+{
+	dob=document.getElementById('appDob').value;
+	if(dob!="")
+	{
+		months = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05','Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11','Dec': '12'};
+
+		split = dob.split('/');
+		dob=[split[0], months[split[1]],  split[2]].join('/');
+		year=split[2];
+//		console.log(year);
+		document.getElementById('appDob').value=dob;
+	}
+}
+
+function pref_City(id)
+{
+	//$('#fragment-28').css('display','inline-block');
+	var city1 = [["Andhra Pradesh","Guntur"],["Andhra Pradesh","Kurnool"],["Andhra Pradesh","Rajahmundry"],["Andhra Pradesh","Tirupathi"],["Andhra Pradesh","Visakhapatnam"],["Assam","Guwahati"],["Assam","Jorhat"],["Bihar","Patna"],["Chandigarh","Chandigarh"],["Chhattisgarh","Bhilai Nagar"],["Chhattisgarh","Raipur"],["Delhi","New Delhi"],["Goa","Panaji"],["Gujarat","Ahmedabad"],["Gujarat","Surat"],["Gujarat","Vadodara"],["Haryana","Kurukshetra"],["Himachal Pradesh","Bilaspur"],["Jammu and Kashmir","Jammu"],["Jharkhand","Dhanbad"],["Jharkhand","Hazaribagh"],["Jharkhand","Jamshedpur"],["Karnataka","Bengaluru"],["Karnataka","Hubballi(Hubli)"],["Karnataka","Mysuru(Mysore)"],["Karnataka","Udupi"],["Kerala","Kozhikode"],["Kerala","Thiruvananthapuram"],["Kerala","Thrissur"],["Madhya Pradesh","Bhopal"],["Madhya Pradesh","Gwalior"],["Madhya Pradesh","Indore"],["Madhya Pradesh","Jabalpur"],["Maharashtra","Aurangabad"],["Maharashtra","Kolhapur"],["Maharashtra","Mumbai"],["Maharashtra","Nagpur"],["Maharashtra","Nashik"],["Maharashtra","Navi Mumbai"],["Maharashtra","Pune"],["Meghalaya","Shillong"],["Mizoram","Aizawl"],["Nagaland","Kohima"],["Odisha","Balasore"],["Odisha","Berhampur-Ganjam"],["Odisha","Bhubaneswar"],["Odisha","Cuttack"],["Odisha","Sambalpur"],["Punjab","Amritsar"],["Punjab","Ludhiana"],["Rajasthan","Ajmer"],["Rajasthan","Jaipur"],["Rajasthan","Jodhpur"],["Rajasthan","Kota"],["Rajasthan","Sikar"],["Rajasthan","Udaipur"],["Tamil Nadu","Chennai"],["Tamil Nadu","Coimbatore"],["Tamil Nadu","Madurai"],["Tamil Nadu","Salem"],["Tamil Nadu","Tiruchirappalli"],["Tamil Nadu","Tirunelveli"],["Telangana","Hyderabad"],["Telangana","Karimnagar"],["Telangana","Warangal"],["Uttar Pradesh","Aligarh"],["Uttar Pradesh","Allahabad"],["Uttar Pradesh","Gorakhpur"],["Uttar Pradesh","Greater Noida"],["Uttar Pradesh","Lucknow"],["Uttar Pradesh","Meerut"],["Uttar Pradesh","Noida"],["Uttar Pradesh","Varanasi"],["Uttarakhand","Dehradun"],["Uttarakhand","Haldwani"],["West Bengal","Asansol"],["West Bengal","Hooghly"],["West Bengal","Kolkata"],["West Bengal","Siliguri"]];
+	if(id=='txtStateCenterChoice1')
+	{
+		$('#CenterChoice1').empty();
+		$('#CenterChoice1').append($("<option></option>").text("---Select---").val(""));
+		for(var i=0;i<city1.length;i++)
+		{
+			if(city1[i][0]==$('#'+id).val())
+			{
+				$('#CenterChoice1').append($("<option></option>").val(city1[i][1]).attr('title',city1[i][1]).text(city1[i][1]));
+			}
+		}
+		$('#CenterChoice1').selectpicker('refresh');
+	}
+	
+	
+	var city2=[["Andhra Pradesh","Guntur"],["Andhra Pradesh","Kurnool"],["Andhra Pradesh","Rajahmundry"],["Andhra Pradesh","Tirupathi"],["Andhra Pradesh","Visakhapatnam"],["Assam","Guwahati"],["Assam","Jorhat"],["Bihar","Patna"],["Chandigarh","Chandigarh"],["Chhattisgarh","Bhilai Nagar"],["Chhattisgarh","Raipur"],["Delhi","New Delhi"],["Goa","Panaji"],["Gujarat","Ahmedabad"],["Gujarat","Surat"],["Gujarat","Vadodara"],["Haryana","Kurukshetra"],["Himachal Pradesh","Bilaspur"],["Jammu and Kashmir","Jammu"],["Jharkhand","Dhanbad"],["Jharkhand","Hazaribagh"],["Jharkhand","Jamshedpur"],["Karnataka","Bengaluru"],["Karnataka","Hubballi(Hubli)"],["Karnataka","Mysuru(Mysore)"],["Karnataka","Udupi"],["Kerala","Kozhikode"],["Kerala","Thiruvananthapuram"],["Kerala","Thrissur"],["Madhya Pradesh","Bhopal"],["Madhya Pradesh","Gwalior"],["Madhya Pradesh","Indore"],["Madhya Pradesh","Jabalpur"],["Maharashtra","Aurangabad"],["Maharashtra","Kolhapur"],["Maharashtra","Mumbai"],["Maharashtra","Nagpur"],["Maharashtra","Nashik"],["Maharashtra","Navi Mumbai"],["Maharashtra","Pune"],["Meghalaya","Shillong"],["Mizoram","Aizawl"],["Nagaland","Kohima"],["Odisha","Balasore"],["Odisha","Berhampur-Ganjam"],["Odisha","Bhubaneswar"],["Odisha","Cuttack"],["Odisha","Sambalpur"],["Punjab","Amritsar"],["Punjab","Ludhiana"],["Rajasthan","Ajmer"],["Rajasthan","Jaipur"],["Rajasthan","Jodhpur"],["Rajasthan","Kota"],["Rajasthan","Sikar"],["Rajasthan","Udaipur"],["Tamil Nadu","Chennai"],["Tamil Nadu","Coimbatore"],["Tamil Nadu","Madurai"],["Tamil Nadu","Salem"],["Tamil Nadu","Tiruchirappalli"],["Tamil Nadu","Tirunelveli"],["Telangana","Hyderabad"],["Telangana","Karimnagar"],["Telangana","Warangal"],["Uttar Pradesh","Aligarh"],["Uttar Pradesh","Allahabad"],["Uttar Pradesh","Gorakhpur"],["Uttar Pradesh","Greater Noida"],["Uttar Pradesh","Lucknow"],["Uttar Pradesh","Meerut"],["Uttar Pradesh","Noida"],["Uttar Pradesh","Varanasi"],["Uttarakhand","Dehradun"],["Uttarakhand","Haldwani"],["West Bengal","Asansol"],["West Bengal","Hooghly"],["West Bengal","Kolkata"],["West Bengal","Siliguri"]];
+	
+	if(id=='txtStateCenterChoice2')
+	{
+		$('#CenterChoice2').empty();
+		$('#CenterChoice2').append($("<option></option>").text("---Select---").val(""));
+		for(var i=0;i<city2.length;i++)
+		{
+			if(city2[i][0]==$('#'+id).val())
+			{
+				$('#CenterChoice2').append($("<option></option>").val(city2[i][1]).attr('title',city2[i][1]).text(city2[i][1]));
+			}
+		}
+		$('#CenterChoice2').selectpicker('refresh');
+	}
+
+}
+
+
+
+
+function showDistrict(id){
+var selbox1 = null;
+if (id == "txtResState")
+{
+	if(document.getElementById('txtResState').value!="")
+	{ 
+		selbox1 = document.getElementById('txtResCity');
+		selbox1.options.length = 1;
+		$('#txtResCity').selectpicker('refresh');
+	 }
+}
+
+if (selbox1 != null){
+if(document.getElementById(id).value== "Andhra Pradesh"){var myArray1=["---Select---","Anantapur","Chittoor","Cuddaph","East Godavari","Guntur","Krishna","Kurnool","Prakasam","Nellore","Srikakulam","Visakhapatnam","Vizianagaram","West Godavari"]; myArray1.sort(); for (var i = 1; i < myArray1.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray1[i], myArray1[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Arunachal Pradesh"){var myArray2=["---Select---","Anjaw","Changlang","East Kameng","East Siang","Lohit","Longding","Lower Subansiri","Papum Pare","Tawang","Tirap","Lower Dibang Valley","Upper Siang","Upper Subansiri","West Kameng","West Siang","Upper Dibang Valley","Kurung Kumey"]; myArray2.sort(); for (var i = 1; i < myArray2.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray2[i], myArray2[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Assam"){var myArray3=["---Select---","Barpeta","Bongaigaon","Cachar","Darrang","Dhemaji","Dhubri","Dibrugarh","Goalpara","Golaghat","Guwahati","Hailakandi","Jorhat","Kamrup","Karbi Anglong","Karimganj","Kokrajhar","Lakhimpur","Marigaon","Nagaon","Nalbari","Dima Hasao","Sivasagar","Sonitpur","Tinsukia","Kamrup Metro","Udalguri","Baksa","Chirang"]; myArray3.sort(); for (var i = 1; i < myArray3.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray3[i], myArray3[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Bihar"){var myArray4=["---Select---","Araria","Arwal","Aurangabad","Banka","Begusarai","Bhagalpur","Bhojpur","Buxar","Darbhanga","East Champaran","Gaya","Gopalganj","Jamui","Jehanabad","Khagaria","Kishanganj","Kaimur","Katihar","Lakhisarai","Madhubani","Munger","Madhepura","Muzaffarpur","Nalanda","Nawada","Patna","Purnia","Rohtas","Saharsa","Samastipur","Sheohar","Sheikhpura","Saran","Sitamarhi","Supaul","Siwan","Vaishali","West Champaran"];  myArray4.sort(); for (var i = 1; i < myArray4.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray4[i], myArray4[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Chhatisgarh"){var myArray5=["---Select---","Balod","Baloda Bazar","Balrampur","Bastar","Bemetara","Bijapur","Bilaspur","Dantewada","Dhamtari","Durg","Gariaband","Jashpur","Janjgir-Champa","Kondagaon","Korba","Koriya","Kanker","Kabirdham","Mahasamund","Mungeli","Narayanpur","Raigarh","Rajnandgaon","Raipur","Surajpur","Sukma","Surguja"];  myArray5.sort(); for (var i = 1; i < myArray5.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray5[i], myArray5[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Goa"){var myArray6=["---Select---","North Goa","South Goa"]; myArray6.sort(); for (var i = 1; i < myArray6.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray6[i], myArray6[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Gujarat"){var myArray7=["---Select---","Ahmedabad","Amreli","Anand","Aravalli","Banaskantha","Bharuch","Bhavnagar","Botad","Chhota Udaipur","Dahod","Dang","Devbhoomi Dwarka","Gandhinagar","Gir Somnath","Jamnagar","Junagadh","Kheda","Kutch","Mahisagar","Mehsana","Morbi","Narmada","Navsari","Panchmahal","Patan","Porbandar","Rajkot","Sabarkantha","Surat","Surendranagar","Tapi","Vadodara","Valsad"];  myArray7.sort(); for (var i = 1; i < myArray7.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray7[i], myArray7[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Haryana"){var myArray8=["---Select---","Ambala","Bhiwani","Faridabad","Fatehabad","Gurugram","Hisar","Jhajjar","Jind","Kaithal","Karnal","Kurukshetra","Mahendragarh","Mewat","Palwal","Panchkula","Panipat","Rewari","Rohtak","Sirsa","Sonipat","Yamuna Nagar"];  myArray8.sort(); for (var i = 1; i < myArray8.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray8[i], myArray8[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Himachal Pradesh"){var myArray9=["---Select---","Bilaspur","Chamba","Hamirpur","Kangra","Kinnaur","Kullu","Lahaul and Spiti","Mandi","Shimla","Sirmaur","Solan","Una"];  myArray9.sort(); for (var i = 1; i < myArray9.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray9[i], myArray9[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Jammu and Kashmir"){var myArray10=["---Select---","Jammu","Doda","Kishtwar","Rajouri","Reasi","Udhampur","Ramban","Kathua","Samba","Poonch","Srinagar","Anantnag","Kulgam","Pulwama","Shopian","Budgam","Ganderbal","Bandipora","Baramulla","Kupwara","Kargil","Leh"];  myArray10.sort(); for (var i = 1; i < myArray10.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray10[i], myArray10[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Jharkhand"){var myArray11=["---Select---","Garhwa","Palamu","Latehar","Chatra","Hazaribagh","Koderma","Giridih","Ramgarh","Bokaro","Dhanbad","Lohardaga","Gumla","Simdega","Ranchi","Khunti","West Singhbhum","Saraikela Kharsawan","East Singhbhum","Jamtara","Jamshedpur","Deoghar","Dumka","Pakur","Godda","Sahebganj"];  myArray11.sort(); for (var i = 1; i < myArray11.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray11[i], myArray11[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Karnataka"){var myArray12=["---Select---","Chamarajanagar","Chikamagalur","Dakshina Kannada","Hassan","Kodagu","Mandya","Mysuru","Udupi","Bellary","Bidar","Gulbarga","Koppal","Raichur","Yadgir","Bagalkot","Belgaum","Bijapur","Dharwad","Gadag","Haveri","Uttara Kannada","Bengaluru Urban","Bengaluru Rural","Chikkaballapur","Chitradurga","Davanagere","Kolar","Ramanagara","Shimoga","Tumakuru"];  myArray12.sort(); for (var i = 1; i < myArray12.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray12[i], myArray12[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Kerala"){var myArray13=["---Select---","Alappuzha","Ernakulam","Idukki","Kannur","Kasaragod","Kollam","Kottayam","Kozhikode","Malappuram","Palakkad","Pathanamthitta","Thiruvananthapuram","Thrissur","Wayanad"];  myArray13.sort(); for (var i = 1; i < myArray13.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray13[i], myArray13[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Madhya Pradesh"){var myArray14=["---Select---","Bhopal","Raisen","Rajgarh","Sehore","Vidisha","Morena","Sheopur","Bhind","Ashoknagar","Shivpuri","Datia","Guna","Gwalior","Alirajpur","Barwani","Burhanpur","Dhar","Indore","Jhabua","Khandwa","Khargone (West Nimar)","Balaghat","Chhindwara","Jabalpur","Katni","Mandla","Narsinghpur","Seoni","Betul","Harda","Hoshangabad","Rewa","Satna","Sidhi","Singrauli","Chhatarpur","Damoh","Panna","Sagar","Tikamgarh","Anuppur","Shahdol","Umaria","Dindori","Agar Malwa","Dewas","Mandsaur","Neemuch","Ratlam","Shajapur","Ujjain"];  myArray14.sort(); for (var i = 1; i < myArray14.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray14[i], myArray14[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Maharashtra"){var myArray15=["---Select---","Ahmednagar","Akola","Amravati","Aurangabad","Beed","Bhandara","Buldhana","Chandrapur","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai City","Mumbai Suburban","Nagpur","Nanded","Nandurbar","Nashik","Osmanabad","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindhudurg","Solapur","Thane","Wardha","Washim","Yavatmal","Palghar"];  myArray15.sort(); for (var i = 1; i < myArray15.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray15[i], myArray15[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Manipur"){var myArray16=["---Select---","Bishnupur","Churachandpur","Chandel","Imphal East","Senapati","Tamenglong","Thoubal","Ukhrul","Imphal West"];  myArray16.sort(); for (var i = 1; i < myArray16.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray16[i], myArray16[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Meghalaya"){var myArray17=["---Select---","Jowai","Khliehriat","Shillong","Nongstoin","Mawkyrwat","Nongpoh","Resubelpara","Williamnagar","Baghmara","Tura","Ampati"];  myArray17.sort(); for (var i = 1; i < myArray17.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray17[i], myArray17[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Mizoram"){var myArray18=["---Select---","Aizawl","Kolasib","Lawngtlai","Lunglei","Mamit","Saiha","Serchhip","Champhai"];  myArray18.sort(); for (var i = 1; i < myArray18.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray18[i], myArray18[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Nagaland"){var myArray19=["---Select---","Dimapur","Kiphire","Kohima","Longleng","Mokokchung","Mon","Peren","Phek","Tuensang","Wokha","Zunheboto"];  myArray19.sort(); for (var i = 1; i < myArray19.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray19[i], myArray19[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Odisha"){var myArray20=["---Select---","Anugul","Bargarh","Bhadrak","Balasore","Balangir","Bhubaneswar","Boudh","Cuttack","Deogarh","Dhenkanal","Gajapati","Ganjam","Jagatsinghapur","Jajpur","Jharsuguda","Kalahandi","Kandhamal","Kendrapara","Keonjhar","Khurda","Koraput","Malkangiri","Mayurbhanj","Nuapada","Nabarangpur","Nayagarh","Puri","Rayagada","Rourkela","Sambalpur","Subarnapur","Sundargarh"];  myArray20.sort(); for (var i = 1; i < myArray20.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray20[i], myArray20[i]);}selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Pondicherry"){var myArray21=["---Select---","Karaikal","Mahe","Puducherry","Yanam"];  myArray21.sort(); for (var i = 1; i < myArray21.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray21[i], myArray21[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Rajasthan"){var myArray22=["---Select---","Ajmer","Alwar","Banswara","Baran","Barmer","Bharatpur","Bhilwara","Bikaner","Bundi","Chittorgarh","Churu","Dausa","Dholpur","Dungarpur","Hanumangarh","Jaipur","Jaisalmer","Jalor","Jhalawar","Jhunjhunu","Jodhpur","Karauli","Kota","Nagaur","Pali","Pratapgarh","Rajsamand","Sawai Madhopur","Sikar","Sirohi","Sri Ganganagar","Tonk","Udaipur"];  myArray22.sort(); for (var i = 1; i < myArray22.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray22[i], myArray22[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Sikkim"){var myArray23=["---Select---","East Sikkim","North Sikkim","South Sikkim","West Sikkim"];  myArray23.sort(); for (var i = 1; i < myArray23.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray23[i], myArray23[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Tamil Nadu"){var myArray24=["---Select---","Ariyalur","Chennai","Coimbatore","Cuddalore","Dharmapuri","Dindigul","Erode","Kanchipuram","Kanniyakumari","Karur","Krishnagiri","Madurai","Nagapattinam","Namakkal","The Nilgiris","Perambalur","Pudukkottai","Ramanathapuram","Salem","Sivagangai","Thanjavur","Theni","Thoothukudi","Tiruchirappalli","Thirunelveli","Tiruppur","Thiruvallur","Tiruvannamalai","Thiruvarur","Vellore","Villupuram","Virudhunagar"];  myArray24.sort(); for (var i = 1; i < myArray24.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray24[i], myArray24[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Telangana"){var myArray25=["---Select---","Adilabad","Hyderabad","Karimnagar","Khammam","Mahbubnagar","Medak","Nalgonda","Nizamabad","Rangareddy","Warangal"];  myArray25.sort(); for (var i = 1; i < myArray25.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray25[i], myArray25[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Uttar Pradesh"){var myArray26=["---Select---","Agra","Aligarh","Allahabad","Ambedkar Nagar","Auraiya","Azamgarh","Bagpat","Bahraich","Ballia","Balrampur","Banda","Barabanki","Bareilly","Basti","Bijnor","Budaun","Bulandshahr","Chandauli","Chitrakoot","Deoria","Etah","Etawah","Faizabad","Farrukhabad","Fatehpur","Firozabad","Gautam Buddha Nagar","Ghaziabad","Ghazipur","Gonda","Gorakhpur","Hamirpur","Hardoi","Hathras","Jalaun","Jaunpur","Jhansi","Jyotiba Phule Nagar","Kannauj","Kanpur","Kanpur Dehat","Kanpur Nagar","Kaushambi","Kheri","Kushinagar","Lalitpur","Lucknow","Mahoba","Maharajganj","Mainpuri","Mathura","Mau","Meerut","Mirzapur","Moradabad","Muzaffarnagar","Noida","Pilibhit","Pratapgarh","RaeBareli","Rampur","Saharanpur","Sant Kabir Nagar","Sant Ravidas Nagar","Shahjahanpur","Shravasti","Siddharthnagar","Sitapur","Sonbhadra","Sultanpur","Unnao","Varanasi","Manyavar Kanshiram Nagar","Prabuddha Nagar","Panchsheel Nagar","Bhim Nagar","Chhatrapati Shahuji Maharaj Nagar"];  myArray26.sort(); for (var i = 1; i < myArray26.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray26[i], myArray26[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Uttarakhand"){var myArray27=["---Select---","Almora","Bageshwar","Chamoli","Champawat","Dehradun","Pauri Garhwal","Haldwani","Haridwar","Nainital","Pithoragarh","Rudraprayag","Tehri Garhwal","Udham Singh Nagar","Uttarkashi"];  myArray27.sort(); for (var i = 1; i < myArray27.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray27[i], myArray27[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Tripura"){var myArray28=["---Select---","Dhalai","North Tripura","South Tripura","West Tripura","Gomati","Khowai","Sepahijala","Unakoti"];  myArray28.sort(); for (var i = 1; i < myArray28.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray28[i], myArray28[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "West Bengal"){var myArray29=["---Select---","Asansol","Bankura","Bardhaman","Birbhum","Durgapur","East Midnapore (Purba Medinipur)","Hooghly","Purulia","West Midnapore (Paschim Medinipur)","Cooch Behar","Darjeeling","Alipurduar","Jalpaiguri","Malda","North Dinajpur (Uttar Dinajpur)","South Dinajpur (Dakshin Dinajpur)","Howrah","Kolkata","Murshidabad","Nadia","North 24 Parganas (Uttar 24 Parganas)","Siliguri","South 24 Parganas (Dakshin 24 Parganas)"];  myArray29.sort(); for (var i = 1; i < myArray29.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray29[i], myArray29[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Andaman and Nicobar"){var myArray30=["---Select---","North and Middle Andaman","Nicobar","South Andaman"];  myArray30.sort(); for (var i = 1; i < myArray30.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray30[i], myArray30[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Chandigarh"){var myArray31=["---Select---","Chandigarh"];  myArray31.sort(); for (var i = 1; i < myArray31.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray31[i], myArray31[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Chhattisgarh"){var myArray31=["---Select---","Bhilai","Bilaspur","Raipur"];  myArray31.sort(); for (var i = 1; i < myArray31.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray31[i], myArray31[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Dadra and Nagar Haveli"){var myArray32=["---Select---","Dadra and Nagar Haveli"];  myArray32.sort(); for (var i = 1; i < myArray32.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray32[i], myArray32[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Daman and Diu"){var myArray33=["---Select---","Daman","Diu"];  myArray33.sort(); for (var i = 1; i < myArray33.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray33[i], myArray33[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Lakshadweep"){var myArray34=["---Select---","Lakshadweep"];  myArray34.sort(); for (var i = 1; i < myArray34.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray34[i], myArray34[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Delhi"){var myArray35=["---Select---","Central Delhi","East Delhi","New Delhi","North Delhi","North East Delhi","North West Delhi","South Delhi","South West Delhi","West Delhi","Shahdara","South East Delhi"];  myArray35.sort(); for (var i = 1; i < myArray35.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray35[i], myArray35[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Puducherry"){var myArray36=["---Select---","Karaikal","Mahe","Pondicherry","Yanam"];  myArray36.sort(); for (var i = 1; i < myArray36.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray36[i], myArray36[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+if(document.getElementById(id).value== "Punjab"){var myArray37=["---Select---","Amritsar","Barnala","Bathinda","Firozpur","Faridkot","Fatehgarh Sahib","Fazilka","Gurdaspur","Hoshiarpur","Jalandhar","Kapurthala","Ludhiana","Mansa","Moga","Mohali","Sri Muktsar Sahib","Pathankot","Patiala","Rupnagar","Sahibzada Ajit Singh Nagar","Sangrur","Shahid Bhagat Singh Nagar","Tarn Taran"];  myArray37.sort(); for (var i = 1; i < myArray37.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray37[i], myArray37[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}
+/*if(document.getElementById(id).value== "Lakshadweep"){var myArray38=["---Select---","LAKSHADWEEP"];  myArray38.sort(); for (var i = 1; i < myArray38.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray38[i], myArray38[i]);} selbox1.options[selbox1.options.length] = new Option('OTHERS', 'OTHERS');}*/
+if(document.getElementById(id).value== "OTHERS"){var myArray38=["---Select---","OTHERS"];  myArray38.sort(); for (var i = 1; i < myArray38.length; ++i) {selbox1.options[selbox1.options.length] = new Option(myArray38[i], myArray38[i]);}}
+}
+$("#txtResCity option[value='OTHERS']").remove();
+$('#txtResCity').selectpicker('refresh');
+$('.selectpicker').selectpicker('refresh');
+}
+
+
+function cityPref()
+{
+	if($("#txtExamMode").val() == "In - Centre")
+	{
+		$(".citypref").show();
+		$(".RPA").hide();
+	}
+	else
+	{
+		$(".citypref").hide();
+		$(".RPA").show();
+	}	
+}
+
+function langPref()
+{
+	if($("#txtCorpChoice").val() == "Yes, I will register for the coding test.")
+	{
+		$(".langPref").show();
+		$(".noErr").hide();
+	}
+	else
+	{
+		$(".langPref").hide();
+		$(".noErr").show();
+	}	
+}
+
+function OtherBranch()
+{
+	if($('#txtBranch').val()=='Others')
+	{
+		$('#branchOther').show();		
+	}
+	else{
+		$('#branchOther').hide();		
+	}
+	$('#txtOtherBranch').val("");
+	$("#txtExtra2").val($('#txtBranch').val());
+	$(".gmyp").css("margin","0");
+}
+
+function otherClg()
+{
+	if($('#txtCollege').val()=='OTHER')
+	{
+		$('#instOther').show();		
+	}
+	else{
+		$('#instOther').hide();		
+	}
+	$('#instOther').val("");
+	//$("#txtCollege").val($('#txtCollege1').val());
+	$(".gmyp").css("margin","0");
+}
+
+function OtherDegree()
+{
+	if($('#txtDiplomaDegree').val()=='Others')
+	{
+		$('#DiplomaOther').show();
+		$('#txtOtherDiploma').val("");
+	}
+	else{
+		$('#DiplomaOther').hide();
+		$('#txtOtherDiploma').val("");
+	}
+	$("#txtExtra1").val($('#txtDiplomaDegree').val());
+	$(".gmyp").css("margin","0");
+}
+
+
+function drop_select_if(id)
+{
+	$('#'+id).parent().find('.errortxt').css('display', 'inline');
+	$('#'+id).next().addClass('borderredcolor1');
+	$('#'+id).next().find('button').addClass('borderredcolor');
+	$(window).scrollTop($('[data-id="'+id+'"]').offset().top);
+	if(id == 'txtDistrict1'){ 
+		$('html, body').animate({
+			scrollTop: $(".cityclass").offset().top
+		}, 100);
+	} else if(id == 'txtGender'){ 
+		$('html, body').animate({
+			scrollTop: $(".genderclass").offset().top
+		}, 100);
+	}
+}
+function drop_select_else(id)
+{
+	$('#'+id).parent().find('.errortxt').css('display', 'none');
+	$('#'+id).next().removeClass('borderredcolor1');
+	$('#'+id).next().find('button').removeClass('borderredcolor');
+}
+
+
+function input_if(id)
+{
+	$('#'+id).parent().find('.errortxt').css('display', 'inline');
+	$('#'+id).addClass('borderredcolor');
+
+}
+function input_else(id)
+{
+	$('#'+id).parent().find('.errortxt').css('display', 'none');
+	$('#'+id).removeClass('borderredcolor');
+	$('#'+id).css('color','#333');
+}
+function percent(id)
+{
+	if($('#'+id).val().indexOf('%') > -1)
+	{
+		var p = '';
+	}
+	else
+	{
+		var p = '%';
+	}	
+	
+	if(validate)
+	{
+			$('#'+id).val($('#'+id).val()+''+p);
+	}
+	
+	if($('#'+id).val() == '%')
+	{
+		$('#'+id).val('');
+	}	
+}
+
+function isScore1(key,event){
+ 	var keyCode;
+	var isIE;
+
+	if(navigator.appName == "Microsoft Internet Explorer" || navigator.appName == "Netscape"){  
+		keyCode = event.keyCode;
+		
+		isIE = 1;
+		if(navigator.appName == "Netscape"){
+		    keyCode = event.charCode;		   
+			isIE = 0;
+		}
+	}else{
+		keyCode = event.charCode;
+		isIE = 0;
+	}
+		  
+			if(isIE == 1 ){
+			if(!((keyCode >= 48 && keyCode <= 57)|| keyCode == 65 || keyCode == 78 ))
+			{
+			return false;
+				}
+			}
+			else{
+			if(!((keyCode >= 48 && keyCode <= 57) || keyCode == 0 || keyCode == 65 || keyCode == 78))
+			{
+			
+				event.preventDefault();								
+			}
+						
+	  }
+}
+function CheckSingleDot(id,suffix) {
+		var countDot = 0;
+		var val=document.getElementById(id).value;
+		if (val.charAt("0") == ".") {
+			alert("Incorrect Number Format, Please enter correct Number in " + suffix + ".");
+			$("#" + id).val("");
+			$("#" + id).focus();
+		}
+		if (val[val.length - 1] == ".") {
+			alert("Incorrect Number Format, Please enter correct Number in " + suffix + ".");
+			$("#" + id).val("");
+			$("#" + id).focus();
+		}
+		for (var i = 0; i < val.length; i++) {
+			if (val.charAt(i) == '.') {
+				countDot++;
+			}
+		}
+		if (countDot > 1) {
+			alert('Incorrect Format of Number, Please enter correct Number with single "." in ' + suffix + '.');
+			$("#" + id).val("");
+			$("#" + id).focus();
+		}
+	}
+
+function isScore(key,event) {
+ 	var keyCode;
+	var isIE;
+
+	if(navigator.appName == "Microsoft Internet Explorer" || navigator.appName == "Netscape"){  
+		keyCode = event.keyCode;
+		
+		isIE = 1;
+		if(navigator.appName == "Netscape"){
+		    keyCode = event.charCode;		   
+			isIE = 0;
+		}
+	}else{
+		keyCode = event.charCode;
+		isIE = 0;
+	}
+		  
+			if(isIE == 1 ){
+			if(!((keyCode >= 48 && keyCode <= 57) || keyCode==46 || keyCode == 65 || keyCode == 78 ))
+			{
+			event.returnValue = false;
+				}
+			}
+			else{
+			if(!((keyCode >= 48 && keyCode <= 57) || keyCode == 0 || keyCode==46 || keyCode == 65 || keyCode == 78 ))
+			{
+			
+				event.preventDefault();								
+			}
+						
+	  }
+}
+
+function checkcity(elemt) {
+	for (i = 1; i <= 3; i++) {
+		var otherElemt = document.getElementById("txtLangKnown" + i);
+		if (otherElemt.id != elemt.id && elemt.options[elemt.selectedIndex].value != "NA" && elemt.options[elemt.selectedIndex].value != ""	&& otherElemt.options[otherElemt.selectedIndex].value != "NA"	&& otherElemt.options[otherElemt.selectedIndex].value == elemt.options[elemt.selectedIndex].value) {
+			alert("This option is already selected. Please select a different option.");
+			elemt.selectedIndex = 0;
+			break;
+		}
+	}
+}
+
+
+
+function SeatCountStateCity(ajaxfor) 
+{
+ 		  var results='';
+		  $.ajax({
+			type: "POST",
+			url: "/EForms/cdmsservlet", //Your servlet name.
+			data: {
+				actionId: "NQTSearch",
+				orgId: 1016,
+				Formid:"67887",
+				State: "",
+				City: "",
+				Institute:"",
+				Pin: "",
+				preferenceState: $('#txtStateCenterChoice1').val(),
+                preferenceCity: $('#CenterChoice1').val(),
+				ajaxFor: ajaxfor,
+				argnum:0,
+			},
+			dataType: "json",
+			success: function (result) {
+			if(ajaxfor == 'PreferenceState')
+			{
+				$('#txtStateCenterChoice1').empty();
+				$('#txtStateCenterChoice1').append($("<option></option>").text("Select State Preferences").val(""));
+				for(var i=0;i<result.PreferenceState_data.length;i++){
+					 $('#txtStateCenterChoice1').append($("<option></option>").val(result.PreferenceState_data[i].PreferenceState).attr('title',result.PreferenceState_data[i].PreferenceState).text(result.PreferenceState_data[i].PreferenceState));
+				}
+				$('#txtStateCenterChoice1').selectpicker('refresh');
+			}
+			if(ajaxfor == 'PreferenceCity')
+			{
+				$('#CenterChoice1').empty();
+				$('#CenterChoice1').append($("<option></option>").text("Select City Preferences").val(""));
+				for(var i=0;i<result.PreferenceCity_data.length;i++){
+					$('#CenterChoice1').append($("<option></option>").val(result.PreferenceCity_data[i].PreferenceCity).attr('title',result.PreferenceCity_data[i].PreferenceCity).text(result.PreferenceCity_data[i].PreferenceCity));
+				}
+				$('#CenterChoice1').selectpicker('refresh');
+			}
+			if(ajaxfor == 'AvailableSeat')
+            {
+                //alert(result.SeatData[0].isAvailableSeat +" / "+result.SeatData[0].AvailableSeat);
+				if(result.SeatData[0].AvailableSeat == 0)
+				{
+					//alert("Sitting capacity of the centre you selected is full. Please select another nearby centre.");
+					$(".capacity").show();
+					$('#CenterChoice1').val("");
+					$('#CenterChoice1').selectpicker('refresh');
+				}
+				else
+				{
+					$(".capacity").hide();
+				}	
+            }
+			},
+			error: function (result) {
+				//alert("Error: "+result);
+				$("#searchedData").html('No Result Found');
+			}
+		});
+   //} 
+}
+
+
+function ExamMode()
+{
+	var selValueByClass = $(".moe:checked").val();
+    if(selValueByClass == 'In - Centre')
+	{
+		$(".prefincenter").show();
+		SeatCountStateCity('PreferenceState');
+	}
+	else
+	{
+		$(".prefincenter").hide();
+		$("#txtStateCenterChoice1").val("");
+		$("#txtCenterChoice1").val("");
+	}
+	$("#txtExamMode").val(selValueByClass);
+}
+
+function ProgTest111()
+{
+	var selValueByClass = $(".prog:checked").val();
+	if(selValueByClass == 'Yes')
+	{
+		$('#checkbox1').prop('checked', true);
+		$("#checkbox1").attr("disabled", true);
+		//$("#txtSubscribedProduct").val();
+	} else {
+		$('#checkbox1').prop('checked', false);
+		$("#checkbox1").attr("disabled", false);
+		//$("#txtSubscribedProduct").val($("#txtVariantCode").val().trim());
+		$("#txtLang").val("");
+	}	
+	$("#txtCorpChoice").val(selValueByClass);
+}
+
+function ProgTest()
+{
+	var selValueByClass = $(".prog:checked").val();
+	if($('#togBtn').prop("checked") == true)
+	{
+		$('#checkbox1').prop('checked', true);
+		$("#checkbox1").attr("disabled", true);
+		//$("#txtSubscribedProduct").val();
+		//alert("Checkbox is checked.");
+		$("#txtCorpChoice").val("Yes");
+	}
+	else if($('#togBtn').prop("checked") == false)
+	{
+		$('#checkbox1').prop('checked', false);
+		$("#checkbox1").attr("disabled", true);
+		//$("#txtSubscribedProduct").val($("#txtVariantCode").val().trim());
+		$("#txtLang").val("");
+		//alert("Checkbox is unchecked.");
+		$("#txtCorpChoice").val("No");
+	}
+}
+
+
+function CheckforOTP() {
+    if ($('#txtMobileNo').val() == '' ) {
+        alert('Enter Mobile number for OTP');
+        return false;
+    }
+    if ($('#txtEmail').val() == '') {
+        alert('Enter Email Addres for OTP');
+        return false;
+    } else {
+		sendOTPSMS();
+        return true;
+    }	
+}
+
+
+/*-------------------OTP functions--------------------*/
+
+function sendOTPSMS() {
+    var functionName = 'OTPResponse';
+    
+    var otpMobileNumber = document.getElementById('txtMobileNo').value;
+    var otpEmail = document.getElementById('txtEmail').value;
+    //fnGenerateOTP(otpMobileNumber, functionName);
+    fnGenerateOTPBOTH(otpMobileNumber, otpEmail, functionName);
+    
+}
+
+function OTPResponse(req) {
+    var response = req.responseText;
+    
+    //alert(response);
+    
+    if (response == 'OTP000') {
+        alert('Number has been validated.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    
+    if (response == 'OTP002') {
+        alert('Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    
+    if (response == 'OTP001') {
+        alert('Kindly use some other number as this number has already been used.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP003') {
+        alert('Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP004') {
+        alert('Please try again later.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP005') {
+        alert('Error occured while sending message.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP006') {
+        alert('OTP for your mobile No./Email has not been generated. Kindly use Send button to generate OTP')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP010') {
+        alert('OTP has been regenerated and sent successfully.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP011') {
+        alert('Error occured while updating status of the OTP.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP012') {
+        alert('Wait for 5 min and try again.');
+        $("#txtOTP").val("");
+    }
+    if (response == 'OTP013') {
+        alert('Tried to validate OTP of a mobile Number/Email for which OTP is not generated in the current session.')
+        $("#txtOTP").val("");
+    }
+    if (response == 'OTP016') {
+        alert('Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+}
+
+function ResendOTPSMS() {
+    var functionName = 'OTPResendResponse';
+    var otpMobileNumber = document.getElementById('txtMobileNo').value;
+    var otpEmail = document.getElementById('txtEmail').value;
+    //fnResendOTP(otpMobileNumber, functionName)
+    fnResendOTPBOTH(otpMobileNumber, otpEmail, functionName);
+    //fnResendOTPBOTH(otpMobileNumber,otpEmail,statusShowFunctionName);
+}
+
+function OTPResendResponse(req) {
+    var response = req.responseText;
+    
+    //alert(response);
+    if (response == 'OTP000') {
+        alert('Number has been validated.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    
+    if (response == 'OTP002') {
+        alert('Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    
+    if (response == 'OTP001') {
+        alert('Kindly use some other number as this number has already been used.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP003') {
+        alert('OTP resent successfully. Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP004') {
+        alert('Please try again later.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP005') {
+        alert('Error occured while resending message.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+        
+    }
+    if (response == 'OTP006') {
+        alert('OTP for your mobile No. has not been generated. Kindly use Send button to generate OTP')
+		$("#txtOTP").val("");
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP010') {
+        alert('OTP has been regenerated and sent successfully.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP011') {
+        alert('Error occured while updating status of the OTP.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP012') {
+        alert('Wait for 5 min and try again.')
+        $("#txtOTP").val("");
+    }
+    if (response == 'OTP013') {
+        alert('Tried to validate OTP of a mobile Number for which OTP is not generated in the current session.')
+        $("#txtOTP").val("");
+    }
+    
+}
+
+function ValidateOTPSMS() {
+    var functionName = 'OTPValidateResponse';
+    var otpMobileNumber = document.getElementById('txtMobileNo').value;
+    var otpText = document.getElementById('txtOTP').value;
+    var otpEmail = document.getElementById('txtEmail').value;
+    //fnValidateOTP(otpMobileNumber, otpText, functionName)
+    //fnValidateOTP(otpMobileNumber,otpText,functionName);
+    fnValidateOTPBOTH(otpMobileNumber, otpEmail, otpText, functionName);
+}
+
+
+function OTPValidateResponse(req) {
+    
+    var response = req.responseText;
+    validateOTPcheck = response;
+    //validateOTPCheck(validateOTPcheck);
+    $('#txtOtpStatus').val('');    
+    //alert(response);
+    if (response == 'OTP000') {
+        alert('Number has been validated.')
+        $("#SendOTP").hide();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+        //$('#txtOtpStatus').val('Validated');
+    }
+    if (response == 'OTP002') {
+        alert('Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    
+    if (response == 'OTP001') {
+        alert('Kindly use some other number as this number has already been used.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP003') {
+        alert('OTP resent successfully. Kindly use OTP received on your mobile number or Email.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP004') {
+        alert('Please try again later.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP005') {
+        alert('Error occured while resending message.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP006') {
+        alert('OTP for your mobile No. has not been generated. Kindly use Send button to generate OTP')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP007') {
+        alert('Invalid OTP. Kindly verify OTP.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+        validate = false;
+    }
+    if (response == 'OTP008') {
+        alert('OTP has expired. Kindly regenerate OTP.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP009') {
+        alert('OTP has been validated successfully.')
+        $("#SendOTP").hide();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+        $('#txtOtpStatus').val('yes');
+        $('#txtOtpStatusEmail').val($('#txtEmail').val());
+        $('#txtOtpStatusMobile').val($('#txtMobileNo').val());
+		$('#txtMobileNo').attr('readonly', true);
+		$('#txtEmail').attr('readonly', true);
+    }
+    if (response == 'OTP010') {
+        alert('OTP has been regenerated and sent successfully.')
+		$("#txtOTP").val("");
+        $("#SendOTP").hide();
+        $("#ResendOTP").show();
+        $("#ValidateOTP").show();
+        $("#txtOTP").show();
+        $("#OTPtext").show();
+    }
+    if (response == 'OTP011') {
+        alert('Error occured while updating status of the OTP.')
+		$("#txtOTP").val("");
+        $("#SendOTP").show();
+        $("#ResendOTP").hide();
+        $("#ValidateOTP").hide();
+        $("#OTPtext").hide();
+        $("#txtOTP").hide();
+    }
+    if (response == 'OTP012') {
+        alert('Wait for 5 min and try again.')
+        
+    }
+    if (response == 'OTP013') {
+        alert('Tried to validate OTP of a mobile Number/Email for which OTP is not generated in the current session.')
+    }
+}
+/*-------------------OTP functions ends--------------------*/

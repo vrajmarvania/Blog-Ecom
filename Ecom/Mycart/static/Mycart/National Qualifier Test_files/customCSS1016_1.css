@@ -1,0 +1,2019 @@
+@charset "utf-8";
+.bannerCont {
+    background-position: fixed;
+    position: relative;
+    background-size: cover;
+    height: 470px
+}
+
+.bannerCont .owl-stage-outer {
+    padding-top: 0
+}
+
+.homeBanner {
+    height: 380px;
+    width: 100%
+}
+
+.banner_13 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366x378_NQT.jpg?v=iHUB1.9) no-repeat #fff
+}
+
+
+.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01_IntelliGem_iDLH-Banner_1366-x-378_27Aug_2.jpg?v=iHUB1.9) no-repeat #fff
+}
+.banner_10 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Career-Edge_Banner_1366-x-378_2.png?v=iHUB1.9) no-repeat #fff
+}
+
+.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/RemoteMarking_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote_Assessments_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366x378_ipadlandscape152020.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+.banner_CareerEdge {
+	background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/01-Career-Edge-iDLH-banner_1366-x-378.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP1366x378.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Ipad-Landscape_1366x378-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CORNERD_1366-x-378-px_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Ipad-Landscape_1366x378-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_1366x378_banner01OSP.jpg) no-repeat #fff
+}
+.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_1366_378.jpg) no-repeat #fff
+}
+
+.banner_2 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_1366-x-378.jpg?v=iHUB1.0) no-repeat #fff
+}
+
+.banner_3 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_1366-x-378_i28.jpg?v=iHUB1.0) no-repeat #fff
+}
+
+.banner_4 {
+    background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_1366-x-378_17Jul.jpg?v=iHUB1.0) no-repeat #fff
+}
+
+.banner_5 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366-x-378_IHC30032020.jpg) no-repeat #fff
+}
+
+.homeBanner .btn-black {
+    background: #293646;
+    width: 120px;
+    height: 40px;
+    padding-top: 8px;
+    box-shadow: none
+}
+
+.homeBanner .btn-black:hover {
+    background: #000
+}
+
+.homeBanner h1 {
+    font-size: 50px
+}
+
+.TrainingPartners .clientTile {
+    padding: 10px
+}
+
+.BadgeBanner {
+    background: url(/dotcom/ICMP/images/Banner-1366-LLLlink_new.png) no-repeat;
+    position: absolute;
+    height: 358px;
+    top: 0;
+    right: 0;
+    width: 409px;
+    z-index: 2
+}
+
+.LLLpromotionClick {
+    position: absolute;
+    top: 60%;
+    left: 12%
+}
+
+.WatchNow {
+    height: 80px
+}
+
+.privacyPolicybatch {
+    background: #ffe372;
+    height: 30px;
+    display: block;
+    color: #333;
+    padding: 7px 14px;
+    text-align: center;
+    line-height: 11px
+}
+
+.BadgeBannerButton,
+.indexPageBannerButton {
+    height: 45px;
+    width: 155px;
+    position: relative;
+    border-radius: 10px;
+    vertical-align: middle;
+    padding: 13px 10px;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center
+}
+
+.privacyPolicybatch .closepolicyico {
+    float: right
+}
+
+.policyHeading a:hover,
+.policyHeading:focus {
+    color: #333;
+    text-decoration: underline
+}
+
+.BadgeBannerButton {
+    background-color: #efe43c;
+    top: 74%;
+    left: 27%;
+    color: #000;
+    float: left;
+    cursor: pointer
+}
+
+.indexPageBannerButton {
+    background-color: red;
+    top: 62%;
+    left: 7%;
+    color: #fff;
+    float: left
+}
+
+.BadgeBannerButton:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0
+}
+
+.BadgeBannerButton:hover {
+    background-color: #e8c627;
+    color: #000
+}
+
+#WhyIon {
+    color: #fff!important
+}
+
+.valign_middle {
+    position: relative;
+    top: 50%;
+    display: block;
+    transform: perspective(1px) translateY(-50%);
+    -webkit-transform: perspective(1px) translateY(-50%);
+    -ms-transform: perspective(1px) translateY(-50%);
+    -moz-transform: perspective(1px) translateY(-50%);
+    -o-transform: perspective(1px) translateY(-50%)
+}
+
+.banner {
+    position: absolute;
+    z-index: 1
+}
+
+.affix+.fixtop .banner {
+    top: 0
+}
+
+.basebackgrnd {
+    background-color: #616b88;
+    background-position: left center;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat
+}
+
+.searcharea.active {
+    background-image: url(https://cdn4.tcsion.com/dotcom/ICMP/images/Index_4dev/02-Welcome-Banners.jpg)
+}
+
+.searcharea1.active {
+    background-image: url(../images/banner_new1.jpg)
+}
+
+.tagline {
+    color: #e6e6e6;
+    font-size: 2em;
+    line-height: 1.2em;
+    font-weight: 100;
+    width: 90%
+}
+
+.customPlay.owl-dots {
+    text-align: center;
+    -webkit-tap-highlight-color: transparent
+}
+
+.customPlay.owl-dots .owl-dot {
+    display: inline-block;
+    zoom: 1
+}
+
+.customPlay.owl-dots .owl-dot span {
+    width: 13px;
+    height: 13px;
+    margin: 5px 7px;
+    background: 0 0;
+    display: block;
+    -webkit-backface-visibility: visible;
+    transition: opacity .2s ease;
+    border-radius: 50%;
+    border: 2px solid #13afea;
+}
+
+.customPlay.owl-dots .owl-dot.active span,
+.customPlay.owl-dots .owl-dot:hover span {
+    background: #fcb034
+}
+
+.btn-search,
+.slideBox {
+    background-color: #fff
+}
+
+.owl-banner .customPlay.owl-dots {
+    position: absolute;
+    width: 100%;
+    bottom: 88px
+}
+
+.playstopBtn {
+    position: absolute;
+    bottom: 30px
+}
+
+.cube.pos1 .f2,
+.cube.pos1 .f3,
+.cube.pos2 .f1,
+.cube.pos2 .f3,
+.cube.pos3 .f1,
+.cube.pos3 .f2 {
+    z-index: -1;
+    opacity: 0
+}
+
+.r-tabs .r-tabs-accordion-title.r-tabs-state-disabled,
+.r-tabs .r-tabs-nav .r-tabs-state-disabled {
+    opacity: .5
+}
+
+.f1,
+.f2,
+.f3 {
+    backface-visibility: hidden
+}
+
+.btn-search {
+    border-radius: 0!important;
+    border-color: #fff;
+    color: #ddd;
+    font-size: 35px!important
+}
+
+.bigLabel p {
+    font-size: 1.25em;
+    margin-bottom: 22px;
+    line-height: 28px;
+    color: rgba(255, 255, 255, .72)
+}
+
+.topLink {
+    text-align: center
+}
+
+.topLink p {
+    display: block;
+    font-size: 12px;
+    line-height: normal;
+    margin: 0;
+    font-weight: 700;
+    color: #fff;
+    transition: all .2s
+}
+
+.topLink>div {
+    cursor: pointer;
+    display: inline-block;
+    height: 40px;
+    text-align: center;
+    width: 150px;
+    transition: all .2s;
+    vertical-align: bottom;
+    position: initial
+}
+
+.contentBoxContainer,
+.cube,
+.cube.pos1,
+.cube.pos2,
+.cube.pos3,
+.cube.pos4 {
+    position: relative
+}
+
+.topLink>div.sel,
+.topLink>div:hover {
+    height: 50px
+}
+
+.topLink>div p.singleLine {
+    margin-top: 10px;
+    transition: all .2s
+}
+
+.popularCourses .lblContainer {
+    color: #000;
+    height: 140px;
+    padding: 0 6px;
+    background-color: #fff;
+    position: relative
+}
+
+.slideBox {
+    color: #333;
+    max-width: 350px
+}
+
+.popularAssesments .lblContainer {
+    color: #000;
+    height: 124px;
+    padding: 0 14px;
+    border-radius: 0 0 5px 5px
+}
+
+.contentBoxContainer {
+    height: 77px;
+    width: 100%
+}
+
+.cube.pos2,
+.cube.pos3,
+.cube.pos4,
+.cubeContainer,
+.face {
+    height: 80px
+}
+
+.cubeContainer {
+    perspective: 800px;
+    width: 100%
+}
+
+@media screen and (-ms-high-contrast:active),
+(-ms-high-contrast:none) {
+    .pos1 .f1,
+    .pos2 .f2 {
+        z-index: 99
+    }
+    .cube.pos1,
+    .cube.pos2,
+    .cube.pos3,
+    .pos2 .f2,
+    .pos3 .f3 {
+        transform: rotateX(0) translateZ(0)!important
+    }
+}
+
+.cube,
+.cube.pos1 {
+    height: 80px;
+    transform: translateZ(-40px) rotateX(0);
+    transform-origin: 50% 50% 0;
+    transform-style: preserve-3d;
+    width: 100%;
+    transition: all .4s
+}
+
+.cube.pos2 {
+    transform: translateZ(-40px) rotateX(-90deg);
+    transform-origin: 50% 50% 0;
+    transform-style: preserve-3d;
+    width: 100%
+}
+
+.cube.pos3 {
+    transform: translateZ(-40px) rotateX(-180deg);
+    transform-origin: 50% 50% 0;
+    transform-style: preserve-3d;
+    width: 100%
+}
+
+.cube.pos4 {
+    transform: translateZ(-40px) rotateX(-270deg);
+    transform-origin: 50% 50% 0;
+    transform-style: preserve-3d;
+    width: 100%
+}
+
+.contentBox,
+.face {
+    position: absolute;
+    width: 100%
+}
+
+.f1 {
+    transform: rotateY(0) translateZ(40px)
+}
+
+.f2 {
+    transform: rotateX(90deg) translateZ(40px)
+}
+
+.f3 {
+    transform: rotateX(180deg) translateZ(40px)
+}
+
+.f4 {
+    transform: rotateX(-90deg) translateZ(40px)
+}
+
+.r-tabs,
+.topLink {
+    position: relative
+}
+
+.topLink>div.hov {
+    height: 52px
+}
+
+.tb1 {
+    left: -60px
+}
+
+.tb2 {
+    left: 90px
+}
+
+.tb3 {
+    left: 240px
+}
+
+.cBox1,
+.tb1 {
+    background-color: #13afea
+}
+
+.cBox2,
+.tb2 {
+    background-color: #f25529
+}
+
+.cBox3,
+.tb3 {
+    background-color: #9357b9
+}
+
+.cBox4,
+.tb4 {
+    background-color: #c1392b;
+    padding-top: 10px
+}
+
+ul.TabsInnrTxt {
+    margin: 0;
+    padding: 0 36px 0 10px;
+    float: left
+}
+
+.cBox1 ul.TabsInnrTxt {
+    border-right: 1px solid #4ec2f3
+}
+
+.cBox2 ul.TabsInnrTxt {
+    border-right: 1px solid #c88c96
+}
+
+.cBox3 ul.TabsInnrTxt {
+    border-right: 1px solid #b07bd2
+}
+
+.cBox4 ul.TabsInnrTxt {
+    border-right: 1px solid #d74f41
+}
+
+ul.TabsInnrTxt.last {
+    border: 0
+}
+
+ul.TabsInnrTxt li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    line-height: 24px;
+    font-size: 12px;
+    display: block;
+    letter-spacing: 1px;
+    text-align: left
+}
+
+ul.TabsInnrTxt li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700
+}
+
+ul.TabsInnrTxt li a:hover {
+    color: #fff;
+    text-decoration: underline
+}
+
+.topLink {
+    margin: 0 auto;
+    width: 100%
+}
+
+.r-tabs .r-tabs-nav .r-tabs-tab {
+    position: relative;
+    top: 0;
+    left: 32%
+}
+
+.r-tabs .r-tabs-nav .r-tabs-anchor {
+    background: #13afea;
+    padding: 10px 12px;
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: .813em
+}
+
+.r-tabs .r-tabs-nav .r-tabs-state-active {
+    margin-bottom: -1px;
+    border-top: 12px solid #0f68ce
+}
+
+.r-tabs .r-tabs-nav .r-tabs-state-active .r-tabs-anchor {
+    color: #fff;
+    background-color: #0f68ce
+}
+
+.r-tabs .r-tabs-panel {
+    margin-bottom: 0;
+    background: #13afea
+}
+
+.r-tabs .r-tabs-accordion-title .r-tabs-anchor {
+    display: block;
+    padding: 10px;
+    background-color: #0ad;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 1px
+}
+
+.r-tabs .r-tabs-accordion-title.r-tabs-state-active .r-tabs-anchor {
+    background-color: #0ad;
+    color: #fff;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    margin-bottom: 0
+}
+
+.r-tabs .r-tabs-nav {
+    border-bottom: 0;
+    margin: 0;
+    padding: 0
+}
+
+.r-tabs .r-tabs-tab {
+    display: inline-block;
+    margin: 0 0 0 -3px!important;
+    list-style: none;
+    padding: 0
+}
+
+.r-tabs .r-tabs-panel {
+    padding: 17px;
+    display: none;
+    height: 100px
+}
+
+.r-tabs .r-tabs-accordion-title {
+    display: none
+}
+
+.r-tabs .r-tabs-panel.r-tabs-state-active {
+    display: block
+}
+
+.tabsAbs {
+    bottom: -19%;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    z-index: 9
+}
+
+#WhyIon {
+    margin-top: 4px
+}
+
+
+#WhyIon ul, ol {
+    margin-top: 0;
+    margin-bottom: 10px;
+    list-style-type: none;
+}
+
+
+#WhyIon .sectionHeader {
+    font-size: 48px;
+    color: #fff;
+	padding-bottom: 8px;
+    padding-top: 18px;
+}
+
+#WhyIon p {
+    color: #fff;
+    font-family: opensans-regular, arial;
+    font-size: 21px;
+    line-height: 32px;
+    margin: 0 auto;
+    padding: 0;
+    width: 70%
+}
+
+.tag2,
+.tag6 {
+    font-family: OpenSans-Regular
+}
+
+#Video-tag {
+    background: url(/dotcom/ICMP/images/video-bg.jpg) left center no-repeat fixed;
+    background-size: cover
+}
+
+#Video-tag .sectionHeader {
+    color: #13afea
+}
+
+.tagContent {
+    position: relative;
+    color: #fff;
+    height: 280px;
+    margin-top: 85px
+}
+
+.tagContent a {
+    color: #fff;
+    display: inline-block;
+    position: absolute;
+    transition: all .6s ease 0s
+}
+
+.tag1 {
+    left: 3%;
+    top: 15px;
+    font-size: 19px
+}
+
+.tag2 {
+    left: 31%;
+    top: 0;
+    font-size: 28px
+}
+
+.tag3 {
+    left: 38%;
+    top: 72px;
+    font-size: 19px
+}
+
+.tag4 {
+    left: 78%;
+    top: 100px;
+    font-size: 20px
+}
+
+.tag5 {
+    font-size: 18px;
+    left: 23%;
+    top: 45px
+}
+
+.tag6 {
+    left: 0;
+    top: 62px;
+    font-size: 28px
+}
+
+.tag10,
+.tag12,
+.tag14,
+.tag7 {
+    font-family: opensans-regular
+}
+
+.tag7 {
+    left: 2%;
+    top: 127px;
+    font-size: 20px
+}
+
+.tag8 {
+    left: 14%;
+    top: 98px;
+    font-size: 18px
+}
+
+.tag9 {
+    left: 68%;
+    top: 29px;
+    font-size: 21px
+}
+
+.tag10 {
+    left: 22%;
+    top: 225px;
+    font-size: 19px
+}
+
+.tag11 {
+    left: 7%;
+    top: 173px;
+    font-size: 21px
+}
+
+.tag12,
+.tag13 {
+    font-size: 24px
+}
+
+.tag12 {
+    left: 50%;
+    top: 180px
+}
+
+.tag13 {
+    left: 36%;
+    top: 130px
+}
+
+.tag14 {
+    left: 39%;
+    top: 155px;
+    font-size: 20px
+}
+
+.clientTile {
+    background-color: #fff;
+    padding: 10px;
+    height: auto;
+    line-height: 45px
+}
+
+.inputBigselecter .btn {
+    height: 45px
+}
+
+.loginopt button {
+    font-size: 15px
+}
+
+.mainheading {
+    font-size: 5em;
+    color: #fff;
+    background: -webkit-linear-gradient(#eee, #333);
+    -webkit-background: -webkit-linear-gradient(#eee, #333);
+    -webkit-background-clip: text;
+    text-shadow: 1px 3px 0 #333;
+    margin-bottom: 10px
+}
+
+.logininst li {
+    margin-bottom: 20px
+}
+
+@media only screen and (max-width:1024px) {
+.tabsAbs {
+    bottom: -10px;
+	}
+	
+	}
+
+
+@media only screen and (max-width:768px) {
+    #Video-tag {
+        height: 700px!important
+    }
+    .tabsAbs {
+        bottom: -24%
+    }
+    #WhyIon .sectionHeader {
+        font-size: 32px;
+        color: #fff
+    }
+    .text-center ul {
+        padding: 10px 0
+    }
+}
+
+.carousel-fade .carousel-inner .item {
+    opacity: 0;
+    transition-property: opacity;
+    transition-timing-function: ease-in-out;
+    transition-duration: 1s
+}
+
+.carousel-fade .carousel-inner .active {
+    opacity: 1
+}
+
+.carousel-fade .carousel-inner .active.left,
+.carousel-fade .carousel-inner .active.right {
+    left: 0;
+    opacity: 0;
+    z-index: 1
+}
+
+.carousel-fade .carousel-inner .next.left,
+.carousel-fade .carousel-inner .prev.right {
+    opacity: 1
+}
+
+.carousel-fade .carousel-control {
+    z-index: 2
+}
+
+@media all and (transform-3d),
+(-webkit-transform-3d) {
+    .carousel-fade .carousel-inner>.item.active.left,
+    .carousel-fade .carousel-inner>.item.active.right,
+    .carousel-fade .carousel-inner>.item.next,
+    .carousel-fade .carousel-inner>.item.prev {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
+    }
+    .carousel-fade .carousel-inner>.item.active,
+    .carousel-fade .carousel-inner>.item.next.left,
+    .carousel-fade .carousel-inner>.item.prev.right {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
+    }
+}
+
+.carouselButtons {
+    position: absolute;
+    bottom: 30px;
+    left: 120px;
+    width: 30px;
+    z-index: 99;
+    right: 0;
+    margin: auto
+}
+
+.pauseBtn,
+.playBtn {
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer
+}
+
+.playBtn {
+    display: none
+}
+
+.carouselIndiCont li {
+    border: 2px solid #fff!important;
+    height: 13px;
+    width: 13px;
+    border-radius: 50%
+}
+
+.carouselIndiCont li.active {
+    height: 14px;
+    width: 14px;
+    background: #fcb034
+}
+
+.carouselIndiCont {
+    position: relative;
+    top: 300px
+}
+
+.Logobaner {
+    padding-top: 30px
+}
+
+.carouselButtons:hover .dot {
+    animation: pulsate 1.5s ease-in-out infinite
+}
+
+.dot {
+    background: 0 0;
+    border: 2px solid #fcb034;
+    border-radius: 50%;
+    height: 55px;
+    left: -12px;
+    opacity: 0;
+    position: absolute;
+    top: -12px;
+    width: 55px;
+    z-index: 1
+}
+
+@keyframes pulsate {
+    0% {
+        opacity: .6;
+        transform: scale(.6)
+    }
+    50% {
+        opacity: .4;
+        transform: scale(.7)
+    }
+    75% {
+        opacity: .1;
+        transform: scale(.75)
+    }
+    100% {
+        opacity: 0;
+        transform: scale(.8)
+    }
+}
+
+.contentBox .owl-nav {
+    width: 100%;
+    top: 22%;
+    position: absolute;
+    height: 0
+}
+
+.contentBox .fa-chevron-circle-left {
+    position: absolute;
+    left: -40px;
+    color: rgba(255, 255, 255, .8)
+}
+
+.contentBox .fa-chevron-circle-right {
+    position: absolute;
+    right: -40px;
+    color: rgba(255, 255, 255, .8)
+}
+
+.contentBox .fa-chevron-circle-left:hover,
+.contentBox .fa-chevron-circle-right:hover {
+    color: rgba(255, 255, 255, 1)
+}
+
+.cubeContainer .owl-carousel p {
+    line-height: 18px;
+    font-size: 13px;
+    padding-right: 10px
+}
+
+.wt-bg {
+    background-color: rgba(245, 245, 245, .6);
+    padding: 3px 5px;
+    border-radius: 4px
+}
+
+.contentBox {
+    height: 100px;
+    padding: 0 50px
+}
+
+.contentBox .owl-stage-outer {
+    padding-top: 5px
+}
+
+.contentBox .item a {
+    color: #fff
+}
+
+.cBox1 .item,
+.cBox2 .item,
+.cBox3 .item {
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, .1);
+    padding-top: 5px;
+    height: 90px;
+    padding-bottom: 15px;
+    cursor: pointer
+}
+
+.cBox2 .item,
+.cBox3 .item {
+    padding-top: 15px
+}
+
+.contentBox .item a i {
+    height: 50px;
+    width: 50px;
+    padding: 4px;
+    transition: all .2s;
+    border-radius: 50%;
+    display: block;
+    margin: auto
+}
+
+.contentBox .item:hover a i {
+    background-color: #fff;
+    border-radius: 50%
+}
+
+.contentBox .item a i svg {
+    height: 45px;
+    width: 42px;
+    padding: 4px
+}
+
+.contentBox.cBox1 .item:hover a svg path {
+    fill: #13afea
+}
+
+.contentBox.cBox2 .item:hover a svg path {
+    fill: #f25529
+}
+
+.contentBox.cBox3 .item:hover a svg path {
+    fill: #9357b9
+}
+
+.banner {
+    bottom: 0!important;
+    height: auto!important;
+    top: 0;
+    padding-left: 0;
+    padding-right: 0
+}
+
+.basebackgrnd {
+    height: 520px!important;
+    cursor: pointer
+}
+
+.owl-stage {
+    margin: auto
+}
+
+@media only screen and (max-width:480px) {
+    .newFont,
+    .newSmlFont {
+        text-align: center
+    }
+    .blue_block,
+    .brown_block,
+    .green_block {
+        font-size: 35px;
+        min-height: 85px;
+        width: 100%;
+        padding: 20px 0
+    }
+    .newFont,
+    .para .sectionHeader1 {
+        font-size: 28px;
+        line-height: 36px
+    }
+    .moreBtn {
+        margin-top: 0;
+        margin-right: 15px
+    }
+    .newSmlFont {
+        line-height: 36px
+    }
+    .box_ht {
+        height: 410px!important
+    }
+    .reg_students div {
+        width: 60%
+    }
+    .newClient {
+        margin: 10px 0
+    }
+    .chatBlock {
+        padding: 8px 10px
+    }
+    .subBlock a {
+        display: block;
+        padding: 5px 0;
+        text-align: left
+    }
+    .liveChat {
+        right: 0;
+        padding: 29px 20px 30px
+    }
+    .newSlider .carouselIndiCont {
+        top: 130px
+    }
+    .BadgeBannerButton {
+        height: 18px;
+        width: 45%;
+        top: 60%;
+        border-radius: 4px;
+        left: 29%;
+        padding: 5px 2px;
+        font-size: 7px
+    }
+    .BadgeBannerButton:after {
+        border-top: solid 5px #962438;
+        border-left: solid 5px transparent;
+        border-right: solid 5px transparent;
+        margin-left: -5px
+    }
+}
+
+@media only screen and (max-width:360px) {
+    .blue_block,
+    .brown_block,
+    .green_block {
+        font-size: 32px;
+        min-height: 70px;
+        width: 100%;
+        padding: 15px 0
+    }
+    .newFont {
+        font-size: 22px;
+        line-height: 30px
+    }
+    .moreBtn {
+        margin-top: 0;
+        margin-right: 0
+    }
+    .newSmlFont {
+        line-height: 36px;
+        font-size: 15px
+    }
+    .box_ht {
+        height: 359px
+    }
+    .para .sectionHeader1 {
+        font-size: 25px;
+        line-height: 36px
+    }
+    .para p {
+        width: 95%;
+        font-size: 15px
+    }
+    .reg_students div {
+        width: 80%
+    }
+    .newClient {
+        margin: 10px 0
+    }
+    .subBlock a {
+        display: block;
+        padding: 5px 0;
+        text-align: left
+    }
+    .newSlider .carouselIndiCont {
+        top: 100px
+    }
+    .BadgeBannerButton {
+        height: 18px;
+        width: 45%;
+        top: 49%;
+        border-radius: 4px;
+        left: 29%;
+        padding: 5px 2px
+    }
+    .BadgeBannerButton:after {
+        border-top: solid 5px #962438;
+        border-left: solid 5px transparent;
+        border-right: solid 5px transparent;
+        margin-left: -5px
+    }
+}
+
+.BadgeBannerButton:after {
+    border-top: solid 5px #962438;
+    border-left: solid 5px transparent;
+    border-right: solid 5px transparent;
+    margin-left: -5px
+}
+
+@media only screen and (max-width:1100px) {
+	.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01_IntelliGem_iDLH-Banner_1366-x-378_27Aug_2.jpg?v=iHUB1.9) no-repeat #fff
+}
+	.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/RemoteMarking_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote_Assessments_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+	.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366x378_ipadlandscape152020.jpg?v=iHUB1.9) no-repeat #fff
+}
+
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/01-Career-Edge-iDLH-banner_1366-x-378.jpg?v=iHUB1.9) no-repeat #fff
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP1366x378.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Ipad-Landscape_1366x378-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CORNERD_1366-x-378-px_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Ipad-Landscape_1366x378-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+	.banner_01 {
+		background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_1366x378_banner01OSP.jpg) no-repeat #fff
+	}
+	.banner_1 {
+		background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_1366_378.jpg) no-repeat #fff
+	}
+	
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_1366-x-378.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_1366-x-378_i28.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_1366-x-378_17Jul.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366-x-378_IHC30032020.jpg) no-repeat #fff
+    }
+    ._homeBanner {
+        height: 320px
+    }
+    .BadgeBanner {
+        background: url(/dotcom/ICMP/images/Banner-1366-LLLlink_new.png) no-repeat;
+        position: absolute;
+        height: 300px;
+        top: 0;
+        right: 0;
+        width: 375px;
+        background-size: contain
+    }
+    .BadgeBannerButton {
+        height: 36px;
+        width: 32%;
+        top: 76%;
+        border-radius: 10px;
+        left: 26%;
+        padding: 10px 0;
+        font-size: 14px;
+        float: left
+    }
+    .bannerCont {
+        background-position: fixed;
+        position: relative;
+        background-size: cover;
+        height: 400px
+    }
+	.owl-banner .customPlay.owl-dots {
+   
+    bottom: 38px;
+}
+
+}
+@media only screen and (min-width:1022px) and (max-width:1025px) {
+	div.banner_01 {
+background-size: 100% 122% !important;
+	}
+}
+@media only screen and (max-width:1024px) {
+	.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01_IntelliGem_iDLH-Banner_1366-x-378_27Aug_2.jpg?v=iHUB1.9) no-repeat #fff
+}
+.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/RemoteMarking_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote_Assessments_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366x378_desktop_RIONEW152020.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/01-Career-Edge-iDLH-banner_1366-x-378.jpg?v=iHUB1.7) no-repeat #fff;
+	
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP1366x378.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Ipad-Landscape_1366x378-px_updatedNEW442020.jpg?v=iHUB1.5) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CORNERD_1366-x-378-px_updatedNEW442020.jpg?v=iHUB1.5) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Ipad-Landscape_1366x378-px_updatedNEW442020.jpg?v=iHUB1.5) no-repeat #fff
+}
+	.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_1280x800_banner01OSP.jpg) no-repeat #fff;
+	
+}
+.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_1366_378.jpg) no-repeat #fff;
+}
+	
+	
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_1280-x-800.jpg?v=iHUB1.0) no-repeat #fff;
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_1280-x-800_i28.jpg?v=iHUB1.0) no-repeat #fff;
+    }
+    .homeBanner {
+        background-size: cover!important;
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_1280-x-800_19Jul.jpg?v=iHUB1.0) no-repeat #fff;
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1280-x-800_IHC30032020.jpg) no-repeat #fff;
+		
+    }
+    .LLLpromotionClick {
+        position: absolute;
+        top: 64%;
+        left: 12%
+    }
+    .indexPageBannerButton {
+        height: 39px;
+        width: 118px;
+        top: 66%;
+        padding: 8px 10px;
+        left: 9%
+    }
+    .bannerCont {
+        background-position: fixed;
+        position: relative;
+        background-size: cover;
+        height: 450px;
+    }
+    .contentBoxContainer {
+        height: 40px;
+        position: relative;
+        width: 100%
+    }
+    .activateCode a.btn {
+        padding: 5px;
+        font-size: 12px;
+        margin-top: 7px
+    }
+    .BadgeBanner {
+        background: url(/dotcom/ICMP/images/Banner-1366-LLLlink_new.png) no-repeat;
+        position: absolute;
+        /* height: 300px; */
+        top: 0;
+        right: -55px;
+        /* width: 375px; */
+		height: 236px;
+		width: 308px;
+        z-index: 999;
+        background-size: contain
+    }
+    .BadgeBannerButton {
+        height: 36px;
+        width: 32%;
+        top: 76%;
+        border-radius: 10px;
+        left: 26%;
+        padding: 10px 0;
+        font-size: 14px;
+        float: left
+    }
+}
+
+@media only screen and (max-width:1023px) {
+.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01_IntelliGem_iDLH-Banner_1366-x-378_27Aug_2.jpg?v=iHUB1.9) no-repeat #fff
+}
+.banner_10 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Career-Edge_Banner_1366-x-378_2.png?v=iHUB1.8) 
+	no-repeat #fff
+}
+
+	.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/RemoteMarking_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote_Assessments_1366x378.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1366x378_desktop_RIONEW152020.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/01-Career-Edge-iDLH-banner_1366-x-378.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP1366x378.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/iDLH_1280x800_updated_banner_02_04032020.jpg?v=iHUB1.1) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1280-x-800_cornerdupdated_04032020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/Career_edge_1280x800_updatedbanner_03_03042020.jpg?v=iHUB1.1) no-repeat #fff
+}
+	.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_1280x800_banner01OSP.jpg) no-repeat #fff
+}
+.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_1366_378.jpg) no-repeat #fff
+}
+	
+	
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_1280-x-800.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_1280-x-800_i28.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_1280-x-800_19Jul.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/1280-x-800_IHC30032020.jpg) no-repeat #fff
+    }
+}
+
+@media only screen and (max-width:992px) {
+    .signUpoffr {
+        font-size: 20px
+    }
+	
+	.tagContent {
+    left: 20px;
+    color: red;
+    margin-top: 0px;
+}
+}
+@media only screen and (max-width:440px) {
+ .bannerCont {
+		    height: 360px!important;
+    }
+}
+@media only screen and (max-width:768px) {
+    .loginoffr,
+    .signUpoffr {
+        text-align: center;
+        padding-left: 10px;
+        padding-right: 10px
+    }
+    .sectionstepHead,
+    .stepsPart {
+        display: block
+    }
+    .homeBanner {
+        height: 200px;
+        background-size: cover
+    }
+	.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/03_IntelliGem_iDLH-Banner_768-x-200_27Aug_2.jpg?v=iHUB1.99) no-repeat #fff
+}
+		.banner_10 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Career-Edge_Banner_768-x-200.png?v=iHUB1.9) no-repeat #fff
+no-repeat #fff
+}
+	
+	
+	.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote-Marking_768-x-200.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote-Assessments_768-x-200.png?v=iHUB1.9) no-repeat #fff
+}
+	.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/768x200_iPad-Potrait_RIONEW152020.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/03-Career-Edge-iDLH-banner_768-x-200.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP768x200.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Mobile-Landscape_768x200-px_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CORNERD_768-x-200_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Mobile_Landscape_768x200_px_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+		.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_768x200_banner01OSP.jpg) no-repeat #fff
+}
+	.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_768_200.jpg) no-repeat #fff
+}
+
+	
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_768-x-200.jpg) no-repeat #fff
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_768-x-200_i28.jpg) no-repeat #fff
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_768-x-200_17Jul.jpg) no-repeat #fff
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/768-x-200_IHC30032020.jpg) no-repeat #fff
+    }
+    .LLLpromotionClick {
+        position: absolute;
+        top: 65%;
+        left: 11%
+    }
+    .indexPageBannerButton {
+        height: 28px;
+        width: 87px;
+        top: 62%;
+        padding: 5px 10px;
+        left: 2%;
+        font-size: 12px
+    }
+    .BadgeBanner {
+        background: url(/dotcom/ICMP/images/Banner-768-LLLlink_new.png) no-repeat;
+        position: absolute;
+        height: 150px;
+        top: 0;
+        right: 0px;
+        width: 194px;
+        background-size: contain
+    }
+    .contentBoxContainer {
+        height: 48px;
+        position: relative;
+        width: 100%
+    }
+    .BadgeBannerButton {
+        height: 20px;
+        width: 36%;
+        top: 73%;
+        border-radius: 5px;
+        left: 27%;
+        padding: 5px 0;
+        font-size: 8px;
+        float: left
+    }
+    .bannerCont {
+        background-position: fixed;
+        position: relative;
+        background-size: cover;
+        height: 280px
+    }
+    .activateCode a.btn {
+        padding: 5px;
+        font-size: 12px;
+        margin-top: 0
+    }
+    .owl-banner .customPlay.owl-dots {
+    position: absolute;
+    width: 150px;
+    bottom: 50px;
+    left: calc(50% - 75px);
+    }
+}
+
+@media only screen and (max-width:640px) {
+    .stepsSec::after,
+    .stepsSec::before {
+        content: normal
+    }
+    .stepsSec {
+        width: 100%;
+        text-align: center
+    }
+    #comingsoon h1 span {
+        font-size: 30px
+    }
+    #comingsoon h1 {
+        margin-top: 0
+    }
+    .homeBanner {
+        height: 200px;
+        background-size: cover;
+        /* background-position: -34px 0 */
+    }
+	
+	.banner_13 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/768x200_NQT.jpg?v=iHUB1.9) no-repeat #fff
+}
+	
+	
+	
+	.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/03_IntelliGem_iDLH-Banner_768-x-200_27Aug_2.jpg?v=iHUB1.99) no-repeat #fff
+}
+	.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote-Marking_768-x-200.png?v=iHUB1.9) no-repeat #fff
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote-Assessments_768-x-200.png?v=iHUB1.9) no-repeat #fff
+}
+	.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/768x200_Mobile-Landscape_RIONEW152020.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/03-Career-Edge-iDLH-banner_768-x-200.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP768x200.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Mobile-Landscape_768x200-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CORNERD_768-x-200_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Mobile_Landscape_768x200_px_updatedNEW442020.jpg?v=iHUB1.4) no-repeat #fff
+}
+	.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_768x200_banner01OSP.jpg) no-repeat #fff
+}
+		.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_768_200.jpg) no-repeat #fff
+}
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_768-x-200.jpg) no-repeat #fff
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_768-x-200_i28.jpg) no-repeat #fff
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_768-x-200_17Jul.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/768-x-200_IHC30032020.jpg) 34% no-repeat #fff
+    }
+    .indexPageBannerButton {
+        height: 30px;
+        width: 118px;
+        top: 40%;
+        padding: 8px 10px
+    }
+    .LLLpromotionClick {
+        position: absolute;
+        top: 65%;
+        left: 11%
+    }
+    .privacyPolicybatch {
+        text-align: left;
+        font-size: 11px;
+        line-height: 11px
+    }
+    .BadgeBanner {
+        background: url(/dotcom/ICMP/images/Banner-768-LLLlink_new.png) no-repeat;
+        position: absolute;
+        height: 136px;
+        top: 0;
+        right: 0;
+        width: 174px;
+        background-size: contain
+    }
+    .owl-banner .customPlay.owl-dots {
+        position: absolute;
+        width: 100%;
+        bottom: 50px;
+		left:calc(50% - 320px);
+    }
+    .tagContent a {
+        font-size: 16px
+    }
+}
+
+@media only screen and (max-width:480px) {
+    .loginoffr,
+    .signUpoffr {
+        float: none;
+        width: 100%
+    }
+    .homeBanner {
+        height: 330px;
+        background-size: cover
+    }
+	.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/04_IntelliGem_iDLH-Banner_480-x-301_27Aug_2.jpg?v=iHUB1.99) no-repeat #fff
+}
+	.banner_10 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Career-Edge_Banner_480-x-301.png?v=iHUB1.9) no-repeat #fff
+}
+	
+	.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote_Marking_480-x-301.png?v=iHUB1.9) no-repeat #fff;
+    background-position: 19% 50%;
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote-Assessments_480-x-301.png?v=iHUB1.9) no-repeat #fff
+
+}
+	.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/480x301_Mobile-Potrait_RIONEW152020.jpg?v=iHUB1.8) no-repeat #fff
+}
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/04-Career-Edge-iDLH-banner_480-x-301.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+
+	.banner_13 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/480x301_NQT.jpg?v=iHUB1.9) no-repeat #fff;
+	height : 285px;
+}
+
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP480x301.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Mobile-Portrait_480x301-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CorNERD_480-x-301_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff;
+	background-size: 100% 87%!important;
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Mobile-Portrait_480x301-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff;
+	background-size: 100% 87%!important;
+}
+	.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_480x301_banner01OSP.jpg) no-repeat #fff;
+	background-size: 100% 87%!important;
+	}
+		.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_480_301.jpg) no-repeat #fff;
+	background-size: cover!important;
+}
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_480-x-301.jpg) no-repeat #fff;
+		background-size: cover!important;
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_480-x-301_i28.jpg) no-repeat #fff;
+		background-size: cover!important;
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_480-x-301_17Jul.jpg) no-repeat #fff;
+		background-size: cover!important;
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/480-x-301_IHC30032020.jpg) no-repeat #fff;
+		background-size: 126% 87%!important;
+    }
+
+    .LLLpromotionClick {
+        position: absolute;
+        top: 44%;
+        left: 10%
+    }
+    .indexPageBannerButton {
+        height: 33px;
+        width: 100px;
+        top: 43%;
+        padding: 7px 10px;
+        left: 10%;
+        font-size: 13px
+    }
+    .tabsAbs {
+        bottom: -2px;
+    }
+    .BadgeBanner {
+        /* background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/banner480_LLL.png) no-repeat; */
+        position: absolute;
+        height: 142px;
+        top: 0;
+        right: 20px;
+        width: 131px;
+        background-size: contain
+    }
+    .BadgeBannerButton {
+        height: 18px;
+        width: 45%;
+        top: 59%;
+        border-radius: 4px;
+        left: 29%;
+        padding: 5px 2px;
+        font-size: 7px
+    }
+    .owl-banner .customPlay.owl-dots {
+        position: absolute;
+        width: 100%;
+        bottom: 100px;
+		left:calc(50% - 198px);
+    }
+}
+
+@media only screen and (max-width:320px) {
+    .reg_students div {
+        width: 90%
+    }
+    .BadgeBannerButton {
+        top: 75%
+    }
+    .BadgeBannerButton:after {
+        border-top: solid 5px #962438;
+        border-left: solid 5px transparent;
+        border-right: solid 5px transparent;
+        margin-left: -5px
+    }
+    .WatchNow {
+        height: 50px
+    }
+}
+
+@media only screen and (max-width:992px) {
+    .bannerCont .customPlay.owl-dots .owl-dot:hover span {
+        background: unset!important
+    }
+    .bannerCont .customPlay.owl-dots .owl-dot.active span {
+        background: #fcb034!important
+    }
+}
+
+
+
+@media only screen and (max-width:360px) {
+    .homeBanner {
+        height: 300px
+    }
+	.banner_10 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Career-Edge_Banner_480-x-301.png?v=iHUB1.9) no-repeat #fff
+}
+	.banner_12 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/04_IntelliGem_iDLH-Banner_480-x-301_27Aug_2.jpg?v=iHUB1.99) no-repeat #fff
+}
+	.banner_09 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote_Marking_480-x-301.png?v=iHUB1.9) no-repeat #fff;
+	    background-position: 19% 50%;
+}
+.banner_08 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/Remote-Assessments_480-x-301.png?v=iHUB1.9) no-repeat #fff
+}
+	.banner_07 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/480x301_Mobile-Potrait_RIONEW152020.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_CareerEdge {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/04-Career-Edge-iDLH-banner_480-x-301.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+.banner_YEEP {
+    background: url(/per/g01/pub/1016/iDH/instance/1/template/20/temp/template/image/YEEP480x301.jpg?v=iHUB1.7) no-repeat #fff
+}
+
+
+.banner_13 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/480x301_NQT.jpg?v=iHUB1.99) no-repeat #fff;
+	height:253px;
+}
+
+
+	.banner_02 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/GR_Mobile-Portrait_480x301-px_updatedNEW442020.jpg?v=iHUB1.2) no-repeat #fff
+}
+.banner_03 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CorNERD_480-x-301_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+.banner_04 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/CE_Mobile-Portrait_480x301-px_updatedNEW442020.jpg?v=iHUB1.3) no-repeat #fff
+}
+	.banner_01 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/01/iDLH_480x301_banner01OSP.jpg) no-repeat #fff
+		}
+			.banner_1 {
+    background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Kaplan_480_301.jpg) no-repeat #fff
+}
+    .banner_2 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Value_pack_480-x-301.jpg) no-repeat #fff
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/procert/Procert_480-x-301_i28.jpg) no-repeat #fff
+    }
+    .banner_4 {
+        background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_480-x-301_17Jul.jpg?v=iHUB1.0) no-repeat #fff
+    }
+    .banner_5 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/homepage_banner/480-x-301_IHC30032020.jpg) no-repeat #fff
+    }
+    .LLLpromotionClick {
+        position: absolute;
+        top: 57%;
+        left: 16%
+    }
+    .indexPageBannerButton {
+        height: 31px;
+        width: 86px;
+        top: 42%;
+        padding: 6px 10px;
+        left: 8%;
+        font-size: 13px
+    }
+    .tabsAbs {
+        bottom: 0%;
+    }
+    .bannerCont {
+        height: 335px
+    }
+    .BadgeBanner {
+       /*  background: url(https://cdn4.tcsion.com/dotcom/ICMP/images/banner320_LLL.png) no-repeat; */
+        position: absolute;
+        height: 115px;
+        top: 0;
+        right: 4px;
+        width: 114px;
+        background-size: contain
+    }
+    .BadgeBannerButton {
+        height: 18px;
+        width: 45%;
+        top: 64%;
+        border-radius: 4px;
+        left: 29%;
+        padding: 5px 2px;
+        font-size: 7px
+    }
+    .owl-banner .customPlay.owl-dots {
+        position: absolute;
+        width: 100%;
+        bottom: 100px;
+		left:calc(50% - 180px);
+    }
+}
+#subscribeContent h4 {
+    font-size: 17px!important;
+    line-height: 22px;
+}
+h4#myModalLabel
+{font-size: 17px!important;}
+@media only screen and (max-width:320px) {
+    .homeBanner {
+        height: 230px
+    }
+    .banner_3 {
+        background: url(https://learning.tcsionhub.in/dotcom/ICMP/images/indexSlidingBanner/Career_Skill/Career_480-x-301_17Jul.jpg?v=iHUB1.0) no-repeat #fff
+    }
+}
+
+/* CSS Fix for Defect_18044 */
+@media only screen and (max-width:400px) {
+	
+	.TrainingPartners .clientTile img {
+		padding-left: 50px !important;
+	}
+}
+/* fix of Defect_18044 ends */
+
+@media only screen and (min-width: 991px) and (max-width: 1215px) {
+	.banner_CareerEdge {
+		background-position: 20% !important;
+	}
+}

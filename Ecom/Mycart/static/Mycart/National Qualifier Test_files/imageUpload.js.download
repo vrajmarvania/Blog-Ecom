@@ -1,0 +1,2951 @@
+var cont=false;
+var uploadedPath="";
+function showUploadField(name,id){
+
+	$('#image-container').hide();
+	$('#pop_body .crop-table').each(function(){ 
+		if(this.id==name+'_table')
+			$(this).show();
+		else
+			$(this).hide();
+	});
+
+	$('#tabs .tab-link').each(function(){
+		$(this).removeClass('selected-tab');
+	});    
+
+	$('#'+name).addClass('selected-tab')
+	$('#tabActive').val(name.replace('_tab',''));
+	$('#tabActiveId').val(id);
+}
+
+function setScroll(){
+	var menuWidth=0;
+	var count=0;
+	$('#tabs a').each(function(){
+		menuWidth+=$(this).width()+parseInt($(this).css('margin-left'))+40;
+		count++;
+	});
+
+	if(menuWidth>800){
+		$('#tabs')
+		.css({'white-space':'nowrap','width':'825px','overflow':'hidden'})
+		.wrap('<div class="tabScroller" style="width:100%; overflow:hidden; position:relative;">');
+
+		$('#tabs a').css({'float':'none','display':'inline-block'});
+
+		var tabNavHTML='';
+		tabNavHTML+='<div style="position:absolute; top:0; right:0; padding:10px; width:40px; border-left:1px solid #555; background:#fafafa; text-align:center;">';
+		tabNavHTML+='<div class="tabPrev" style="cursor:pointer; width:20px; height:20px; float:left; background:url(/EForms/images/admin/arrow-left2.png) no-repeat "></div>';
+		tabNavHTML+='<div class="tabNext" style="cursor:pointer; width:20px; height:20px; float:left; background:url(/EForms/images/admin/arrow-right2.png) no-repeat "></div>';
+		tabNavHTML+='</div>'; 
+
+		$('.tabScroller').append(tabNavHTML);
+
+		var scrolled=0;
+		$('.tabNext').on('click',function(){
+			if(scrolled + 825 <menuWidth){
+				scrolled+=200;
+				$('#tabs').animate({scrollLeft: scrolled}, 300);
+			}
+			else{
+				$('#tabs').animate({scrollLeft: menuWidth+'px'}, 300);
+			}
+			// console.log(scrolled);
+		});
+		$('.tabPrev').on('click',function(){
+			if(scrolled>0){
+				scrolled-=200;
+				$('#tabs').animate({scrollLeft: scrolled}, 300);
+			}
+			// console.log(scrolled);
+		});
+
+		// console.log("UL WIDTH=>"+menuWidth);
+		// console.log("COUNT=>"+count);
+	}
+	else $('#tabs')
+	.css({'width':'100%'});
+
+}
+
+function createDataStatic(http_request,parsedData)
+{
+
+	if (http_request.readyState == 4){
+	// alert("1");
+	if (http_request.status == 200) {
+	// alert("2");
+	if(parsedData != null)
+	{
+		// alert("3");
+		 data=http_request.responseText;
+		 var parsedTokenData=JSON.parse(data); 
+		// alert(data);
+		// alert(parsedData);
+		var previewImgTs = $("#previewImgTs").val();
+		$("#pop_body").empty();
+		$("#pop_body").append('<div class="tabs" id="tabs" ></div><input type="hidden" id="previewImgTs" name="previewImgTs" value="'+previewImgTs+'">');
+		$("#pop_body").append('<span id = "imageUploadAlert2" data-staticKey="Please upload file" style="display:none">Please upload file</span>');
+		$("#pop_body").append('<span id = "imageUploadAlert3" data-staticKey="File name contains %" style="display:none">File name contains %</span>');
+		$("#pop_body").append('<span id = "imageUploadAlert4" data-staticKey="Please select area for cropping image" style="display:none">Please select area for cropping image</span>');
+		$("#pop_body").append('<span id = "imageUploadAlert5" data-staticKey="Are you sure you want to overwrite existing file?" style="display:none">Are you sure you want to overwrite existing file?</span>');
+		$("#pop_body").append('<span id = "imageUploadAlert6" data-staticKey="You have not uploaded all the mandatory documents, do you still want to close the upload screen?" style="display:none">You have not uploaded all the mandatory documents, do you still want to close the upload screen?</span>');
+		jQuery('#search-beats-popup').css({'position':'absolute'});
+		jQuery('#search-beats-popup, .shadow').fadeIn();
+		$(window).scrollTop(0);
+		popupAlign($('#search-beats-popup').height());
+		// console.log("json::"+data);
+		var firstChk='true';
+		var tabActive='';
+		var tabActiveId='';
+
+
+		var txtFilePathArr=document.getElementById('txtFilePath').value.split("||");		
+		var txtFileNameArr=document.getElementById('txtFileName').value.split("||");		
+		var txtFilePath=document.getElementById('txtFilePath').value;
+		var txtFilePathEdit=document.getElementById('txtFilePathEdit').value;
+		var txtfilePathEditArr=document.getElementById('txtFilePathEdit').value.split("||");	
+		var list='';
+		for(var i=0;i<parsedData.msg.length;i++)
+		{
+			var mand="";
+			var crop="";
+			var cropDiv="";
+			var validation=parsedData.msg[i].validation.split(',');
+			 localStorage.setItem("isFileDeletionRequired_"+parsedData.msg[i].fieldName,parsedData.msg[i].isFileDeletionRequired);
+			if(validation.length>0)
+			{
+				if(validation[0].toLowerCase()=='mandatory')
+				{
+					mand="<span class='red-text'> * </span>";
+					document.getElementById('imgMandChk').value=document.getElementById('imgMandChk').value+parsedData.msg[i].fieldName+"||";
+				}
+			}
+
+			var previewLink='/EForms/'+parsedData.msg[i].displayImg;
+
+			var previewLinkDoc='';
+			var style='';
+			var style1='';
+
+			if(typeof parsedData.msg[i].path != 'undefined')
+			{
+
+				var txtFilePathEdit=document.getElementById('txtFilePathEdit').value;
+				txtFilePathEdit=txtFilePathEdit+parsedData.msg[i].path+"||";
+				var txtFileNameEdit=document.getElementById('txtFileNameEdit').value;
+				txtFileNameEdit=txtFileNameEdit+parsedData.msg[i].fieldName+"||";
+
+				document.getElementById('txtFilePathEdit').value=txtFilePathEdit;
+				document.getElementById('txtFileNameEdit').value=txtFileNameEdit;
+				document.getElementById('txtFilePath').value=txtFilePathEdit;
+					
+				
+				if(parsedData.msg[i].path != '' && parsedData.msg[i].path != null && parsedData.msg[i].path != ' ' && parsedData.msg[i].path != 'null'){
+					if(parsedData.msg[i].fieldType.toLowerCase()=='image')
+					{
+						previewLink=parsedData.msg[i].fullPath;
+						style='display:none';
+					}else{
+						previewLink='';
+						previewLinkDoc="<div><a href='"+parsedData.msg[i].fullPath+"' target='_blank' data-staticKey=\"Click here to download\">Click here to download</a></div>";
+						style1="display:none";
+					}
+				}
+			}else{
+				style="display:none";
+			}
+
+
+			if(parsedData.msg[i].crop.toLowerCase()=='y' && parsedData.msg[i].fieldType.toLowerCase()=='image')
+				var display="display:"
+					if($('#entityId').val()=='')
+					{ display='display:none';}
+
+			if(style1=='')
+			{display=display;}
+			else{
+				display=style1+' ;'+display
+			}
+			if(display==undefined){var display='display:none';}
+			{crop="<div class='edit-appname-btn' id='"+parsedData.msg[i].fieldName+"_cropButt'  style='"+display+";cursor:pointer' ><a style='cursor:pointer' ><b><font color='#fff'><span data-staticKey=\"Crop\">Crop</span></font></b></a></div>";
+
+			var list=list+parsedData.msg[i].fieldName+"_class|";
+
+			}
+			var displayChk='display:';
+
+			if(firstChk=='true')
+			{
+				$("#tabs").append("<a class='tab-link uploadTab selected-tab' style='cursor:pointer' id='"+parsedData.msg[i].fieldName+"_tab' onclick='showUploadField(this.id,"+parsedData.msg[i].id+")'>"+parsedData.msg[i].htmlName+"</a>");
+				activeTab=parsedData.msg[i].fieldName;
+				activeTabId=parsedData.msg[i].id;
+			}
+			else
+			{
+				$("#tabs").append("<a class='tab-link uploadTab' style='cursor:pointer' id='"+parsedData.msg[i].fieldName+"_tab' onclick='showUploadField(this.id,"+parsedData.msg[i].id+")'>"+parsedData.msg[i].htmlName+"</a>");
+				displayChk="style='display:none'";
+			}
+
+			// console.log("<span
+			// id='"+parsedData.msg[i].fieldName+"_previewLink'
+			// style='"+style+"'/>"+previewLinkDoc+"</span>");
+			$("#pop_body").append("<table cellpadding='0' cellspacing='0' class='crop-table' id='"+parsedData.msg[i].fieldName+"_tab_table' "+displayChk+"'><tr  height='80px'><td align='right' width='200' valign='bottom' style='padding-bottom : 10px'> "+mand+parsedData.msg[i].htmlName+" : </td><td align='left' valign='bottom' width='60%'><div class='uploadPanel'><span id='"+parsedData.msg[i].fieldName+"_loaderSpan' style='display:none'><img src='/EForms/images/onlineAppForm/crop/ajax-loader.gif' alt='uploading...'></span><span id='"+parsedData.msg[i].fieldName+"_uploadSpan'><table><tr><td><input type='file'  id='"+parsedData.msg[i].fieldName+"' name='"+parsedData.msg[i].fieldName+"' /></td><td><a class='upload-btn-up bold left fnt-11 progress-bar-trigger-btn' style='cursor:pointer' onClick='javascript:upload(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")' data-staticKey=\"Upload\">Upload</a></td><td>"+crop+"</td></tr></table><div class='clear'></span> </div></div> </td><td rowspan='2'> <div id='preview-pane1'><div class='preview-container1'><span id='"+parsedData.msg[i].fieldName+"_previewLink' style='"+style+"'/>"+previewLinkDoc+"</span> 	<img width='120px' height='120px' src='"+previewLink+"' alt='Preview' id='"+parsedData.msg[i].fieldName+"_previewImg' style='"+style1+"'/></div></div></td></tr><tr><td>&nbsp;</td><td valign='top' style='padding-right:25px;'><span class='fnt-11 col-grey'>"+parsedData.msg[i].msg+"</span><div class='red-text' id='"+parsedData.msg[i].fieldName+"_error'></div><div class='green-text' id='"+parsedData.msg[i].fieldName+"_success'></div></td></tr><tr><td>&nbsp;</td><td><div class='edit-appname-btn2' onclick='javascript:closePopUpWithCloseButton();' id='closeImagePopUp' style='margin-bottom:10px;margin-left:127px'><a style='cursor:pointer' style='text-decoration:none'><b><font color='#fff'><span data-staticKey=\"Close This Window\" >Close This Window</span> </font></b></a></div></td></tr><span><input type='hidden' id='crop"+parsedData.msg[i].id+"_x' class='x' value=''><input  type='hidden' id='crop"+parsedData.msg[i].id+"_y' class='y' value=''><input type='hidden' id='crop"+parsedData.msg[i].id+"_height' class='height' value=''><input type='hidden' id='crop"+parsedData.msg[i].id+"_width' class='width' value=''></span></table>");
+			firstChk='false';
+
+
+			for(var k=0;k<txtFileNameArr.length;k++)
+			{
+				if(txtFileNameArr[k]==parsedData.msg[i].fieldName)
+				{
+					// console.log(txtFileNameArr[k]+"::file
+					// path::"+parsedData.msg[i].fieldName+":::"+txtFilePathArr[k]);
+					var target=parsedData.msg[i].fieldName+'_target';
+					var preview=parsedData.msg[i].fieldName+'_previewImg';
+					var cropButt=parsedData.msg[i].fieldName+'_cropButt';
+					var previewLink=parsedData.msg[i].fieldName+'_previewLink';
+					var field3=parsedData.msg[i].fieldName+'_previewLink';
+					var field2=parsedData.msg[i].fieldName+'_previewImg';
+
+					if(parsedData.msg[i].fieldType.toLowerCase()=='image')
+					{  
+						if(txtfilePathEditArr[k]!=null && txtfilePathEditArr[k].indexOf("/EFormsServeImage")==-1)
+							document.getElementById(preview).src=txtfilePathEditArr[k]+'?v='+Math.random();
+
+					}
+					else{ 
+						var span = document.getElementById(field3);
+						document.getElementById(field2).style.display="none";
+						document.getElementById(field3).style.display="";
+						while( span.firstChild ) {
+							span.removeChild( span.firstChild );
+						}
+						 if(txtfilePathEditArr[k]!=''  && txtfilePathEditArr[k]!=null && txtfilePathEditArr[k]!=' ' && !(txtfilePathEditArr[k].includes('null'))) {
+					
+						var tempDiv = document.createElement('div');
+						// tempDiv.setAttribute('vertical-align', 'middle');
+						tempDiv.innerHTML = "<a href='"+txtfilePathEditArr[k]+"' target='_blank' data-staticKey=\"Click Here to Download\">Click Here to Download</a>";
+						span.appendChild( tempDiv );
+						 }
+					}
+
+					if(parsedData.msg[i].crop.toLowerCase()=='y')
+					{
+						//document.getElementById(target).src=txtFilePathArr[k];
+						document.getElementById(cropButt).style.display='';
+					}
+				}
+			}
+		}
+
+
+		cropDiv="<tr>  <td colspan='3'><div class='image-container' id='image-container' style='display:none' ><a style='cursor:pointer' onclick='closeCropper()' title='Close' class='image_crop_close' style='float:right;'></a><span class='boldText' data-staticKey=\"The preview below is not the actual size of your image and is used for cropping only.\">The preview below is not the actual size of your image and is used for cropping only.</span><span class='font12' data-staticKey=\"Click and drag on the image to make selection. Hold Shift for square\">Click and drag on the image to make selection. Hold Shift for square</span><div class='photo_crop ><div class='photo_container'> <table><tr><td width='550px'> <div id='cropper'></div>  </td><td>  <span class='edit-appname-btn1' width='100%'><a style='cursor:pointer' ><b><font color='#fff'><span data-staticKey=\"Submit\">Submit</span></font></b></a></span></td></tr></table> </div></div></div></td></tr>";
+		$('#pop_body').append(cropDiv);
+		$('#pop_body').append("<input type='hidden' id='tabActive' name='tabActive' value='"+activeTab+"'><input type='hidden' id='tabActiveId' name='tabActiveId' value='"+activeTabId+"'>");
+		if(list!=''){list=list.substring(0,list.length-1);}
+		document.getElementById('cropList').value=list;
+		$('.preview-container1 > div').remove();
+		// console.log("this is it::"+list);
+		setScroll();
+		var secToken=parsedTokenData.secToken;
+		document.getElementById("token_img").value=secToken;
+	}
+	if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y")
+		multilingualFormStaticValue("Image Upload"); 
+	 }}
+}
+
+
+function createDataStaticNew(http_request,parsedData)
+{
+if(typeof window.createDataStaticNewFrameworkBeforeAjaxCall == 'function') {
+		
+	createDataStaticNewFrameworkBeforeAjaxCall(http_request,parsedData);
+	   }
+
+	if (http_request.readyState == 4){
+		// alert("1");
+		if (http_request.status == 200) {
+		// alert("2");
+		if(parsedData != null)
+		{
+			// alert("3");
+			 data=http_request.responseText;
+			// data = updateStaticJsonWithViewDetails(data);
+			 var parsedTokenData=JSON.parse(data); 
+		/*if(document.getElementById("formId").value=="53166")
+			 newPopupModal(parsedData,parsedTokenData);
+		else*/
+		imageUploadNewCommonFunction(parsedData,parsedTokenData);
+			
+			 
+	}
+	 }}
+}
+
+
+function createData(http_request)
+{
+	if (http_request.readyState == 4){
+		if (http_request.status == 200) {
+			if(http_request.responseText != null)
+			{
+				data=http_request.responseText;
+
+				$("#pop_body").empty();
+				$("#pop_body").append('<div class="tabs" id="tabs" ></div><input type="hidden" id="previewImgTs" name="previewImgTs"><input type="hidden" id="txtFileNameEdit" name="txtFileNameEdit">');
+				$("#pop_body").append('<span id = "imageUploadAlert2" data-staticKey="Please upload file" style="display:none">Please upload file</span>');
+				$("#pop_body").append('<span id = "imageUploadAlert3" data-staticKey="File name contains %" style="display:none">File name contains %</span>');
+				$("#pop_body").append('<span id = "imageUploadAlert4" data-staticKey="Please select area for cropping image" style="display:none">Please select area for cropping image</span>');
+				$("#pop_body").append('<span id = "imageUploadAlert5" data-staticKey="Are you sure you want to overwrite existing file?" style="display:none">Are you sure you want to overwrite existing file?</span>');
+				$("#pop_body").append('<span id = "imageUploadAlert6" data-staticKey="You have not uploaded all the mandatory documents, do you still want to close the upload screen?" style="display:none">You have not uploaded all the mandatory documents, do you still want to close the upload screen?</span>');
+				$("#pop_body").append('<span id = "browseMessage3" data-staticKey="Click Here to Download" style="display:none">Click Here to Download</span>');
+				//Error messages
+				$("#pop_body").append('<span id = "errorMessage1" data-staticKey="Invalid Values. Unable to upload Images/Documents. Please try again." style="display:none">Invalid Values. Unable to upload Images/Documents. Please try again.</span>');
+				$("#pop_body").append('<span id = "errorMessage2" data-staticKey="Invalid Request. Unable to upload Images/Documents. Please try again." style="display:none">Invalid Request. Unable to upload Images/Documents. Please try again.</span>');
+				$("#pop_body").append('<span id = "errorMessage3" data-staticKey="Invalid Format. Unable to upload Images/Documents." style="display:none">Invalid Format. Unable to upload Images/Documents.</span>');
+				$("#pop_body").append('<span id = "errorMessage4" data-staticKey="File size is greater than specified. Unable to upload Images/Documents." style="display:none">File size is greater than specified. Unable to upload Images/Documents.</span>');
+				$("#pop_body").append('<span id = "errorMessage5" data-staticKey="Colour Code of image is not proper. Please upload images of RGB Code only." style="display:none">Colour Code of image is not proper. Please upload images of RGB Code only.</span>');
+				$("#pop_body").append('<span id = "errorMessage6" data-staticKey="Uploaded file is currupted.Please upload new file." style="display:none">Uploaded file is currupted.Please upload new file.</span>');
+				$("#pop_body").append('<span id = "errorMessage7" data-staticKey="Unable to upload Images/Documents. Please try again." style="display:none">Unable to upload Images/Documents. Please try again.</span>');
+				$("#pop_body").append('<span id = "errorMessage8" data-staticKey="Error while reading image file.Please try again." style="display:none">Error while reading image file.Please try again.</span>');
+				$("#pop_body").append('<span id = "errorMessage9" data-staticKey="Session has expired. Please login again." style="display:none">Session has expired. Please login again.</span>');
+				$("#pop_body").append('<span id = "errorMessage10" data-staticKey="Invalid file type detected. File" style="display:none">Invalid file type detected. File</span>');
+				$("#pop_body").append('<span id = "errorMessage11" data-staticKey="File size exceeded allowed file size for File" style="display:none">File size exceeded allowed file size for File</span>');
+				$("#pop_body").append('<span id = "errorMessage12" data-staticKey="File size is less than specified. Unable to upload Images/Documents." style="display:none">File size is less than specified. Unable to upload Images/Documents.</span>');
+				$("#pop_body").append('<span id = "errorMessage13" data-staticKey="File size is less than the allowed file size for File" style="display:none">File size is less than the allowed file size for File</span>');
+				
+				jQuery('#search-beats-popup').css({'position':'absolute'});
+				jQuery('#search-beats-popup, .shadow').fadeIn();
+				$(window).scrollTop(0);
+				popupAlign($('#search-beats-popup').height());
+				// console.log("json::"+data);
+				var firstChk='true';
+				var tabActive='';
+				var tabActiveId='';
+				var parsedData=JSON.parse(data); 
+				
+				if(parsedData.error!=null && parsedData.error=="sessionExpire"){
+					fnLogout(parsedData.msg);
+				}
+				var txtFilePathArr=document.getElementById('txtFilePath').value.split("||");
+				var txtFileNameArr=document.getElementById('txtFileName').value.split("||");
+				var txtFilePath=document.getElementById('txtFilePath').value;
+				var txtFilePathEdit=document.getElementById('txtFilePathEdit').value;
+				var txtfilePathEditArr=document.getElementById('txtFilePathEdit').value.split("||");	
+
+				var list='';
+				for(var i=0;i<parsedData.msg.length;i++)
+				{
+					var mand="";
+					var crop="";
+					var cropDiv="";
+					var validation=parsedData.msg[i].validation.split(',');
+					 localStorage.setItem("isFileDeletionRequired_"+parsedData.msg[i].fieldName,parsedData.msg[i].isFileDeletionRequired);
+
+					if(validation.length>0)
+					{
+						if(validation[0].toLowerCase()=='mandatory')
+						{
+							mand="<span class='red-text'> * </span>";
+							document.getElementById('imgMandChk').value=document.getElementById('imgMandChk').value+parsedData.msg[i].fieldName+"||";
+						}
+					}
+
+					var previewLink='/EForms/'+parsedData.msg[i].displayImg;
+
+					var previewLinkDoc='';
+					var style='';
+					var style1='';
+
+					if(typeof parsedData.msg[i].path != 'undefined')
+					{
+
+						
+						txtFilePathEdit=txtFilePathEdit+parsedData.msg[i].fullPath+"||";
+						var txtFileNameEdit=document.getElementById('txtFileNameEdit').value;
+						txtFileNameEdit=txtFileNameEdit+parsedData.msg[i].fieldName+"||";
+
+						document.getElementById('txtFilePathEdit').value=txtFilePathEdit;
+						document.getElementById('txtFileNameEdit').value=txtFileNameEdit;
+						
+						if(parsedData.msg[i].path != '' && parsedData.msg[i].path != null && parsedData.msg[i].path != ' ' && parsedData.msg[i].path != 'null'){
+							if(parsedData.msg[i].fieldType.toLowerCase()=='image')
+							{
+								previewLink=parsedData.msg[i].fullPath;
+								style='display:none';
+							}else{
+								previewLink='';
+								previewLinkDoc="<div><a href='"+parsedData.msg[i].fullPath+"' target='_blank' data-StaticKey=\"Click here to download\">Click here to download</a></div>";
+								style1="display:none";
+							}
+						}
+					}else{
+						style="display:none";
+					}
+
+					//var txtfilePathEditArr=document.getElementById('txtFilePathEdit').value.split("||");	
+					
+					if(parsedData.msg[i].crop.toLowerCase()=='y' && parsedData.msg[i].fieldType.toLowerCase()=='image')
+						var display="display:"
+							if($('#entityId').val()=='')
+							{ display='display:none';}
+
+					if(style1=='')
+					{display=display;}
+					else{
+						display=style1+' ;'+display
+					}
+					if(display==undefined){var display='display:none';}
+					{crop="<div class='edit-appname-btn' id='"+parsedData.msg[i].fieldName+"_cropButt' style='"+display+";cursor:pointer' ><a style='cursor:pointer' ><b><font color='#fff'><span data-staticKey=\"Crop\">Crop</span></font></b></a></div>";
+
+					var list=list+parsedData.msg[i].fieldName+"_class|";
+
+					}
+					var displayChk='display:';
+
+					if(firstChk=='true')
+					{
+						$("#tabs").append("<a class='tab-link uploadTab selected-tab' style='cursor:pointer' id='"+parsedData.msg[i].fieldName+"_tab' onclick='showUploadField(this.id,"+parsedData.msg[i].id+")'>"+parsedData.msg[i].htmlName+"</a>");
+						activeTab=parsedData.msg[i].fieldName;
+						activeTabId=parsedData.msg[i].id;
+					}
+					else
+					{
+						$("#tabs").append("<a class='tab-link uploadTab' style='cursor:pointer' id='"+parsedData.msg[i].fieldName+"_tab' onclick='showUploadField(this.id,"+parsedData.msg[i].id+")'>"+parsedData.msg[i].htmlName+"</a>");
+						displayChk="style='display:none'";
+					}
+
+					// console.log("<span
+					// id='"+parsedData.msg[i].fieldName+"_previewLink'
+					// style='"+style+"'/>"+previewLinkDoc+"</span>");
+					$("#pop_body").append("<table cellpadding='0' cellspacing='0' class='crop-table' id='"+parsedData.msg[i].fieldName+"_tab_table' "+displayChk+"'><tr  height='80px'><td align='right' width='200' valign='bottom' style='padding-bottom : 10px'> "+mand+parsedData.msg[i].htmlName+" : </td><td align='left' valign='bottom' width='60%'><div class='uploadPanel'><span id='"+parsedData.msg[i].fieldName+"_loaderSpan' style='display:none'><img src='/EForms/images/onlineAppForm/crop/ajax-loader.gif' alt='uploading...'></span><span id='"+parsedData.msg[i].fieldName+"_uploadSpan'><table><tr><td><input type='file'  id='"+parsedData.msg[i].fieldName+"' name='"+parsedData.msg[i].fieldName+"' /></td><td><a class='upload-btn-up bold left fnt-11 progress-bar-trigger-btn' style='cursor:pointer' onClick='javascript:upload(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")' data-staticKey=\"Upload\">Upload</a></td><td >"+crop+"</td></tr></table><div class='clear'></span> </div></div> </td><td rowspan='2'> <div id='preview-pane1'><div class='preview-container1'><span id='"+parsedData.msg[i].fieldName+"_previewLink' style='"+style+"'/>"+previewLinkDoc+"</span> 	<img width='120px' height='120px' src='"+previewLink+"' alt='Preview' id='"+parsedData.msg[i].fieldName+"_previewImg' style='"+style1+"'/></div></div></td></tr><tr><td>&nbsp;</td><td valign='top' style='padding-right:25px;'><span class='fnt-11 col-grey'>"+parsedData.msg[i].msg+"</span><div class='red-text' id='"+parsedData.msg[i].fieldName+"_error'></div><div class='green-text' id='"+parsedData.msg[i].fieldName+"_success'></div></td></tr><tr><td>&nbsp;</td><td><div class='edit-appname-btn2' onclick='javascript:closePopUpWithCloseButton();' id='closeImagePopUp' style='margin-bottom:10px;margin-left:127px'><a style='cursor:pointer'><b><font color='#fff'><span data-staticKey=\"Close This Window\">Close This Window </span></font></b></a></div></td></tr><span><input type='hidden' id='crop"+parsedData.msg[i].id+"_x' class='x' value=''><input  type='hidden' id='crop"+parsedData.msg[i].id+"_y' class='y' value=''><input type='hidden' id='crop"+parsedData.msg[i].id+"_height' class='height' value=''><input type='hidden' id='crop"+parsedData.msg[i].id+"_width' class='width' value=''></span></table>");
+					firstChk='false';
+
+
+					for(var k=0;k<txtFileNameArr.length;k++)
+					{
+						if(txtFileNameArr[k]==parsedData.msg[i].fieldName)
+						{
+							// console.log(txtFileNameArr[k]+"::file
+							// path::"+parsedData.msg[i].fieldName+":::"+txtFilePathArr[k]);
+							var target=parsedData.msg[i].fieldName+'_target';
+							var preview=parsedData.msg[i].fieldName+'_previewImg';
+							var cropButt=parsedData.msg[i].fieldName+'_cropButt';
+							var previewLink=parsedData.msg[i].fieldName+'_previewLink';
+							var field3=parsedData.msg[i].fieldName+'_previewLink';
+							var field2=parsedData.msg[i].fieldName+'_previewImg';
+
+							if(parsedData.msg[i].fieldType.toLowerCase()=='image')
+							{  
+								if(txtfilePathEditArr[k]!=null && txtFilePathArr[k].indexOf("/EFormsServeImage")==-1)
+									document.getElementById(preview).src=txtfilePathEditArr[k]+'?v='+Math.random();	
+								else
+									document.getElementById(preview).src=txtfilePathEditArr[k] +"&sessChk="+$("#sessChk").val()
+							}
+							else{ 
+								var span = document.getElementById(field3);
+								document.getElementById(field2).style.display="none";
+								document.getElementById(field3).style.display="";
+								while( span.firstChild ) {
+									span.removeChild( span.firstChild );
+								}
+								var tempDiv = document.createElement('div');
+								// tempDiv.setAttribute('vertical-align',
+								// 'middle');
+								tempDiv.innerHTML = "<a href='"+txtfilePathEditArr[k]+"' target='_blank' data-staticKey=\"Click Here to Download\">Click Here to Download</a>";
+								span.appendChild( tempDiv );
+							}
+
+							if(parsedData.msg[i].crop.toLowerCase()=='y')
+							{
+								// document.getElementById(target).src=txtFilePathArr[k];
+								document.getElementById(cropButt).style.display='';
+							}
+						}
+					}
+				}
+
+
+				cropDiv="<tr>  <td colspan='3'><div class='image-container' id='image-container' style='display:none' ><a style='cursor:pointer' onclick='closeCropper()' title='Close' class='image_crop_close' style='float:right;'></a><span class='boldText'data-staticKey=\"The preview below is not the actual size of your image and is used for cropping only.\">The preview below is not the actual size of your image and is used for cropping only.</span><span class='font12' data-staticKey=\"Click and drag on the image to make selection. Hold Shift for square\">Click and drag on the image to make selection. Hold Shift for square</span><div class='photo_crop ><div class='photo_container'> <table><tr><td width='550px'> <div id='cropper'></div>  </td><td>  <span class='edit-appname-btn1' width='100%'><a style='cursor:pointer'><b><font color='#fff'><span data-staticKey=\"Submit\">Submit</span></font></b></a></span></td></tr></table> </div></div></div></td></tr>";
+				$('#pop_body').append(cropDiv);
+				$('#pop_body').append("<input type='hidden' id='tabActive' name='tabActive' value='"+activeTab+"'><input type='hidden' id='tabActiveId' name='tabActiveId' value='"+activeTabId+"'>");
+				if(list!=''){list=list.substring(0,list.length-1);}
+				document.getElementById('cropList').value=list;
+				$('.preview-container1 > div').remove();
+				// console.log("this is it::"+list);
+				setScroll();
+				var secToken=parsedData.secToken;
+				document.getElementById("token_img").value=secToken;
+			}
+			if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y")
+				multilingualFormStaticValue("Image Upload"); 
+			}}}
+
+function createDataNew(http_request)
+{
+	if(typeof window.createDataNewFrameworkBeforeAjaxCall == 'function') {
+	
+		createDataNewFrameworkBeforeAjaxCall(http_request);
+   }
+	if (http_request.readyState == 4){
+		if (http_request.status == 200) {
+			if(http_request.responseText != null)
+			{
+				data=http_request.responseText;
+				var parsedData=JSON.parse(data); 
+				/*if(document.getElementById("formId").value=="53166")
+					 newPopupModal(parsedData,"");
+				else*/
+				imageUploadNewCommonFunction(parsedData,"");
+					
+			}}}
+}
+var myDropzone;
+function populateNewDropZone(fieldName,validation,crop,fieldType,previewLink,previewLinkDoc){
+	// alert("in populateNewDropZone");
+	var fieldNameDiv=document.createElement('input');
+	fieldNameDiv.setAttribute("type","hidden");
+	fieldNameDiv.setAttribute("id","fieldName");
+	fieldNameDiv.setAttribute("value",fieldName);
+	$("div[id*='_tab_table']").css("display","none");// hide all the elements
+	$('#'+fieldName+'_tab_table').css("display","");
+	var removeElem=document.getElementById("fieldName");
+	if(removeElem!=null)
+	removeElem.parentNode.removeChild(removeElem);
+	var tempvar=document.getElementById(fieldName+'_tab_table');
+		tempvar.appendChild(fieldNameDiv);
+	if(crop!=undefined && crop=='Y'){
+		$('#'+fieldName+'_tab_table').append();
+	}
+	var entityId ="";
+	if(document.getElementById("entityId") != null){
+		entityId = document.getElementById("entityId").value;
+	} else {
+		entityId = document.getElementById("entity_Id").value;
+	}
+	if($('#'+fieldName+'-upload-zone').hasClass('dz-clickable')==false){
+		myDropzone = new Dropzone('#'+fieldName+'-upload-zone',{
+		  url: uploadImageDocumentNew(fieldName,validation,crop,fieldType),
+		  addRemoveLinks:true,
+		  uploadMultiple:false,
+		  init: function() {
+			  var prevFile;
+			  var temp = document.createElement('span');
+  			temp.innerHTML = $('#browseMessage1').text();
+  			$('[data-staticKey="Drag and Drop File Here"]').html(temp.innerHTML);
+  			
+  			var temp1 = document.createElement('span');
+  			temp1.innerHTML = $('#browseMessage2').text();
+  			$('[data-staticKey="Browse"]').html(temp1.innerHTML);
+/*
+			              this.on('addedfile', function() {
+			                  if (typeof prevFile != undefined && typeof prevFile != "undefined" && typeof prevFile!=null && $('.dz-filename > span').html()!='CroppedFile') {
+			                      this.removeFile(prevFile);
+			                  }
+			                  else if($('#'+fieldName+'-upload-zone .dz-image-preview').length>0){
+			                	  $('#'+fieldName+'-upload-zone .dz-image-preview').remove();
+			                  }
+			                  this.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+			              });*/
+  			this.on('addedfile', function(file) {
+  				if(localStorage.getItem("DeletedFile_"+fieldName)=="true"){
+  					localStorage.setItem("DeletedFile_"+fieldName,false);
+  				prevFile=undefined;}
+                if (typeof prevFile != undefined && typeof prevFile != "undefined" && typeof prevFile!=null && $('.dz-filename > span').html()!='CroppedFile') {
+                    this.removeFile(prevFile);
+                }
+                else if($('#'+fieldName+'-upload-zone .dz-image-preview').length>0){
+              	  $('#'+fieldName+'-upload-zone .dz-image-preview').remove();
+                } try{
+                	var minsize="0";
+                	var validationArr=validation.split(",");
+                	if(validationArr.length==4)
+                		{ minsize=validationArr[3];}
+                var myfilesize=file.size;
+                    if(parseInt(myfilesize)<parseInt(minsize)*parseInt(1024)){
+                    $('#'+fieldName+'_success').html('File Size is less than specified'); 
+						$('#'+fieldName+'_success').css({"color":"red","font-weight":"bold"});
+						throw 'myexception';
+						}
+						else
+                this.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+           
+						}catch(e){
+							myDropzone.removeAllFiles();
+							prevFile=undefined;
+						}
+              //  this.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+            });
+  			
+  			
+            //this event captures and sends additional data to server with file to be uploaded
+            this.on("sending", function(file, xhr, formData){
+          	  //formData.append(fieldName , file.files[0]);
+          	  formData.append("validation" , validation);
+          	  formData.append("entity_id" , entityId);   
+          	  formData.append("fileName" , fieldName);
+          	  this.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+            });
+
+			              //this event captures and sends additional data to server with file to be uploaded
+			              this.on("sending", function(file, xhr, formData){
+			            	  //formData.append(fieldName , file.files[0]);
+			            	  formData.append("validation" , validation);
+			            	  formData.append("entity_id" , entityId);   
+			            	  formData.append("fileName" , fieldName);
+			            	  this.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+			              });
+			              
+			              this.on('success', function(file, response) {
+			                  prevFile = file;
+			                 var uploadStatus = fnGetUploadRespNew(fieldName,crop,fieldType,response,file,myDropzone);
+			                 
+			                 if(uploadStatus==false){
+			                	 prevFile=undefined; 
+			                 }
+			                 else{
+			                	 $('#'+fieldName+'-upload-zone .dz-message').css({"position":"absolute","left":"0","right":"0"});
+			                	 $('#'+fieldName+'-upload-zone .dz-message').show();
+			                	 
+			                 }
+			                 this.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+			              });
+			          },
+			         // myDropzone.createThumbnailFromUrl(file, imageUrl,
+						// callback, crossOrigin);
+		/*
+		 * success: function (file, response) {
+		 * 
+		 *  }
+		 */
+		});
+	previewImg = $('#'+fieldName+'_previewImg')[0].src;
+	if(previewImg!=undefined && previewImg!='undefined' && previewImg!=''){
+		var newDropzone = Dropzone.forElement('#'+fieldName+'-upload-zone');
+		var fileName = previewImg.substring(previewImg.lastIndexOf("/") + 1, previewImg.length);
+		fileName = fileName.split("?").shift();
+		
+		var mockFile = { name: fileName, size: 12345 };
+		//newDropzone.removeAllFiles();
+		//$('#'+fieldname+'-upload-zone .dz-image-preview').remove();
+		newDropzone.options.addedfile.call(newDropzone, mockFile);
+		newDropzone.options.thumbnail.call(newDropzone, mockFile,previewImg);
+		$('.dz-image > img').css({"height":"100%","width":"100%"});
+		$('#'+fieldName+'-upload-zone .dz-message').css({"position":"absolute","left":"0","right":"0"});
+   	 	$('#'+fieldName+'-upload-zone .dz-message').show();
+   		newDropzone.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+   		
+		  //mockFile.previewElement.classList.add('dz-success');
+		  //mockFile.previewElement.classList.add('dz-complete');
+	}
+	/*previewLinkDoc = $('#'+fieldName+'_previewImg').attr('src');
+	if(previewLinkDoc!=undefined && previewLinkDoc!='undefined' && previewLinkDoc!=''){
+		$('#'+fieldName+'_previewLink').appendChild( previewLinkDoc );
+	}*/
+	}
+	else{
+		var newDropzone = Dropzone.forElement('#'+fieldName+'-upload-zone');
+		newDropzone.options.url = uploadImageDocumentNew(fieldName,validation,crop,fieldType); //set new URL in every case
+		
+	}
+	
+}
+function fncrop(id,name)
+{  
+	var entityId ="";
+	if(document.getElementById("entityId") != null){
+		entityId = document.getElementById("entityId").value;
+
+	} else {
+		entityId = document.getElementById("entity_Id").value;
+	}
+	var orgId=document.getElementById('orgId').value;
+	var formId=document.getElementById("formId").value;
+	var xval='crop'+id+'_x'; var yval='crop'+id+'_y'; var heightval='crop'+id+'_height'; var widthval='crop'+id+'_width';
+	var path=document.getElementById('target').src;
+
+	$('#'+name+'_previewImg').removeAttr('height');
+	$('#'+name+'_previewImg').removeAttr('width');
+	var h1=$('#'+name+'_previewImg').height();
+	var w1=$('#'+name+'_previewImg').width();
+
+	var h=$('#target').height();
+	var w=$('#target').width();
+
+
+	$('#'+name+'_previewImg').attr('height','120px');
+	$('#'+name+'_previewImg').attr('width','120px');
+
+	var heightRatio=h1/h;
+	var widthRatio=w1/w;
+
+	// console.log('heightRatio::'+heightRatio);
+	// console.log('widthRatio::'+widthRatio);
+	if(path.indexOf('?v=')>-1)
+	{	path=path.substring(0,path.indexOf('?v='));  }
+	var x=document.getElementById(xval).value;
+	var y=document.getElementById(yval).value;
+	var height=document.getElementById(heightval).value;
+	var width=document.getElementById(widthval).value;
+	// console.log(path+'::'+x+'::'+y+'::'+height+'::'+width);
+	x=parseInt(x*widthRatio);
+	y=parseInt(y*heightRatio);
+
+	height=parseInt(height*heightRatio);
+	width=parseInt(width*widthRatio);
+	if(x==0 && y==0)
+	{
+		var temp = document.createElement('span');
+		temp.innerHTML = $('#imageUploadAlert4').text();
+		alert(temp.innerHTML);
+		return false;
+	}
+	// path=path.replace('/EForms','//Online/EForms');
+	// console.log(path+'::'+x+'::'+y+'::'+height+'::'+width);
+	var sessChk=$("#sessChk").val();
+	var isAdminEdit=$("#isAdminEdit").val();
+
+	var param='path='+path+'&x='+x+'&y='+y+'&height='+height+'&width='+width+'&subAction=crop&orgId='+orgId+'&formId='+formId+'&entityId='+entityId+'&sessChk='+sessChk+'&isAdminEdit='+isAdminEdit;
+
+	$.post( "/EForms/ImageFileUpload", param)
+	.done(function( data ) {
+		if(data.msg.toLowerCase()=='success')
+		{ 
+			/*
+			 * if(data.ecVal !=null && data.ecVal!="" && data.isSecure!=null &&
+			 * data.isSecure=='Y'){
+			 * 
+			 * setFilePath(fieldname,data.relativeImagePath,data.path);
+			 * document.getElementById(name+'_previewImg').src=path+"&ecVal="
+			 * +data.ecVal+"&sessChk="+$("#sessChk").val(); } else{
+			 * setFilePath(name,data.relativeImagePath,path);
+			 */	document.getElementById(name+'_previewImg').src=path+'?v='+data.ts;
+		// }
+
+			// document.getElementById(name+'_target').src=path+'?v='+data.ts;
+			document.getElementById(name+'_success').innerHTML='<p data-staticKey="Photo cropped successfully.">Photo cropped successfully.</p>';
+			document.getElementById(name+'_error').innerHTML="";
+			document.getElementById(name+'_error').style.display='none';
+			document.getElementById(xval).value='';
+			document.getElementById(yval).value='';
+			document.getElementById(heightval).value='';
+			document.getElementById(widthval).value='';
+
+		}else{
+			document.getElementById(name+'_success').innerHTML="";
+			document.getElementById(name+'_success').style.display='none';
+			document.getElementById(name+'_error').innerHTML='<p data-staticKey="Error occured while cropping photo">Error occured while cropping photo</p>';
+		}
+
+		document.getElementById('image-container').style.display='none';
+		if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y")
+			multilingualFormStaticValue("Image Upload"); // You have to remove this and write a better function.
+	});
+}
+
+/*
+ * $('body').on('click','.edit-appname-btn',function(){
+ * $(this).parents('.crop-table').find('.image-container').show(); });
+ */
+
+
+
+
+
+function imagecropclose(id)
+{  
+	$("#crop"+id).hide(); 
+}
+
+
+function setpath(id)
+{
+	var field=id+'_txt';
+	document.getElementById(field).value=document.getElementById(id).value;
+}
+
+function upload(fieldname,validation,crop,fieldType)
+{
+	/*
+	 * try{ if ($.browser.msie) { //before making an object of ActiveXObject,
+	 * //please make sure ActiveX is enabled in your IE browser var objFSO = new
+	 * ActiveXObject("Scripting.FileSystemObject"); } }catch(e) { alert('Please
+	 * make sure ActiveX is enabled in your IE browser'); return false; }
+	 */
+	var entityId ="";
+	if(document.getElementById("entityId") != null){
+		entityId = document.getElementById("entityId").value;
+
+	} else {
+		entityId = document.getElementById("entity_Id").value;
+	}
+	var orgId=document.getElementById('orgId').value;
+	var formId=document.getElementById("formId").value;
+	if(document.getElementById(fieldname).value=='')
+	{
+		var temp = document.createElement('span');
+		temp.innerHTML = $('#imageUploadAlert2').text();
+		alert(temp.innerHTML);
+		return false;
+	}
+	if($("#"+fieldname).val().indexOf("%")>-1)
+	{
+		var temp = document.createElement('span');
+		temp.innerHTML = $('#imageUploadAlert3').text();
+		alert(temp.innerHTML);
+		return false;
+	}
+	var fileNameUploaded= $("#txtFileName").val();
+	var fileNameUploadedArr=[];
+	fileNameUploadedArr = fileNameUploaded.split("||");
+	var existField="";
+	if(fileNameUploadedArr!=null && fileNameUploadedArr.length>0)
+	{
+		for(i=0;i<fileNameUploadedArr.length;i++)
+		{
+			if(fileNameUploadedArr[i]==fieldname)
+				existField="Y";
+		}if(existField=="Y")
+		{
+			var temp = document.createElement('span');
+			temp.innerHTML = $('#imageUploadAlert5').text();
+			if(!confirm(temp.innerHTML))
+				return false;
+		}
+	}
+	// console.log(fieldname+":::"+validation);
+	document.getElementById(fieldname+'_uploadSpan').style.display='none';
+	document.getElementById(fieldname+'_loaderSpan').style.display='';
+	$('.tab-link').each(function(){
+        $(this).css({"pointer-events":"none","cursor":"default"});
+    });
+   
+  
+	document.getElementById(fieldname+'_success').innerHTML="";
+	document.getElementById(fieldname+'_error').innerHTML="";
+	var size="80";
+	var minsize="0";
+	var validationArr=validation.split(",");
+	if(validationArr.length>1)
+	{ size=validationArr[1]; }
+	if(validationArr.length==4)
+		{ minsize=validationArr[3];}
+	// console.log(size)
+	//var resp=GetFileSize(fieldname,size);
+	// console.log(resp);
+	if(GetFileSize(fieldname,size) && GetFileSizeMin(fieldname,minsize))
+	{
+		var field=fieldname+"_error";
+		document.getElementById(field).innerHTML="";
+
+		var http_request=fnGetXMLHttpObject();
+
+		var file = document.getElementById(fieldname);
+		var entity_id=document.getElementById("entityId").value;
+
+		if(typeof FormData == "undefined"){
+			ajaxFileUpload(fieldname,validation,crop,fieldType);
+		}else{
+			/* Add the file */ 
+			if(document.getElementById('isSessionToBeCheckedOnFinalSubmission')!=null){
+				var isSessionToBeCheckedOnFinalSubmission= document.getElementById('isSessionToBeCheckedOnFinalSubmission').value;
+			}
+			else
+				var isSessionToBeCheckedOnFinalSubmission='';
+			var token_img=$("#token_img").val();
+			var formData = new FormData();
+			formData.append(fieldname , file.files[0]);
+			formData.append("validation" , validation);
+			formData.append("entity_id" , entity_id);   
+			formData.append("fileName" , fieldname);
+			formData.append("isSessionToBeCheckedOnFinalSubmission" , isSessionToBeCheckedOnFinalSubmission);
+			//formData.append("token_img" , token_img);
+			var client = new XMLHttpRequest();
+			var pValidationServlet = ""; 
+			var chksum="";
+			var imgChkSum=document.getElementById("imgChkSum").value;
+			if(document.getElementById('checksum')!=null)
+			{
+				chksum="&checkSum="+document.getElementById('checksum').value;
+			}
+			var sessChk=$("#sessChk").val();
+			var isAdminEdit=$("#isAdminEdit").val();
+			
+			pValidationServlet = "/EForms/ImageFileUpload?imgChkSum="+imgChkSum+"&fieldName="+fieldname+chksum+"&orgId="+orgId+"&formId="+formId+"&entityId="+entityId+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&token_img="+encodeURIComponent(token_img)+"&isSessionToBeCheckedOnFinalSubmission="+isSessionToBeCheckedOnFinalSubmission; 
+			client.open("post", pValidationServlet, true);
+			client.onreadystatechange = function() { fnGetUploadRespRaw(client,fieldname,crop,fieldType); }; 	
+			client.send(formData);  /* Send to server */ 
+		}
+
+	}
+}
+
+// This is a fall back method for IE, if formData is not supported, this method
+// will be invoked and the file will be uploaded using iFrame
+function ajaxFileUpload(fieldname,validation,crop,fieldType)
+{
+
+	var imgChkSum=document.getElementById("imgChkSum").value;
+	var entId="";
+	if(document.getElementById('entityId').value!='' )
+	{
+		entId="&entity_id="+document.getElementById('entityId').value;
+	}
+	
+	if(document.getElementById('isSessionToBeCheckedOnFinalSubmission')!=null){
+		var isSessionToBeCheckedOnFinalSubmission= document.getElementById('isSessionToBeCheckedOnFinalSubmission').value;
+	}
+	else
+		var isSessionToBeCheckedOnFinalSubmission='';
+	
+	var sessChk=$("#sessChk").val();
+	var isAdminEdit=$("#isAdminEdit").val();
+	var token_img=$("#token_img").val();
+	$.ajaxFileUpload
+	(
+			{
+
+				url:pValidationServlet = "/EForms/ImageFileUpload?imgChkSum="+imgChkSum+"&fieldName="+fieldname+entId+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&token_img="+encodeURIComponent(token_img),
+				secureuri:false,
+				fileElementId:fieldname,
+				isSessionToBeCheckedOnFinalSubmission: isSessionToBeCheckedOnFinalSubmission,
+				dataType: 'json',
+				success: function (data, status)
+
+				{		
+
+					if(typeof(data.error) != 'undefined')
+					{
+						if(data.error != '')
+						{
+							alert(data.error);
+						}else
+						{
+							alert(data.path);
+						}
+					}
+					else
+					{
+						var rawResp=data.responseText;
+
+						if(data.substring(0,5).toLowerCase()=='<pre>')
+						{
+							data=data.substring(5,data.length-6);
+						}
+
+						fnGetUploadResp(fieldname,crop,fieldType,data)
+					}
+
+				},
+				error: function (data, status, e)
+				{
+
+					var rawResp=data.responseText;
+					if(rawResp.substring(0,5).toLowerCase()=='<pre>')
+					{
+						rawResp=rawResp.substring(5,rawResp.length-6);
+					}
+
+					fnGetUploadResp(fieldname,crop,fieldType,rawResp)
+				}
+			}
+	)
+
+	return false;
+
+}  
+
+// v12.00
+function uploadImageDocumentNew(fieldname,validation,crop,fieldType){
+	// alert("in uploadImageDocumentNew");
+	var imgChkSum=document.getElementById("imgChkSum").value;
+	var entId="";
+	if(document.getElementById('entityId').value!='' )
+	{
+		entId="&entity_id="+document.getElementById('entityId').value;
+	}
+	var sessChk=$("#sessChk").val();
+	var isAdminEdit=$("#isAdminEdit").val();
+	var formId=$("#formId").val();
+	var orgId=$("#orgId").val();
+	var token_img=$("#token_img").val();
+	finalURLforUpload = "/EForms/ImageFileUpload?imgChkSum="+imgChkSum+"&fieldName="+fieldname+entId+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&fileElementId="+fieldname+"&formId="+formId+"&orgId="+orgId+"&token_img="+encodeURIComponent(token_img);
+	
+	return finalURLforUpload;
+}
+function fnGetUploadRespRaw(client,fieldname,crop,fieldType){
+	if(client.readyState == 4){
+		if (client.status == 200){
+			if(client.responseText != null){
+				fnGetUploadResp(fieldname,crop,fieldType,client.responseText);
+			}
+		}
+	}
+}
+
+function fnGetUploadResp(fieldname,crop,fieldType,rawResp)
+{
+	var obj=JSON.parse(rawResp);
+	var isAdminEdit="";
+	if(document.getElementById("isAdminEdit")!=null)
+		isAdminEdit=document.getElementById("isAdminEdit").value;
+	
+	var imageUploadInViewPage="";
+	if(document.getElementById("imageUploadInViewPage")!=null)
+		imageUploadInViewPage=document.getElementById("imageUploadInViewPage").value;
+	document.getElementById(fieldname+'_uploadSpan').style.display='';
+	document.getElementById(fieldname+'_loaderSpan').style.display='none';
+	  $('.tab-link').each(function(){
+	        $(this).css({"pointer-events":"","cursor":"pointer"});
+	    });
+	uploadedPath=obj.path==null?"":obj.path;
+	if(obj.validationFlag=='N')
+	{
+		field1=fieldname+'_error';
+		if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y"){
+			var message = obj.msg;
+			if($('[data-staticKey="'+message+'"]').length>0)
+				document.getElementById(field1).innerHTML=$('[data-staticKey="'+message+'"]').text();
+			else
+				document.getElementById(field1).innerHTML=obj.msg;
+			
+		}else
+		document.getElementById(field1).innerHTML=obj.msg;
+		
+		document.getElementById("token_img").value=obj.secToken;
+	}else
+	{
+		var field1=fieldname+'_success';
+		var field2=fieldname+'_previewImg';
+		var field3=fieldname+'_previewLink';
+		/*var field5=fieldname+'_delete';
+		$('#'+fieldname+'_delete').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a><a href="javascript: deleteUploadedFile();" data-staticKey="Delete"><u>Delete Uploaded File</u></a><br>');
+		*/
+		if(obj.successMessage==''){
+			if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y"))
+				document.getElementById(field1).innerHTML='<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a><br><p data-staticKey="File uploaded successfully">File uploaded successfully</p>';
+			else
+				document.getElementById(field1).innerHTML='<p data-staticKey="File uploaded successfully">File uploaded successfully</p>';
+		}
+		else
+		{
+			if(obj.successMessage.length>150){
+				if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y")){
+				$('#'+fieldname+'_success').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>'); 
+				$('#'+fieldname+'_success').append(obj.successMessage.substring(0, 150)+'<a href="#">......</a>').attr("title",obj.successMessage.substring(3,obj.successMessage.length-5)); 
+					}
+				else
+					{
+					$('#'+fieldname+'_success').html(obj.successMessage.substring(0, 150)+'<a href="#">......</a>').attr("title",obj.successMessage.substring(3,obj.successMessage.length-5)); 
+					}
+				}
+			else{
+				if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y")){
+				$('#'+fieldname+'_success').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>'); 
+				$('#'+fieldname+'_success').append(obj.successMessage); 
+				}
+				else
+					$('#'+fieldname+'_success').html(obj.successMessage); 
+				}
+		} 
+		if(fieldType.toLowerCase()=='image')
+
+		{  
+			document.getElementById(field2).style.display="";
+			//document.getElementById(field5).style.display="";
+			document.getElementById(field3).style.display="none";		 
+			document.getElementById(field2).src=obj.path;  
+		}
+		else{ 
+			var span = document.getElementById(field3);
+			document.getElementById(field2).style.display="none";
+			document.getElementById(field3).style.display="";
+			//document.getElementById(field5).style.display="";
+			while( span.firstChild ) {
+				span.removeChild( span.firstChild );
+			}
+			var tempDiv = document.createElement('div');
+			tempDiv.setAttribute('style', 'display:inline');
+			//tempDiv.innerHTML = "<a href='"+obj.path+"' target='_blank'>Click Here to Download</a>";
+			var temp1 = document.createElement('span');
+  			temp1.innerHTML = $('#browseMessage3').text();
+			tempDiv.innerHTML = "<a href='"+obj.path+"' target='_blank' data-staticKey=\"Click Here to Download\">"+temp1.innerHTML+"</a>";
+			span.appendChild( tempDiv );
+		}
+		if(obj.ecVal !=null && obj.ecVal!="" && obj.isSecure!=null && obj.isSecure=='Y')
+			setFilePath(fieldname,obj.relativeImagePath,obj.path);
+		else if(obj.ts !=null && obj.ts!="" && obj.isSecure!=null && obj.isSecure=='Y'){
+			$("#previewImgTs").val(obj.ts);
+			setFilePath(fieldname,obj.relativeImagePath,obj.path);
+		}else
+			setFilePath(fieldname,obj.relativeImagePath,obj.path);
+
+		var mandChk=document.getElementById('imgMandChk').value;
+		var mandChkArr=mandChk.split("||");
+		var newMandArr="";
+		for(var i=0;i<mandChkArr.length;i++)
+		{
+			if(mandChkArr[i]!='')
+			{
+				if(mandChkArr[i]==fieldname)
+				{  mandChkArr[i]=''; }
+				newMandArr=newMandArr+mandChkArr[i]+"||";
+			}
+		}
+		document.getElementById('imgMandChk').value=newMandArr;
+		var chk=false;
+		var mandArr=newMandArr.split("||");
+		for(var i=0;i<mandArr.length;i++)
+		{
+			if(mandArr[i]!=''){ chk= false;}
+		}
+		if(chk==true)
+		{documenet.getElementById('txtPhotopath_hidden').value='Y';}
+		var span=document.getElementById(fieldname+"_success");
+		var tempDiv = document.createElement('input');
+		tempDiv.setAttribute('id', 'fieldName');
+		tempDiv.setAttribute('value',fieldname);
+		tempDiv.setAttribute('style','display:none');
+		span.appendChild(tempDiv);
+	}
+	if(obj.error!=null && obj.error=="sessionExpire"){
+		fnLogout(obj.msg);
+	}
+	if(crop.toLowerCase()=='y' && fieldType.toLowerCase()=='image')
+	{
+		var field3=fieldname+'_cropButt';
+		// var field4=fieldname+'_target';
+		document.getElementById(field3).style.display="inline";
+		// document.getElementById(field4).src=obj.path;
+	}
+	var secToken=obj.secToken;
+	document.getElementById("token_img").value=secToken;
+}
+var fieldname="";
+function fnGetUploadRespNew(fieldname,crop,fieldType,rawResp,file,thisDropzone){
+if(typeof window.fnGetUploadRespNewFrameworkBeforeAjaxCall == 'function') {
+		
+	fnGetUploadRespNewFrameworkBeforeAjaxCall(fieldname,crop,fieldType,rawResp,file,thisDropzone);
+}
+	var returnValue;
+	var obj=JSON.parse(rawResp);
+	uploadedPath=obj.path==null?"":obj.path;
+	var isAdminEdit="";
+	if(document.getElementById("isAdminEdit")!=null)
+		isAdminEdit=document.getElementById("isAdminEdit").value;
+	
+	var imageUploadInViewPage="";
+	if(document.getElementById("imageUploadInViewPage")!=null)
+		imageUploadInViewPage=document.getElementById("imageUploadInViewPage").value;
+	// document.getElementById(fieldname+'_uploadSpan').style.display='';
+	// docu ment.getElementById(fieldname+'_loaderSpan').style.display='none';
+	if(obj.validationFlag=='N')
+	{
+		$('#'+fieldname+'_success').html(obj.msg); 
+		$('#'+fieldname+'_success').css({"color":"red","font-weight":"bold"});
+		if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y"){
+			var message = obj.msg;
+			if(message.includes('Invalid file type detected. File'))
+			{
+			message = "Invalid file type detected. File";
+			}
+			else if(message.includes('File size exceeded allowed file size for File ')){
+				message = "File size exceeded allowed file size for File ";
+			}
+			else if(message.includes('File size is less than the allowed file size for File ')){
+				message = "File size is less than the allowed file size for File ";
+			}
+			field1=fieldname+'_success';
+			if($('[data-staticKey="'+message+'"]').length>0){
+				if(message.includes('Invalid file type detected. File') || message.includes('File size exceeded allowed file size for File ') || message.includes('File size less than the allowed file size for File '))
+			{
+			document.getElementById(field1).innerHTML=$('[data-staticKey="'+message+'"]').text()+" : "+obj.msg.split(":")[1];
+			}
+			else
+				document.getElementById(field1).innerHTML=$('[data-staticKey="'+message+'"]').text();
+				
+			}
+			else
+				document.getElementById(field1).innerHTML=obj.msg;
+			
+		}
+		thisDropzone.removeAllFiles(true);
+		returnValue=false;
+	}else
+	{
+		var field1=fieldname+'_success';
+		var field2=fieldname+'_previewImg';
+		var field3=fieldname+'_previewLink';
+		/*var field5=fieldname+'_delete';
+		$('#'+fieldname+'_delete').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>');
+*/		if(obj.successMessage=='')
+			{
+				if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y"))
+					$('#'+fieldname+'_success').html('<b><p data-staticKey="File uploaded successfully">File uploaded successfully</p></b><a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>');
+				else
+					$('#'+fieldname+'_success').html('<b><p data-staticKey="File uploaded successfully">File uploaded successfully</p></b>');
+			}
+			else{
+				if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y")){
+					$('#'+fieldname+'_success').html('<b>'+obj.successMessage+'</b><a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>');
+				}
+				else{
+					$('#'+fieldname+'_success').html('<b>'+obj.successMessage+'</b>');
+					} 
+				}
+			
+		$('#'+fieldname+'_success').css({"color":"green"/*,"font-weight":"bold"*/});
+		//$('#'+fieldname+'_success').css({"width":"100px","overflow":"hidden","white-space":"nowrap","text-overflow":"ellipsis"});
+		//$('#'+fieldname+'_success').css.hover({"overflow": "visible", "white-space": "normal", "width": "auto","position": "absolute","background-color":"#FFF"});
+		returnValue = true;
+		if(fieldType.toLowerCase()=='image')
+
+		{  
+			document.getElementById(field2).style.display="";
+			document.getElementById(field3).style.display="none";		 
+			document.getElementById(field2).src=obj.path;  
+		}
+		else{ 
+			var span = document.getElementById(field3);
+			document.getElementById(field2).style.display="none";
+			document.getElementById(field3).style.display="";
+			while( span.firstChild ) {
+				span.removeChild( span.firstChild );
+			}
+			var tempDiv = document.createElement('div');
+			tempDiv.setAttribute('style', 'display:inline');
+			var temp1 = document.createElement('span');
+  			temp1.innerHTML = $('#browseMessage3').text();
+			tempDiv.innerHTML = "<a href='"+obj.path+"' target='_blank' data-staticKey=\"Click Here to Download\">"+temp1.innerHTML+"</a>";
+			span.appendChild( tempDiv );
+		}
+		if(obj.ecVal !=null && obj.ecVal!="" && obj.isSecure!=null && obj.isSecure=='Y'){
+			setFilePath(fieldname,obj.relativeImagePath,obj.path);
+			setImagePathsInViewPage(fieldname,obj.path);
+		}
+		else if(obj.ts !=null && obj.ts!="" && obj.isSecure!=null && obj.isSecure=='Y'){
+			$("#previewImgTs").val(obj.ts);
+			setFilePath(fieldname,obj.relativeImagePath,obj.path);
+			setImagePathsInViewPage(fieldname,obj.path);
+		}else{
+			setFilePath(fieldname,obj.relativeImagePath,obj.path);
+			setImagePathsInViewPage(fieldname,obj.path);
+		}
+		var mandChk=document.getElementById('imgMandChk').value;
+		var mandChkArr=mandChk.split("||");
+		var newMandArr="";
+		for(var i=0;i<mandChkArr.length;i++)
+		{
+			if(mandChkArr[i]!='')
+			{
+				if(mandChkArr[i]==fieldname)
+				{  mandChkArr[i]=''; }
+				newMandArr=newMandArr+mandChkArr[i]+"||";
+			}
+		}
+		document.getElementById('imgMandChk').value=newMandArr;
+		var chk=false;
+		var mandArr=newMandArr.split("||");
+		for(var i=0;i<mandArr.length;i++)
+		{
+			if(mandArr[i]!=''){ chk= false;}
+		}
+		if(chk==true)
+		{documenet.getElementById('txtPhotopath_hidden').value='Y';}
+	}
+	if(obj.error!=null && obj.error=="sessionExpire"){
+		fnLogout(obj.msg);
+	}
+	if(crop.toLowerCase()=='y' && fieldType.toLowerCase()=='image')
+	{
+		var field3=fieldname+'_cropButt';
+		var field4=fieldname+'_target';
+		document.getElementById(field3).style.display="inline";
+		document.getElementById(field4).src=obj.path;
+		//document.getElementById(field4).src='/EForms/images/asses-2.jpg';
+		
+	}
+	var secToken=obj.secToken;
+	document.getElementById("token_img").value=secToken;
+	
+	 if(typeof window.fnGetUploadRespNewFrameworkAfterAjaxCall == 'function') {
+			
+		   fnGetUploadRespNewFrameworkAfterAjaxCall(obj);
+    		   }
+	return returnValue;
+	
+}
+
+function setImagePathsInViewPage(fieldname,path){
+	if($("#imageUploadInViewPage").length > 0 && $("#imageUploadInViewPage").val()=="Y"){
+	if(path!=null && path.indexOf("?v=") == -1&& path.indexOf("/EFormsServeImage")==-1)
+		path=path+"?v="+Math.random();
+		else 
+			path=path+"&sessChk="+$("#sessChk").val();
+	
+	switch(fieldname){
+	case "txtPhotoPath" : {
+		if($('#appPhotoImgPath').length > 0 ){
+			document.getElementById("appPhotoImgPath").src=path;
+		}
+	}
+	break;
+	case "txtSignaturePath" : {
+		if($('#appSignaturePath').length > 0 ){
+			document.getElementById("appSignaturePath").src=path;
+		}
+	}
+	break;
+	case "txtThumbpath" : {
+		if($('#appThumbpath').length > 0 ){
+			document.getElementById("appThumbpath").src=path;
+		}
+	}
+	break ;
+	default : {
+		var thisElement ="";
+		if($("#"+fieldname+"_tr").length > 0)
+			thisElement = fieldname+"_tr";
+		else if($("#"+fieldname+"_div").length > 0)
+			thisElement = fieldname+"_div";
+		if(thisElement != undefined && thisElement != "" && thisElement != null){
+		if($("#"+thisElement).prop("tagName")=="img" || $("#"+thisElement).prop("tagName")=="IMG")
+		{
+			$("#"+thisElement).attr("src", path);
+		}
+		else
+		{
+			document.getElementById(thisElement).innerHTML=path;
+		}
+	}
+	}
+		
+	}
+	}
+}
+function popupAlign(height)
+{
+	var win_width = $(window).width();
+	var win_height = $(window).height();
+	var pop_width = $('.popup').width();
+	var pop_height = $('.popup').height();
+	var pop_top = (win_height - height) / 2 ;
+	var pop_left = (win_width - pop_width) / 2 ;
+	pop_top=20;
+	$('.popup').css({'top':pop_top+'px'/*,'left':pop_left+'px'*/});	
+	// $('.pop_body').css({'height':pop_height+'px'});
+}
+
+
+function GetFileSize(fileid,size) {
+	try {
+		var fileSize = 0;
+		// for IE
+		if ($.browser.msie) {
+			// before making an object of ActiveXObject,
+			// please make sure ActiveX is enabled in your IE browser
+			var objFSO = new ActiveXObject("Scripting.FileSystemObject"); 
+			var filePath = $("#" + fileid)[0].value;
+			var objFile = objFSO.getFile(filePath);
+			var fileSize = objFile.size; // size in kb
+			fileSize = fileSize / 1048576; // size in mb
+		}
+		// for FF, Safari, Opeara and Others
+		else {
+			fileSize = $("#" + fileid)[0].files[0].size // size in kb
+			// fileSize = fileSize / 1048576; //size in mb
+		}
+		// console.log(fileSize+"::"+size*1024);
+		if(parseInt(fileSize)>parseInt(size)*parseInt(1024))
+		{
+			var field=fileid+'_error';
+			// console.log(field);
+			document.getElementById(field).innerHTML='<p data-staticKey="File size larger than the specified limit">File size larger than the specified limit</p>';
+			document.getElementById(fileid+'_uploadSpan').style.display='';
+			document.getElementById(fileid+'_loaderSpan').style.display='none';
+			return false;
+		}else
+		{
+			return true;
+		}
+	}
+	catch (e) {
+		return true;
+	}
+}
+function GetFileSizeMin(fileid,minsize) {
+	try {
+		var fileSize = 0;
+		// for IE
+		if ($.browser.msie) {
+			// before making an object of ActiveXObject,
+			// please make sure ActiveX is enabled in your IE browser
+			var objFSO = new ActiveXObject("Scripting.FileSystemObject"); 
+			var filePath = $("#" + fileid)[0].value;
+			var objFile = objFSO.getFile(filePath);
+			var fileSize = objFile.size; // size in kb
+			fileSize = fileSize / 1048576; // size in mb
+		}
+		// for FF, Safari, Opeara and Others
+		else {
+			fileSize = $("#" + fileid)[0].files[0].size // size in kb
+			// fileSize = fileSize / 1048576; //size in mb
+		}
+		// console.log(fileSize+"::"+size*1024);
+		if(parseInt(fileSize)<parseInt(minsize)*parseInt(1024))
+		{
+			var field=fileid+'_error';
+			// console.log(field);
+			document.getElementById(field).innerHTML='<p data-staticKey="File size is less than the specified limit">File size is less than the specified limit</p>';
+			document.getElementById(fileid+'_uploadSpan').style.display='';
+			document.getElementById(fileid+'_loaderSpan').style.display='none';
+			return false;
+		}else
+		{
+			return true;
+		}
+	}
+	catch (e) {
+		return true;
+	}
+}
+
+function fnGetXMLHttpObject(){
+	var http_req = null;	   
+	if (window.XMLHttpRequest){ // Mozilla, Safari,...
+		http_req = new XMLHttpRequest();
+
+		if (http_req.overrideMimeType)
+		{
+			http_req.overrideMimeType('text/xml');
+		}
+		return http_req;
+	}else if (window.ActiveXObject){ // IE
+		try {
+			http_req = new ActiveXObject("Msxml2.XMLHTTP");
+		}
+		catch (e)
+		{
+			try {
+				http_req = new ActiveXObject("Microsoft.XMLHTTP");
+			} 
+			catch(e){}
+		}
+		return http_req;
+	}
+}
+
+function  openImagePopUp(formId){
+	openImagePopUpWithIdentifier(formId,"");
+
+}
+
+function  openImagePopUpWithDynamicFormId(identifier){
+	var formId=document.getElementById("formId").value;
+	openImagePopUpWithIdentifier(formId,identifier);
+
+}
+
+function openImagePopUpWithDynamicFormIdNewResponsive(identifier){
+	var formId=document.getElementById("formId").value;
+	openImagePopUpWithIdentifierNew(formId,identifier);
+}
+
+function  openImagePopUpWithIdentifier(formId,popupFieldIdentifier){
+	var txtFileName=document.getElementById('txtFileName').value;
+	var txtFilePath=document.getElementById('txtFilePath').value;
+	var sessChk=$("#sessChk").val();
+	var isAdminEdit=$("#isAdminEdit").val();
+	var orgId=document.getElementById('orgId').value;
+	var entityId ="";
+	if(document.getElementById("entityId") != null){
+		entityId = document.getElementById("entityId").value;
+
+	} else {
+		entityId = document.getElementById("entity_Id").value;
+	}
+
+
+	var http_request=fnGetXMLHttpObject();
+
+	if(popupFieldIdentifier=="")
+		FieldIdentifier="default";
+	else FieldIdentifier = popupFieldIdentifier;
+
+	/*
+	 * var loc = window.location; var jsonFilePath=""; var tempJsonPath=
+	 * loc.href.substring(loc.href.lastIndexOf('/EForms/eformStaticFiles'));
+	 * 
+	 * if (tempJsonPath.indexOf("configuredHtml")>=0) {
+	 * jsonFilePath=tempJsonPath.replace(tempJsonPath, "");
+	 *  }
+	 */
+	var language=$('#multilingualLanguageSelected').val();
+	var imageUploadInViewPage = $('#imageUploadInViewPage').val();
+	
+	if( (language==null || language=="") && imageUploadInViewPage!="Y")
+		{
+	var jsonFilePath="/EForms/configuredXML/"+orgId+"/"+formId+"/FileUpload_"+formId+"_"+FieldIdentifier+".json";
+
+	$.getJSON(jsonFilePath,function(data){
+		var parameters = "subAction=generateSecurityToken&entityId="+entityId+"&formId="+formId+"&txtFileName="+txtFileName+"&popupFieldIdentifier="+popupFieldIdentifier+"&txtFilePath="+txtFilePath+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&orgId="+orgId+"&"+formElements;
+		if(http_request!=null){
+			var pValidationServlet = "/EForms/ImageFileUpload"; 
+			http_request.open('POST',pValidationServlet,true);       
+			http_request.onreadystatechange = function() { createDataStatic(http_request,data); }; 	 	                    
+			http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+			http_request.send(parameters);
+		}
+		}) .fail(function() {
+			// alert("5");
+			var formElements='';
+			if($('#entityId').val()!='')
+			{
+				$( ":input" ).each(function() {
+					if($( this ).attr('id')!='strDisplayProfile')
+					{
+						if(formElements=='')
+						{  formElements=$( this ).attr('id')+"="+$( this ).val();}
+						else
+						{  formElements=formElements+"&"+$( this ).attr('id')+"="+$( this ).val();  }
+					}
+				});
+			}
+			var parameters = "subAction=Display&entityId="+entityId+"&formId="+formId+"&txtFileName="+txtFileName+"&popupFieldIdentifier="+popupFieldIdentifier+"&txtFilePath="+txtFilePath+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&orgId="+orgId+"&"+formElements;
+			if(http_request!=null){
+				var pValidationServlet = "/EForms/ImageFileUpload"; 
+				http_request.open('POST',pValidationServlet,true);       
+				http_request.onreadystatechange = function() { createData(http_request); }; 	 	                    
+				http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+				http_request.send(parameters);
+			}
+		});
+}
+	else{
+
+		// alert("5");
+		var formElements='';
+		if($('#entityId').val()!='')
+		{
+			$( ":input" ).each(function() {
+				if($( this ).attr('id')!='strDisplayProfile')
+				{
+					if(formElements=='')
+					{  formElements=$( this ).attr('id')+"="+$( this ).val();}
+					else
+					{  formElements=formElements+"&"+$( this ).attr('id')+"="+$( this ).val();  }
+				}
+			});
+		}
+		var parameters = "subAction=Display&entityId="+entityId+"&formId="+formId+"&txtFileName="+txtFileName+"&popupFieldIdentifier="+popupFieldIdentifier+"&txtFilePath="+txtFilePath+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&orgId="+orgId+"&"+formElements;
+		if(http_request!=null){
+			var pValidationServlet = "/EForms/ImageFileUpload"; 
+			http_request.open('POST',pValidationServlet,true);       
+			http_request.onreadystatechange = function() { createData(http_request); }; 	 	                    
+			http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+			http_request.send(parameters);
+		}
+	
+	}
+}
+
+
+
+var ComponentDivId=null;
+function openImagePopUpWithIdentifierNew(formId,popupFieldIdentifier,divId){
+	
+	if(typeof window.openImagePopUpWithIdentifierNewFrameworkBeforeAjaxCall == 'function') {
+		
+		openImagePopUpWithIdentifierNewFrameworkBeforeAjaxCall(formId,popupFieldIdentifier,divId);
+	   }
+	/*if($('#pop_bodyNew').length > 0){
+		createImagePopupNew();
+	}*/
+	var JSONObject;
+	ComponentDivId='#'+divId;
+	var txtFileName=document.getElementById('txtFileName').value;
+	var txtFilePath=document.getElementById('txtFilePath').value;
+	var sessChk=$("#sessChk").val();
+	var isAdminEdit=$("#isAdminEdit").val();
+	var orgId=document.getElementById('orgId').value;
+	var entityId ="";
+	if(document.getElementById("entityId") != null){
+		entityId = document.getElementById("entityId") .value;
+
+	} else {
+		entityId = document.getElementById("entity_Id").value;
+	}
+
+	if(popupFieldIdentifier=="")
+		FieldIdentifier="default";
+	else FieldIdentifier = popupFieldIdentifier;
+	//var jsonFilePath1="/EForms/configuredXML/"+orgId+"/"+formId+"/FileUpload_"+formId+"_"+FieldIdentifier+".json";
+	/*$.getJSON(jsonFilePath1)
+	.done(function(msg){
+				var component= msg[0].openInCustomComponent;
+				if(component=="N")
+					cont=true;
+		});*/
+	
+        		if($('#tabsUL li').length > 0)
+        			$('#tabsUL').empty();
+        		if($('#tabsDropdownForMobile').length > 0) $('#tabsDropdownForMobile').empty();
+
+
+        		var http_request=fnGetXMLHttpObject();
+
+        		 /*$( "[onclick*='openImagePopUpWithIdentifierNew']" ).attr({
+        	   	  'data-toggle': "modal",
+        	   	  'data-target': ".uploadimagepop"
+        	   	}); 
+        		if($('#tabsUL li').length > 0)
+        			$('#tabsUL').empty();
+        		if($('#tabsDropdownForMobile').length > 0) $('#tabsDropdownForMobile').empty();
+        		var txtFileName=document.getElementById('txtFileName').value;
+        		var txtFilePath=document.getElementById('txtFilePath').value;
+        		var sessChk=$("#sessChk").val();
+        		var isAdminEdit=$("#isAdminEdit").val();
+        		var orgId=document.getElementById('orgId').value;
+        		var entityId ="";
+        		if(document.getElementById("entityId") != null){
+        			entityId = document.getElementById("entityId") .value;
+
+        		} else {
+        			entityId = document.getElementById("entity_Id").value;
+        		}
+
+
+        		var http_request=fnGetXMLHttpObject();
+
+        		if(popupFieldIdentifier=="")
+        			FieldIdentifier="default";
+        		else FieldIdentifier = popupFieldIdentifier;
+        	*/
+        		/*
+        		 * var loc = window.location; var jsonFilePath=""; var tempJsonPath=
+        		 * loc.href.substring(loc.href.lastIndexOf('/EForms/eformStaticFiles'));
+        		 * 
+        		 * if (tempJsonPath.indexOf("configuredHtml")>=0) {
+        		 * jsonFilePath=tempJsonPath.replace(tempJsonPath, "");
+        		 *  }
+        		 */
+        		var language=$('#multilingualLanguageSelected').val();
+        		var imageUploadInViewPage = $('#imageUploadInViewPage').val();
+        		
+        		if((language==null || language=="" || language==undefined) && imageUploadInViewPage!='Y')
+        			{
+        		var jsonFilePath="/EForms/configuredXML/"+orgId+"/"+formId+"/FileUpload_"+formId+"_"+FieldIdentifier+".json";
+
+        		$.getJSON(jsonFilePath,function(data){
+        			 JSONObject=data;
+        			var parameters = "subAction=generateSecurityToken&entityId="+entityId+"&formId="+formId+"&txtFileName="+txtFileName+"&popupFieldIdentifier="+popupFieldIdentifier+"&txtFilePath="+txtFilePath+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&orgId="+orgId+"&"+formElements;
+        		if(http_request!=null){
+        			var pValidationServlet = "/EForms/ImageFileUpload"; 
+        			http_request.open('POST',pValidationServlet,true);       
+        			http_request.onreadystatechange = function() { createDataStaticNew(http_request,data); }; 	 	                    
+        			http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+        			http_request.send(parameters);
+        		}
+        		}) .fail(function() {
+        				// alert("5");
+        				var formElements='';
+        				if($('#entityId').val()!='')
+        				{
+        					$( ":input" ).each(function() {
+        						if($( this ).attr('id')!='strDisplayProfile')
+        						{
+        							if(formElements=='')
+        							{  formElements=$( this ).attr('id')+"="+$( this ).val();}
+        							else
+        							{  formElements=formElements+"&"+$( this ).attr('id')+"="+$( this ).val();  }
+        						}
+        					});
+        				}
+        				var parameters = "subAction=Display&entityId="+entityId+"&formId="+formId+"&txtFileName="+txtFileName+"&popupFieldIdentifier="+popupFieldIdentifier+"&txtFilePath="+txtFilePath+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&orgId="+orgId+"&"+formElements;
+        				if(http_request!=null){
+        					var pValidationServlet = "/EForms/ImageFileUpload"; 
+        					http_request.open('POST',pValidationServlet,true);       
+        					http_request.onreadystatechange = function() { createDataNew(http_request); }; 	 	                    
+        					http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+        					http_request.send(parameters);
+        				}
+        			});
+        		  }
+        		else{
+        			var formElements='';
+        			if($('#entityId').val()!='')
+        			{
+        				$( ":input" ).each(function() {
+        					if($( this ).attr('id')!='strDisplayProfile')
+        					{
+        						if(formElements=='')
+        						{  formElements=$( this ).attr('id')+"="+$( this ).val();}
+        						else
+        						{  formElements=formElements+"&"+$( this ).attr('id')+"="+$( this ).val();  }
+        					}
+        				});
+        			}
+        			var parameters = "subAction=Display&entityId="+entityId+"&formId="+formId+"&txtFileName="+txtFileName+"&popupFieldIdentifier="+popupFieldIdentifier+"&txtFilePath="+txtFilePath+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&orgId="+orgId+"&"+formElements;
+        			if(http_request!=null){
+        				var pValidationServlet = "/EForms/ImageFileUpload"; 
+        				http_request.open('POST',pValidationServlet,true);       
+        				http_request.onreadystatechange = function() { createDataNew(http_request); }; 	 	                    
+        				http_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");               
+        				http_request.send(parameters);
+        			}
+        		}
+        		/*}
+        		/*else{
+        			$('#pop_bodyNew .uploadimagepop ').addClass('in');
+        			$('.modal').css({"display":"block","padding-right":"17px"});
+        		}*/
+        	if(typeof window.openImagePopUpWithIdentifierNewFrameworkAfterAjaxCall == 'function') {
+        			
+        			openImagePopUpWithIdentifierNewFrameworkAfterAjaxCall(formId,popupFieldIdentifier,divId,JSONObject);
+        		   }
+        
+
+
+}
+function setFilePath(fileName,filePath,fileWebUrl)
+{
+	if(document.getElementById('txtFileName')!=null)
+		var txtFileName=document.getElementById('txtFileName').value;
+	else
+		var txtFileName=window.parent.document.getElementById('txtFileName').value;
+	
+	if(document.getElementById('txtFilePath')!=null)
+		var txtFilePath=document.getElementById('txtFilePath').value;
+	else
+		var txtFilePath=window.parent.document.getElementById('txtFilePath').value;
+	
+	if(document.getElementById('txtFilePathEdit')!=null)
+		var txtFilePathEdit=document.getElementById('txtFilePathEdit').value;
+	else
+		var txtFilePathEdit=window.parent.document.getElementById('txtFilePathEdit').value;
+	
+	var fileNameArr=txtFileName.split("||");
+	var filePathArr=txtFilePath.split("||");
+	var filePathEditArr=txtFilePathEdit.split("||");
+	var present='false';
+	var newTxtFileName="";
+	var newTxtFilePath="";
+	var newTxtFilePathEdit="";
+	for(var i=0;i<fileNameArr.length;i++)
+	{
+
+		if(fileNameArr[i]!=''){
+			if(fileNameArr[i]==(fileName))
+			{
+				present='true';
+				fileNameArr[i]=fileName;
+				filePathArr[i]=filePath;
+				filePathEditArr[i]=fileWebUrl;
+			}
+			newTxtFileName=newTxtFileName+fileNameArr[i]+"||";
+			newTxtFilePath=newTxtFilePath+filePathArr[i]+"||";
+			newTxtFilePathEdit=newTxtFilePathEdit+filePathEditArr[i]+"||";
+		}
+	}
+	if(present=='true')
+	{
+		txtFileName=newTxtFileName.substring(0,newTxtFileName.length-2);
+		txtFilePath=newTxtFilePath.substring(0,newTxtFilePath.length-2);
+		txtFilePathEdit=newTxtFilePathEdit.substring(0,newTxtFilePathEdit.length-2);
+
+	}else{
+		if(txtFileName=='' || txtFileName.substring(txtFileName.length-2,txtFileName.length)=='||')
+		{
+			txtFileName=txtFileName+fileName;
+		}else{
+			txtFileName=txtFileName+"||"+fileName;
+		}
+
+
+		if(txtFilePath=='' || txtFilePath.substring(txtFilePath.length-2,txtFilePath.length)=='||')
+		{
+			txtFilePath=txtFilePath+filePath;
+		}else{
+			txtFilePath=txtFilePath+"||"+filePath;
+		}
+		
+		if(txtFilePathEdit=='' || txtFilePathEdit.substring(txtFilePath.length-2,txtFilePath.length)=='||')
+		{
+			txtFilePathEdit=txtFilePathEdit+fileWebUrl;
+		}else{
+			txtFilePathEdit=txtFilePathEdit+"||"+fileWebUrl;
+		}
+
+	}
+	if(document.getElementById('txtFileName')!=null)
+		document.getElementById('txtFileName').value=txtFileName;
+	else
+		window.parent.document.getElementById('txtFileName').value=txtFileName;
+	
+	if(document.getElementById('txtFilePath')!=null)
+		document.getElementById('txtFilePath').value=txtFilePath;
+	else
+		window.parent.document.getElementById('txtFilePath').value=txtFilePath;
+	
+	if(document.getElementById('txtFilePathEdit')!=null)
+		document.getElementById('txtFilePathEdit').value=txtFilePathEdit;
+	else
+		window.parent.document.getElementById('txtFilePathEdit').value=txtFilePathEdit;
+	
+}
+
+function fnChkMandatory(){
+
+	var chk=true;
+	var mandValue=document.getElementById('imgMandChk').value;
+	var mandArr1=mandValue.split("||");
+	var fileNameArr=document.getElementById('txtFileName').value.split("||");
+	var mandArrString="";
+	for(var i=0;i<mandArr1.length;i++)
+	{
+		var dup='false';
+		for(var j=0;j<fileNameArr.length;j++)
+		{
+			if(fileNameArr[j]==mandArr1[i])
+			{dup='true';}
+		}
+		if(dup=='false') 
+		{   mandArrString=mandArrString+mandArr1[i]+"||";  }
+	}
+	mandArr=mandArrString.split('||');
+	if(document.getElementById('txtPhotopath_hidden').value!='Y')
+	{
+		for(var i=0;i<mandArr.length;i++)
+		{
+			if(mandArr[i]!=''){ 
+				chk= false;
+				var txtFileNameEdit=document.getElementById('txtFileNameEdit').value.split('||');
+				var txtFilePathEdit=document.getElementById('txtFilePathEdit').value.split('||');
+				for(var j=0;j<txtFileNameEdit.length;j++)
+				{
+
+					if(txtFileNameEdit[j]==mandArr[i])
+					{ 
+						if(txtFilePathEdit[j]!='')
+						{  chk=true; break;  }
+					}
+				}
+
+			}
+		}
+	}
+	if(chk==true)
+	{document.getElementById('txtPhotopath_hidden').value='Y';}
+	return chk;
+}	
+
+function closeCropper(){
+	$('#image-container').hide();
+}
+
+function closePopUpWithCloseButton(){
+	var chk=fnChkMandatory();
+	if(!chk)
+	{
+		var temp = document.createElement('span');
+		temp.innerHTML = $('#imageUploadAlert6').text();
+		if (confirm(temp.innerHTML) == true) {
+			jQuery('#search-beats-popup, .shadow').fadeOut('fast');
+		}  
+
+	}else{
+		jQuery('#search-beats-popup, .shadow').fadeOut('fast');
+	}
+}
+function imageUploadNewCommonFunction(parsedData,tokenData){
+	cont=parsedData.msg[0].openInCustomComponent=="Y"?true:false;
+	if(cont==true)
+		$("#pop_bodyNew").css("display","none");
+	else{
+	        $( "[onclick*='openImagePopUpWithIdentifierNew']" ).attr({
+	        	'data-toggle': "modal",
+	        	'data-target': ".uploadimagepop"
+	        	   	}); 
+		$("#pop_bodyNew").css("display","");}
+/*else
+	$("#pop_bodyNew").css("display","");*/
+	$("#pop_bodyNew").append('<input type="hidden" id="previewImgTs" name="previewImgTs"><input type="hidden" id="txtFileNameEdit" name="txtFileNameEdit">');
+	$("#pop_bodyNew").append('<span id = "imageUploadAlert1" data-staticKey="Please select area for cropping image" style="display:none">Please select area for cropping image</span>');
+	$("#pop_bodyNew").append('<span id = "browseMessage1" data-staticKey="Drag and Drop File Here" style="display:none">Drag and Drop File Here</span>');
+	$("#pop_bodyNew").append('<span id = "browseMessage2" data-staticKey="Browse" style="display:none">Browse</span>');
+	$("#pop_bodyNew").append('<span id = "browseMessage3" data-staticKey="Click Here to Download" style="display:none">Click Here to Download</span>');
+				
+				$("#pop_bodyNew").append('<span id = "errorMessage1" data-staticKey="Invalid Values. Unable to upload Images/Documents. Please try again." style="display:none">Invalid Values. Unable to upload Images/Documents. Please try again.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage2" data-staticKey="Invalid Request. Unable to upload Images/Documents. Please try again." style="display:none">Invalid Request. Unable to upload Images/Documents. Please try again.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage3" data-staticKey="Invalid Format. Unable to upload Images/Documents." style="display:none">Invalid Format. Unable to upload Images/Documents.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage4" data-staticKey="File size is greater than specified. Unable to upload Images/Documents." style="display:none">File size is greater than specified. Unable to upload Images/Documents.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage5" data-staticKey="Colour Code of image is not proper. Please upload images of RGB Code only." style="display:none">Colour Code of image is not proper. Please upload images of RGB Code only.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage6" data-staticKey="Uploaded file is currupted.Please upload new file." style="display:none">Uploaded file is currupted.Please upload new file.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage7" data-staticKey="Unable to upload Images/Documents. Please try again." style="display:none">Unable to upload Images/Documents. Please try again.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage8" data-staticKey="Error while reading image file.Please try again." style="display:none">Error while reading image file.Please try again.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage9" data-staticKey="Session has expired. Please login again." style="display:none">Session has expired. Please login again.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage10" data-staticKey="Invalid file type detected. File" style="display:none">Invalid file type detected. File</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage11" data-staticKey="File size exceeded allowed file size for File" style="display:none">File size exceeded allowed file size for File</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage12" data-staticKey="File size is less than specified. Unable to upload Images/Documents." style="display:none">File size is less than specified. Unable to upload Images/Documents.</span>');
+				$("#pop_bodyNew").append('<span id = "errorMessage13" data-staticKey="File size is less than the allowed file size for File" style="display:none">File size is less than the allowed file size for File</span>');
+	if(parsedData.msg.length>1)			
+	$("#tabsDropdownForMobile").append("<select class=\"selectpicker form-control\">");//title=\""+mand+parsedData.msg[i].htmlName+"\"
+	var firstChk='true';
+	var tabActive='';
+	var tabActiveId='';
+	
+	if(parsedData.error!=null && parsedData.error=="sessionExpire"){
+		fnLogout(parsedData.msg);
+	}
+
+	if($("#txtFilePathEdit").val()==undefined || $("#txtFilePathEdit").val() == null || $("#txtFilePathEdit").val() == "")
+	var txtFilePathEdit="";
+	else var txtFilePathEdit = $("#txtFilePathEdit").val();
+
+	var list='';
+	var secToken="";
+	if(tokenData=="")
+		{
+		secToken=parsedData.secToken;
+		}
+	else
+		{
+		secToken=tokenData.secToken;
+		}
+	
+	document.getElementById("token_img").value=secToken;
+	for(var i=0;i<parsedData.msg.length;i++)
+	{
+		var mand="";
+		var crop="";
+		var cropDiv="";
+		var fieldname=parsedData.msg[i].fieldName;
+		var validation=parsedData.msg[i].validation.split(',');
+		 localStorage.setItem("isFileDeletionRequired_"+parsedData.msg[i].fieldName,parsedData.msg[i].isFileDeletionRequired);
+
+		if(validation.length>0)
+		{
+			if(validation[0].toLowerCase()=='mandatory')
+			{
+				if(parsedData.msg.length>1)
+				mand="<span class='red-text'> * </span>";
+				document.getElementById('imgMandChk').value=document.getElementById('imgMandChk').value+parsedData.msg[i].fieldName+"||";
+			}
+		}
+
+		var previewLink='/EForms/'+parsedData.msg[i].displayImg;
+
+		var previewLinkDoc='';
+		var style='';
+		var style1='';
+
+		if(typeof parsedData.msg[i].path != 'undefined')
+		{
+			var txtFileNameEdit=document.getElementById('txtFileNameEdit').value;
+			if(document.getElementById('txtFileNameEdit').value.indexOf(parsedData.msg[i].fieldName) == -1){
+				txtFileNameEdit=txtFileNameEdit+parsedData.msg[i].fieldName+"||";
+				
+				if(txtFilePathEdit=="")
+					txtFilePathEdit=parsedData.msg[i].fullPath;
+				else
+					txtFilePathEdit=txtFilePathEdit+"||"+parsedData.msg[i].fullPath;
+			} 
+			
+			document.getElementById('txtFilePathEdit').value=txtFilePathEdit;
+			document.getElementById('txtFileNameEdit').value=txtFileNameEdit;
+			
+			if(parsedData.msg[i].path != '' && parsedData.msg[i].path != ' ' && parsedData.msg[i].path != null && parsedData.msg[i].path != 'null'){
+				if(parsedData.msg[i].fieldType.toLowerCase()=='image')
+				{
+					previewLink=parsedData.msg[i].fullPath;
+					style='display:none';
+				}else{
+					previewLink='';
+				//	previewLinkDoc="<div><a href='"+parsedData.msg[i].fullPath+"' target='_blank'>Click here to download</a></div>";
+					previewLinkDoc="<div><a href=\""+parsedData.msg[i].fullPath+"\" target=\"_blank\" data-staticKey=\"Click here to download\">Click here to download</a></div>";
+					style1="display:none";
+				}
+			}
+		}else{
+			style="display:none";
+		}
+
+		if($('#txtFilePath').val() != "") 	var txtFilePathArr=document.getElementById('txtFilePath').value.split("||");
+		else var txtFilePathArr=document.getElementById('txtFilePathEdit').value.split("||");
+		if($('#txtFileName').val() != "")  var txtFileNameArr=document.getElementById('txtFileName').value.split("||");
+		else var txtFileNameArr=document.getElementById('txtFileNameEdit').value.split("||");
+		
+		var txtfilePathEditArr=document.getElementById('txtFilePathEdit').value.split("||");	
+		
+		if(parsedData.msg[i].crop.toLowerCase()=='y' && parsedData.msg[i].fieldType.toLowerCase()=='image')
+			var display="display:"
+				if($('#entityId').val()=='')
+				{ display='display:none';}
+
+		if(style1=='')
+		{display=display;}
+		else{
+			display=style1+' ;'+display
+		}
+		if(display==undefined){var display='display:none';}
+		{
+			// crop="<div class='edit-appname-btn'
+			// id='"+parsedData.msg[i].fieldName+"_cropButt' style='"+display+"'
+			// style='cursor:pointer' ><a href='#'><b><font
+			// color='#fff'>Crop</font></b></a></div>";
+		crop="<div class='text-center margintop10' id='"+parsedData.msg[i].fieldName+"_cropButt' style='"+display+";cursor:pointer'  ><a style=\"cursor:pointer\" class=\"crop_btn\" data-staticKey=\"Crop\">Crop</a></div>";
+
+		var list=list+parsedData.msg[i].fieldName+"_class|";
+
+		}
+		
+		var displayChk='style=display:';
+		if(firstChk=='true')
+		{
+			
+			// $("#tabs").append("<a class='tab-link uploadTab selected-tab'
+			// href='#' id='"+parsedData.msg[i].fieldName+"_tab'
+			// onclick='showUploadField(this.id,"+parsedData.msg[i].id+")'>"+parsedData.msg[i].htmlName+"</a>");
+			if(parsedData.msg.length>1)
+				$("#tabsUL").append(" <li role=\"presentation\" class=\"active\"><a data-toggle=\"tab\" role=\"tab\" aria-controls=\"home\" href=\"#photograph\" aria-expanded=\"false\" id='"+parsedData.msg[i].fieldName+"_tab' style='text-decoration:none' onClick='javascript:populateNewDropZone(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")'>"+mand+parsedData.msg[i].htmlName+"</a></li>");
+			else
+				$("#tabsUL").append(" <li role=\"presentation\" class=\"active\"><a data-toggle=\"tab\" role=\"tab\" aria-controls=\"home\" aria-expanded=\"false\" id='"+parsedData.msg[i].fieldName+"_tab' style='text-decoration:none' onClick='javascript:populateNewDropZone(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")'>"+mand+parsedData.msg[i].htmlName+"</a></li>");
+				
+			//$("#tabsDropdownForMobile").append("<option>"+mand+parsedData.msg[i].htmlName+"</option>");
+			if(parsedData.msg.length==1){
+				$("#tabsDropdownForMobile").append(" <li role=\"presentation\" class=\"active\"><a data-toggle=\"tab\" role=\"tab\" aria-controls=\"home\" aria-expanded=\"false\" id='"+parsedData.msg[i].fieldName+"_tab' style='text-decoration:none' onClick='javascript:populateNewDropZone(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")'>"+mand+parsedData.msg[i].htmlName+"</a></li>");
+				$('.tabledropdown').attr('class','');
+
+			}
+			else
+			{
+				$("#tabsDropdownForMobile .selectpicker").attr('id','docuploadtypeid');
+				$("#tabsDropdownForMobile .selectpicker").append("<option value=\""+parsedData.msg[i].fieldName+"-@@-ion-@@-"+parsedData.msg[i].validation+"-@@-ion-@@-"+parsedData.msg[i].crop+"-@@-ion-@@-"+parsedData.msg[i].fieldType+"\">"+mand+parsedData.msg[i].htmlName+"</option>");
+				$('.tabledropdown').attr('class','');
+			}
+			
+				
+              
+			activeTab=parsedData.msg[i].fieldName;
+			activeTabId=parsedData.msg[i].id;
+		}
+		else
+		{
+			// $("#tabs").append("<a class='tab-link uploadTab' href='#'
+			// id='"+parsedData.msg[i].fieldName+"_tab'
+			// onclick='showUploadField(this.id,"+parsedData.msg[i].id+")'>"+parsedData.msg[i].htmlName+"</a>");
+			$("#tabsUL").append("<li role=\"presentation\"><a data-toggle=\"tab\" role=\"tab\" aria-controls=\"home\" href=\"#signature\" aria-expanded=\"false\" id='"+parsedData.msg[i].fieldName+"_tab' style='text-decoration:none' onClick='javascript:populateNewDropZone(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")'>"+mand+parsedData.msg[i].htmlName+"</a></li>");
+			displayChk="style='display:none'";
+			if(parsedData.msg.length==1){
+				$("#tabsDropdownForMobile").append(" <li role=\"presentation\" class=\"active\"><a data-toggle=\"tab\" role=\"tab\" aria-controls=\"home\" aria-expanded=\"false\" id='"+parsedData.msg[i].fieldName+"_tab' style='text-decoration:none' onClick='javascript:populateNewDropZone(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].validation+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\")'>"+mand+parsedData.msg[i].htmlName+"</a></li>");
+				$('.tabledropdown').attr('class','');
+			}
+			else{
+				$("#tabsDropdownForMobile .selectpicker").append("<option value=\""+parsedData.msg[i].fieldName+"-@@-ion-@@-"+parsedData.msg[i].validation+"-@@-ion-@@-"+parsedData.msg[i].crop+"-@@-ion-@@-"+parsedData.msg[i].fieldType+"\">"+mand+parsedData.msg[i].htmlName+"</option>");	
+				$('.tabledropdown').attr('class','');
+			}
+		}
+		
+		if($('#pop_bodyNew .modal-body #'+parsedData.msg[i].fieldName+'_tab_table').length == 0){
+		$("#pop_bodyNew .modal-body").append("<div "+displayChk+"  id='"+parsedData.msg[i].fieldName+"_tab_table'><div class=\"upload_file\"><form class='dropzone' id='"+parsedData.msg[i].fieldName+"-upload-zone' action=''></form></div></div>");
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<span id='"+parsedData.msg[i].fieldName+"_success'></span>");
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<div class=\"fnt-11 col-grey informed-text\">"+parsedData.msg[i].msg+"</div>");
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<div class=\"clearfix margintop20 cropimage text-center\" id='"+parsedData.msg[i].fieldName+"_cropimage'\"><img src=\"\" id='"+parsedData.msg[i].fieldName+"_target' class=\"target img-responsive\" alt=\"Pictures\"/></div>");
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<div class=\"text-center margintop10\"><a  style=\"display:none\" class=\"submit_btn btn-warning\" id='"+parsedData.msg[i].fieldName+"_cropSubmitNew'\" onclick='javascript:fnCropNewResponsiveSubmit(\""+parsedData.msg[i].fieldName+"\")'><span data-staticKey=\"Submit\">Submit</span></a></div>");
+		          
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<div class=\"text-center margintop10\"><a  style=\"display:none\" id=\""+parsedData.msg[i].fieldName+"_cropButt\" class=\"submit_btn btn-warning\" onclick='javascript:fnCropNewResponsive(\""+parsedData.msg[i].fieldName+"\",\""+parsedData.msg[i].crop+"\",\""+parsedData.msg[i].fieldType+"\",\""+previewLink+"\",\""+previewLinkDoc+"\")' data-staticKey=\"Crop\">Crop</a><a style=\"cursor:pointer\" class=\"crop_btn\" onclick=\"$('#pop_bodyNew .modal-header .close').click();\" data-staticKey=\"Close\">Close</a></div>"); 
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<a style=\"display:hidden\" id='"+parsedData.msg[i].fieldName+"_previewImg' src='' value=''></a>");
+		$("#pop_bodyNew .modal-body #"+parsedData.msg[i].fieldName+"_tab_table").append("<a style=\"display:hidden\" id='"+parsedData.msg[i].fieldName+"_previewLink' src='' value=''></a>");
+		}
+		for(var k=0;k<txtFileNameArr.length;k++)
+		{
+			if(txtFileNameArr[k]==parsedData.msg[i].fieldName)
+			{
+				// console.log(txtFileNameArr[k]+"::file
+				// path::"+parsedData.msg[i].fieldName+":::"+txtFilePathArr[k]);
+				var target=parsedData.msg[i].fieldName+'_target';
+				var preview=parsedData.msg[i].fieldName+'_previewImg';
+				var cropButt=parsedData.msg[i].fieldName+'_cropButt';
+				var previewLink=parsedData.msg[i].fieldName+'_previewLink';
+				var field3=parsedData.msg[i].fieldName+'_previewLink';
+				var field2=parsedData.msg[i].fieldName+'_previewImg';
+				
+					uploadedPath=txtfilePathEditArr[k];
+				
+				if(parsedData.msg[i].fieldType.toLowerCase()=='image')
+				{  
+					if(txtfilePathEditArr[k]!=null && txtFilePathArr[k].indexOf("/EFormsServeImage")==-1 && txtfilePathEditArr[k]!=''){
+						previewLink = txtfilePathEditArr[k]+'?v='+Math.random();
+						 document.getElementById(field2).src=txtfilePathEditArr[k]+'?v='+Math.random();
+					}
+					else{
+						previewLink = txtfilePathEditArr[k] +"&sessChk="+$("#sessChk").val()
+						 document.getElementById(field2).src=txtfilePathEditArr[k]
+						// +"&sessChk="+$("#sessChk").val()
+					}
+				}
+				else{ 
+					var span = document.getElementById(field3);
+					document.getElementById(field2).style.display="none";
+					document.getElementById(field3).style.display="";
+					while( span.firstChild ) {
+						span.removeChild( span.firstChild );
+					}
+					 if( txtfilePathEditArr[k]!=null && txtfilePathEditArr[k]!='' && txtfilePathEditArr[k]!=' ' && !(txtfilePathEditArr[k].includes('null'))) {
+					
+					var tempDiv = document.createElement('div');
+					// tempDiv.setAttribute('vertical-align', 'middle');
+					tempDiv.innerHTML = "<a href='"+txtfilePathEditArr[k]+"' target='_blank' data-staticKey=\"Click Here to Download\">Click Here to Download</a>";
+					span.appendChild( tempDiv );
+					 }
+				}
+					if(parsedData.msg[i].isFileDeletionRequired.toLowerCase()=='y'){
+					if(uploadedPath!=null && uploadedPath!="" && uploadedPath!=' ' && !(uploadedPath.includes('null'))){
+						$('#'+parsedData.msg[i].fieldName+'_success').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>');
+					}
+					}
+				if(parsedData.msg[i].crop.toLowerCase()=='y')
+				{
+					document.getElementById(target).src=previewLink;
+					document.getElementById(cropButt).style.display='';
+				}
+			}
+		} 
+		if(cont==true) {
+	   		// $("#pop_bodyNew").css('display','none');
+	 		var a= $("#pop_bodyNew").html();
+	 		$(ComponentDivId).html(a);
+	 	 }
+		
+		if(firstChk=='true'){// only for first dropzone
+			var fieldName = parsedData.msg[i].fieldName;
+			var crop = parsedData.msg[i].crop;
+			var fieldType = parsedData.msg[i].fieldType;
+			populateNewDropZone(parsedData.msg[i].fieldName,parsedData.msg[i].validation,parsedData.msg[i].crop,parsedData.msg[i].fieldType,previewLink,previewLinkDoc);
+		firstChk='false';
+		}
+		
+		
+}
+	//load responsive drop down
+	
+	/*if(typeof $('.selectpicker').selectpicker=='undefined'){
+		 // the plugin is not loaded => load it:
+	    jQuery.getScript('/EForms/js/onlineAppForm/bootstrap-select.js');
+	   // setTimeout(3000);
+	    setTimeout(function() {
+	    	$('.selectpicker').selectpicker();
+	    	$('#tabsDropdownForMobile .selectpicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+	    	    var selected = $(e.currentTarget).val();
+	    	    var uploadArray=selected.split('-@@-ion-@@-');
+	    	  //alert(selected+'$$'+clickedIndex+'$$'+newValue+'$$'+oldValue);
+	    	  populateNewDropZone(uploadArray[0],uploadArray[1],uploadArray[2],uploadArray[3],previewLink,previewLinkDoc);
+	    	});
+	    	},3000);
+	}*/
+	$('.selectpicker').selectpicker('refresh');
+	bindChangeEventWithSelectPicker();
+	
+	if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y")
+		multilingualFormStaticValue("Image Upload"); 
+	
+	 if(typeof window.imageUploadNewCommonFunctionFrameworkAfterAjaxCall == 'function') {
+			
+		 imageUploadNewCommonFunctionFrameworkAfterAjaxCall();
+		   }
+}
+function bindChangeEventWithSelectPicker(){
+	$('#docuploadtypeid').change(function () {
+	    var selected=$(this).val();
+	    var uploadArray=selected.split('-@@-ion-@@-');
+	    var previewLink = "";
+	    var previewLinkDoc = "";
+	    //txtPhotoPath-@@-ion-@@-mandatory,80,[jpg:jpeg:pjpeg]-@@-ion-@@-Y-@@-ion-@@-image"
+	  /*  if(uploadArray[3]=='image'){
+	    	 previewLink = $('#'+uploadArray[0]+'_previewLink').src;
+	    	 previewLinkDoc = "";
+	    }
+	    else{
+	    	previewLink = "";
+	   	 previewLinkDoc = $('#'+uploadArray[0]+'_previewLinkDoc').src;
+	    }*/
+	   
+	    //alert(selected+'$$'+clickedIndex+'$$'+newValue+'$$'+oldValue);
+	    populateNewDropZone(uploadArray[0],uploadArray[1],uploadArray[2],uploadArray[3],previewLink,previewLinkDoc);
+	});
+}
+
+
+/*$(document).on('change','#tabsDropdownForMobile> select.selectpicker', function () {
+    var selected = $(this).val();
+    var uploadArray=selected.split('-@@-ion-@@-');
+  //alert(selected+'$$'+clickedIndex+'$$'+newValue+'$$'+oldValue);
+	var field2=uploadArray[0]+'_previewImg';
+
+  populateNewDropZone(uploadArray[0],uploadArray[1],uploadArray[2],uploadArray[3],previewLink,previewLinkDoc);
+});*/
+/*
+ * $(document).on('click','.submit_btn',function(){ $(this).hide();
+ * $('.cropimage').slideToggle(); $('.crop_btn').show();
+ * 
+ * $(function () { var $image = $('_target');
+ * 
+ * $image.cropper({ background:false, scalable:false, zoomable:false,
+ * autoCropArea:0.5, aspectRatio:1, checkOrientation:false }); });
+ * 
+ * 
+ * 
+ * 
+ * 
+ * });
+ */
+/*$(document).ready(function(){
+	$('.selectpicker').selectpicker();
+	$('#tabsDropdownForMobile .selectpicker').on('changed.bs.select', function (e, clickedIndex, newValue, oldValue) {
+	    var selected = $(e.currentTarget).val();
+	  alert(selected+'$$'+clickedIndex+'$$'+newValue+'$$'+oldValue);
+	  populateNewDropZone(parsedData.msg[i].fieldName,parsedData.msg[i].validation,parsedData.msg[i].crop,parsedData.msg[i].fieldType,previewLink,previewLinkDoc);
+	});
+});*/
+
+function fnCropNewResponsive(fieldname,crop,fieldType){
+if(typeof window.fnCropNewResponsiveFrameworkBeforeAjaxCall == 'function') {
+		
+	fnCropNewResponsiveFrameworkBeforeAjaxCall(fieldname,crop,fieldType);
+	   }
+	$('#'+fieldname+'_cropButt').hide();
+	$('#'+fieldname+'_cropimage').slideToggle();// .cropimage
+	$('#'+fieldname+'_cropSubmitNew').show();
+	
+/*		if(!jQuery().cropper) {
+		    // the plugin is not loaded => load it:
+		    jQuery.getScript('/EForms/js/onlineAppForm/cropper.min.js');// the
+																		// plugin
+																		// is
+																		// now
+																		// loaded
+																		// =>
+																		// use
+																		// it
+		   // setTimeout(3000);
+		    setTimeout(function() {
+		    	   var $image = $('#'+fieldname+'_target');
+		    	      $image.cropper({
+		    	        background:false,
+		    			scalable:false,
+		    			zoomable:false,
+		    			autoCropArea:0.5,
+		    			aspectRatio:1,
+		    			checkOrientation:false
+		    			
+		    	      });
+		    	},3000);
+		}
+	*/
+	  $(function () { var $image = $('#'+fieldname+'_target');
+	  
+	  $image.cropper({ background:true, scalable:false, zoomable:false,
+	  autoCropArea:0.5, aspectRatio:1, checkOrientation:false }); });
+	  p=$('#'+fieldname+'_target').attr("src");
+	  $('#'+fieldname+'-upload-zone .cropper-view-box img').attr("src",p);
+	  $('#'+fieldname+'-upload-zone .cropper-canvas img').attr("src",p)
+	  
+	  if(typeof window.fnCropNewResponsiveFrameworkAfterAjaxCall == 'function') {
+        			
+		  fnCropNewResponsiveFrameworkAfterAjaxCall();
+        		   }
+	  
+}
+function fnCropNewResponsiveSubmit(fieldname,id){
+	
+if(typeof window.fnCropNewResponsiveSubmitFrameworkBeforeAjaxCall == 'function') {
+		
+	fnCropNewResponsiveSubmitFrameworkBeforeAjaxCall(fieldname,id);
+	   }
+	
+	var e= $('#'+fieldname+'_target').cropper('getData',true);
+	   
+	        	var entityId ="";
+	        	if(document.getElementById("entityId").value != null){
+	        		entityId = document.getElementById("entityId").value;
+
+	        	} else {
+	        		entityId = document.getElementById("entity_Id").value;
+	        	}
+	        	var orgId=document.getElementById('orgId').value;
+	        	var formId=document.getElementById("formId").value;
+	        	var xval='crop'+id+'_x'; var yval='crop'+id+'_y'; var heightval='crop'+id+'_height'; var widthval='crop'+id+'_width';
+	        	var x=e.x; var y=e.y; var height=e.height; var width=e.height;
+	        	// alert("x:"+x+"&y:"+y+"&h:"+height+"&w:"+width);
+	        	var path= $('#'+fieldname+'_target').attr('src');
+
+	        	/*
+				 * $('#'+name+'_previewImg').removeAttr('height');
+				 * $('#'+name+'_previewImg').removeAttr('width'); var
+				 * h1=$('#'+name+'_previewImg').height(); var
+				 * w1=$('#'+name+'_previewImg').width();
+				 */
+
+	        	// var h=$('#'+fieldname+'_target').height();
+	        	// var w=$('#'+fieldname+'_target').width();
+
+
+	        	// $('#'+fieldname+'_previewImg').attr('height','120px');
+	        	// $('#'+fieldname+'_previewImg').attr('width','120px');
+
+	        	// var heightRatio=h1/h;
+	        	// var widthRatio=w1/w;
+
+	        	// console.log('heightRatio::'+heightRatio);
+	        	// console.log('widthRatio::'+widthRatio);
+	        	if(path.indexOf('?v=')>-1)
+	        	{	path=path.substring(0,path.indexOf('?v='));  }
+	        	/*
+				 * var x=document.getElementById(xval).value; var
+				 * y=document.getElementById(yval).value; var
+				 * height=document.getElementById(heightval).value; var
+				 * width=document.getElementById(widthval).value;
+				 */
+	        	// console.log(path+'::'+x+'::'+y+'::'+height+'::'+width);
+	        	// x=parseInt(x*widthRatio);
+	        	// y=parseInt(y*heightRatio);
+
+	        	// height=parseInt(height*heightRatio);
+	        	// width=parseInt(width*widthRatio);
+	        	if(x==0 && y==0)
+	        	{
+	        		var temp = document.createElement('span');
+        			temp.innerHTML = $('#imageUploadAlert1').text();
+	        		alert(temp.innerHTML);
+	        		return false;
+	        	}
+	        	// path=path.replace('/EForms','//Online/EForms');
+	        	// console.log(path+'::'+x+'::'+y+'::'+height+'::'+width);
+	        	var sessChk=$("#sessChk").val();
+	        	var isAdminEdit=$("#isAdminEdit").val();
+
+	        	var param='path='+path+'&x='+x+'&y='+y+'&height='+height+'&width='+width+'&subAction=crop&orgId='+orgId+'&formId='+formId+'&entityId='+entityId+'&sessChk='+sessChk+'&isAdminEdit='+isAdminEdit+'&fieldName='+fieldname;
+
+	        	$.post( "/EForms/ImageFileUpload", param)
+	        	.done(function( data ) {
+	        		if(data.msg.toLowerCase()=='success')
+	        		{ 
+	        			/*
+						 * if(data.ecVal !=null && data.ecVal!="" &&
+						 * data.isSecure!=null && data.isSecure=='Y'){
+						 * 
+						 * setFilePath(fieldname,data.relativeImagePath,data.path);
+						 * document.getElementById(name+'_previewImg').src=path+"&ecVal="
+						 * +data.ecVal+"&sessChk="+$("#sessChk").val(); } else{
+						 * setFilePath(name,data.relativeImagePath,path);
+						 */	$('#'+fieldname+'_previewImg').val(path+'?v='+data.ts);
+						 $('#'+fieldname+'_target').attr("src",path+"?v="+data.ts);
+						 setImagePathsInViewPage(fieldname,path+"?v="+data.ts);
+	        		// }
+
+	        			// document.getElementById(name+'_target').src=path+'?v='+data.ts;
+	        			// document.getElementById(fieldname+'_success').innerHTML='Photo
+						// cropped successfully.';
+	        			$('#'+fieldname+'_success').html('<p data-staticKey="Photo cropped successfully.">Photo cropped successfully.</p>'); 
+	        			$('#'+fieldname+'_success').css({"color":"green","font-weight":"bold"});
+	        			/*
+						 * document.getElementById(fieldname+'_error').innerHTML="";
+						 * document.getElementById(fieldname+'_error').style.display='none';
+						 */
+	        			// document.getElementById(xval).value='';
+	        			// document.getElementById(yval).value='';
+	        			// document.getElementById(heightval).value='';
+	        			// document.getElementById(widthval).value='';
+	        			var newDropzone = Dropzone.forElement('#'+fieldname+'-upload-zone');
+		        		var mockFile = { name: "CroppedFile", size: 12345 };
+		        		newDropzone.removeAllFiles();
+		        		$('#'+fieldname+'-upload-zone .dz-image-preview').remove();
+		        		newDropzone.options.addedfile.call(newDropzone, mockFile);
+		        		newDropzone.options.thumbnail.call(newDropzone, mockFile,$('#'+fieldname+'_target').attr("src"));
+		        		$('.dz-image > img').css({"height":"100%","width":"100%"});
+		        		  //mockFile.previewElement.classList.add('dz-success');
+		        		  //mockFile.previewElement.classList.add('dz-complete');
+		        		
+
+	        		}else{
+	        			/*
+						 * document.getElementById(fieldname+'_success').innerHTML="";
+						 * document.getElementById(fieldname+'_success').style.display='none';
+						 * document.getElementById(fieldname+'_error').innerHTML='Error
+						 * occured while cropping photo';
+						 */
+	        			var msg = "";
+	        			if(data.msg.toLowerCase()!='failure') msg = data.msg.toLowerCase();
+	        			if(msg == "")
+	        			$('#'+fieldname+'_success').html('<p data-staticKey="Error occured while cropping photo">Error occured while cropping photo</p>');
+	        			else $('#'+fieldname+'_success').html('<p data-staticKey="Image is getting corrupted while cropping">'+msg+'</p>'); 
+	        			$('#'+fieldname+'_success').css({"color":"red","font-weight":"bold"});
+	        		}
+
+	        		document.getElementById(fieldname+'_cropimage').style.display='none';
+	        		$('#'+fieldname+'_cropSubmitNew').css({"display":"none"});
+	        		$('#'+fieldname+'_cropButt').css({"display":""});
+	        		if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y")
+	        			multilingualFormStaticValue("Image Upload");//You have to remove this and write a better function.
+	        		
+	        	});
+	        	$('#'+fieldname+'_target').cropper('destroy');
+	        	
+	        	if(typeof window.fnCropNewResponsiveSubmitFrameworkAfterAjaxCall == 'function') {
+        			
+	     		   fnCropNewResponsiveSubmitFrameworkAfterAjaxCall();
+	             		   }
+}
+
+function deleteUploadedFile(){
+	var formId=document.getElementById("formId").value;
+	var orgId=document.getElementById("orgId").value;
+	var entityId="";
+	var isAdminEdit="";
+	if(document.getElementById("isAdminEdit")!=null)
+		isAdminEdit=document.getElementById("isAdminEdit").value;
+	if(document.getElementById("entityId")!=null)
+		entityId=document.getElementById("entityId").value;
+	var imageUploadInViewPage="";
+	if(document.getElementById("imageUploadInViewPage")!=null)
+		imageUploadInViewPage=document.getElementById("imageUploadInViewPage").value;
+	if(document.getElementById("token_img")!=null)
+		token_img=document.getElementById("token_img").value;
+	var fieldName="";
+	if(document.getElementById('fieldName')!=null)
+	 fieldName=document.getElementById('fieldName').value;
+	 $.ajax({ 
+         type: "POST",
+         url: "/EForms/ImageFileUpload",
+         data: {
+          	subAction: "deleteUploadedFile",
+          	path: uploadedPath,
+          	formId: formId,
+          	orgId: orgId,
+          	entityId:entityId,
+          	imageUploadInViewPage:imageUploadInViewPage,
+          	fieldName: fieldName,
+          	token_img: token_img,
+          	//isAdminEdit: isAdminEdit,
+             },
+         dataType: "text",
+         success: function(result)
+         {
+        	// alert(result);
+        	 
+        	 var JSONObject=JSON.parse(result);
+        	 /*if(JSONObject.txtFilePathEdit=="Y")
+        		 {*/
+        		 //if(document.getElementById('txtFilePath').value.includes(uploadedPath.split("image/")[1]))
+        			// document.getElementById('txtFilePath').value=" ";
+        		 
+        		 
+        		 var txtFilePathEdit=document.getElementById('txtFilePathEdit').value;
+        		 var txtFilePathEditArr=txtFilePathEdit.split("||");
+        		 for(var i=0;i<txtFilePathEditArr.length;i++){
+        			 if(txtFilePathEditArr[i].includes(uploadedPath.split("image/")[1])){
+        			 txtFilePathEditArr[i]=" ";
+        			 break;
+        			 }}
+        			 txtFilePathEdit="";
+        			 for(var i=0; i<txtFilePathEditArr.length;i++){
+        			 if(txtFilePathEdit=="")
+        			 txtFilePathEdit=(txtFilePathEditArr[i]);
+        			 else
+        			 txtFilePathEdit=txtFilePathEdit+"||"+(txtFilePathEditArr[i]);}
+        			 document.getElementById('txtFilePathEdit').value=txtFilePathEdit;
+        			 
+        			 
+        			 var txtFilePath=document.getElementById('txtFilePath').value;
+            		 var txtFilePathArr=txtFilePath.split("||");
+            		 for(var i=0;i<txtFilePathArr.length;i++){
+            			 if(txtFilePathArr[i].includes(uploadedPath.split("image/")[1])){
+            			 txtFilePathArr[i]=" ";
+            			 break;
+            			 }}
+            			 txtFilePath="";
+            			 for(var i=0; i<txtFilePathArr.length;i++){
+            			 if(txtFilePath=="")
+            			 txtFilePath=(txtFilePathArr[i]);
+            			 else
+            			 txtFilePath=txtFilePath+"||"+(txtFilePathArr[i]);}
+            			 document.getElementById('txtFilePath').value=txtFilePath;
+        			 
+        		// }
+        	 if(JSONObject.msg.toLowerCase()=='success')
+        		{
+        		 if(JSONObject.validationFlag=='N'){
+        			 $('#'+fieldName+'_success').html('<p>'+JSONObject.errormsg+'</p>');
+        			 $('#'+fieldName+'_success').css({"color":"red","font-weight":"bold"});
+        		 }
+        		 else{
+        		 document.getElementById("token_img").value=JSONObject.secToken;
+        			$('#'+fieldName+'_success').html('<p data-staticKey="File Deleted successfully">File Deleted successfully</p>');
+        			$('#'+fieldName+'_success').css({"color":"green","font-weight":"bold"});
+        			if(document.getElementById(fieldName+"_cropButt")!=null)
+    					document.getElementById(fieldName+"_cropButt").style.display="none";
+        			if(document.getElementById(fieldName+"_previewLink")!=null)
+                        document.getElementById(fieldName+"_previewLink").style.display="none";
+        			if(myDropzone!=undefined && myDropzone!=null && myDropzone!=""){
+        				myDropzone.removeAllFiles();
+        				localStorage.setItem("DeletedFile_"+fieldName,true);	
+						var tempz="<div class='dz-default dz-message' style='position: absolute; left: 0px; right: 0px; display: block;'><span><span class='deboss' data-statickey='Drag and Drop File Here'>Drag and Drop File Here</span>/ <span class='dz-clickable' id='browsebtn' data-statickey='Browse'>Browse</span></span></div>";
+						if(document.getElementById(fieldName+"-upload-zone")!=null)
+						   document.getElementById(fieldName+"-upload-zone").innerHTML=tempz;
+					   
+					   
+        			}
+        			else{
+        				if(document.getElementById(fieldName+"_previewImg")!=null)
+        					document.getElementById(fieldName+"_previewImg").style.display="none";
+        				if(document.getElementById(fieldName)!=null){
+        					document.getElementById(fieldName).type="";
+        					document.getElementById(fieldName).type="file";
+        				}
+        			}
+        		}
+        		}
+        	 else
+        		 alert("Unable to delete the file");
+         },
+         error: function(x, e)
+         {
+              alert(x.readyState + " "+ x.status +" "+ e.msg);   
+         }
+      });
+}
+
+/*var check=false;*/
+function newPopupModal(parsedData,tokenData){
+/*	$( "[onclick*='openImagePopUpWithIdentifierNew']" ).attr({
+    	'data-toggle': "modal",
+    	'data-target': "#myModal1"
+    	   	}); */ 
+	//document.getElementById('imageuploadwithmodal').setAttribute("src","/EForms/html/form53166/mysample.html");
+//	document.getElementById("imageuploadwithmodal").style="float:bottom";
+	//document.getElementById("imageuploadwithmodal").style.display="";
+	/*if(!check){*/
+	var secToken="";
+	if(tokenData=="")
+	{
+	secToken=parsedData.secToken;
+	}
+else
+	{
+	secToken=tokenData.secToken;
+	}
+
+document.getElementById("token_img").value=secToken;
+	   	var label = document.createElement("label");               
+		var textnode = document.createTextNode(parsedData.msg[0].htmlName);        
+		label.appendChild(textnode);   
+		
+		var tempDiv = document.createElement('input');
+		tempDiv.setAttribute('type', 'hidden');
+		tempDiv.setAttribute('name', 'txtFilePathForModal');
+		tempDiv.setAttribute('id', 'txtFilePathForModal');
+		tempDiv.setAttribute('value', '');
+		tempDiv.setAttribute('oncopy', 'return false');
+		tempDiv.setAttribute('onpaste', 'return false');
+		window.parent.document.getElementsByName("onlineAppForm")[0].appendChild(tempDiv);
+		tempDiv="";
+		tempDiv = document.createElement('input');
+		tempDiv.setAttribute('type', 'hidden');
+		tempDiv.setAttribute('name', 'txtFileNameForModal');
+		tempDiv.setAttribute('id', 'txtFileNameForModal');
+		tempDiv.setAttribute('value', '');
+		tempDiv.setAttribute('oncopy', 'return false');
+		tempDiv.setAttribute('onpaste', 'return false');
+		window.parent.document.getElementsByName("onlineAppForm")[0].appendChild(tempDiv);
+		tempDiv="";
+		tempDiv = document.createElement('input');
+		tempDiv.setAttribute('type', 'hidden');
+		tempDiv.setAttribute('name', 'txtFilePathEditForModal');
+		tempDiv.setAttribute('id', 'txtFilePathEditForModal');
+		tempDiv.setAttribute('value', '');
+		tempDiv.setAttribute('oncopy', 'return false');
+		tempDiv.setAttribute('onpaste', 'return false');
+		window.parent.document.getElementsByName("onlineAppForm")[0].appendChild(tempDiv);
+		if(document.getElementById('setUpHeader')==null)
+			document.getElementById('imageuploadwithmodal').contentWindow.document.getElementById('setUpHeader').appendChild(label);
+			
+		//check=true;
+	//}
+}
+var uploadwindow=0;
+function openiFrame(formId,popupFieldIdentifier){
+	jQuery('.overlayBG').css("display","block");
+	jQuery('#popupGrid1').css({'display':'block','position':'absolute','top':'0px'});
+	document.getElementById('imageuploadwithmodal').setAttribute("src","/EForms/html/form53166/mysample.html");
+	//window.parent.document.getElementById('frame1').setAttribute("scrolling","no");
+	document.getElementById("imageuploadwithmodal").style="float:bottom";
+	document.getElementById("imageuploadwithmodal").style.display="";
+	jQuery('html').css('overflow','hidden');
+	
+	 openImagePopUpWithIdentifierNew(formId,popupFieldIdentifier);
+}
+
+function closeiFrame(){
+	this.parent.$("#popupGrid1").css("display","none");
+	this.parent.$('.overlayBG').css("display","none");
+	//this.parent.$('#imageuploadwithmodal').setAttribute("src","");
+}
+
+
+function hello(){
+	alert("hello!!");
+}
+function imageapi()
+{
+	var actions = "imageapi";
+	if(document.getElementById("uploadimage").files != null )
+ 	{
+		paramsimages	= document.getElementById("uploadimage").files;
+		for (var i = 0; i < paramsimages.length; i++)
+		{
+		 alert(paramsimages[i].name);
+		}
+ 		check = true;
+ 		
+ 	}
+	else
+ 	{
+ 		alert("Please provide the images");check = false;return false;
+ 	}
+	if(check == true){
+		  var formData = new FormData();
+		  /* formData.append("action",actions ); */
+		    var fileSelect = document.getElementById("uploadimage");
+		    if(fileSelect.files && fileSelect.files.length > 0){
+		    	for (var i = 0; i < fileSelect.files.length; i++)
+		    		{
+		     var filenum = fileSelect.files[i]
+		     formData.append("file"+(i+1), filenum );
+		    		}
+		    }
+
+		  
+		    var request = new XMLHttpRequest();
+		    request.open('POST', "/EForms/TestPGAPI?action="+actions);
+		    request.send(formData); 			
+	}
+
+	
+}
+
+function uploadNew(fieldname,validation,crop,fieldType){
+	var entityId ="";
+	if(window.parent.document.getElementById("entityId") != null){
+		entityId = window.parent.document.getElementById("entityId").value;
+
+	} else {
+		entityId = window.parent.document.getElementById("entity_Id").value;
+	}
+	var orgId=window.parent.document.getElementById('orgId').value;
+	var formId=window.parent.document.getElementById("formId").value;
+	var fileNameUploaded= window.parent.document.getElementById("txtFileName").value;
+	var fileNameUploadedArr=[];
+	fileNameUploadedArr = fileNameUploaded.split("||");
+	var existField="";
+	/*if(fileNameUploadedArr!=null && fileNameUploadedArr.length>0)
+	{
+		for(i=0;i<fileNameUploadedArr.length;i++)
+		{
+			if(fileNameUploadedArr[i]==fieldname)
+				existField="Y";
+		}if(existField=="Y")
+		{
+			var temp = document.createElement('span');
+			temp.innerHTML = $('#imageUploadAlert5').text();
+			if(!confirm(temp.innerHTML))
+				return false;
+		}
+	}*/
+	var size="80";
+	var minsize="0";
+	var validationArr=validation.split(",");
+	if(validationArr.length>1)
+	{ size=validationArr[1]; }
+	if(validationArr.length==4)
+		{ minsize=validationArr[3];}
+	var button="";
+	if(uploadwindow==0)
+		button="uploadimage5";
+	else
+		button="uploadimage7"
+	if(GetFileSize(button,size) && GetFileSizeMin(button,minsize))
+	{
+		var field=fieldname+"_error";
+		//document.getElementById(field).innerHTML="";
+
+		var http_request=fnGetXMLHttpObject();
+
+		var file = document.getElementById(button);
+		console.log("The File"+file);
+		var entity_id=window.parent.document.getElementById("entityId").value;
+
+		if(typeof FormData == "undefined"){
+			ajaxFileUpload(fieldname,validation,crop,fieldType);
+		}else{
+			/* Add the file */ 
+			var token_img=window.parent.document.getElementById("token_img").value;//"adAdM9PYud77FL8MJ75cN0MHgfkapp64L10qZy1xLLs=";//$("#token_img").val(); //token_img = "A61IMCs92Anpa5UXudD+W4Pk7MPUQUhJsfcEVB0y3Ao="
+
+			var formData = new FormData();
+			console.log("formData"+formData);
+			formData.append(fieldname , file.files[0]);
+			formData.append("validation" , validation);
+			formData.append("entity_id" , entity_id);   
+			formData.append("fileName" , fieldname);
+			//formData.append("token_img" , token_img);
+			console.log("formData++"+formData);
+			var client = new XMLHttpRequest();
+			var pValidationServlet = ""; 
+			var chksum="";
+			var imgChkSum=window.parent.document.getElementById("imgChkSum").value;//"IgRYp85qgPjm6VA7%2BpxT5zBoF8llndiXBbUYMrlUszk%3D";//document.getElementById("imgChkSum").value; //imgChkSum = "t%2F6I7Ip%2B%2B2tLHTewOOhXdvELirkzG5CCnFqsNMuRJ%2BI%3D" "t%2F6I7Ip%2B%2B2tLHTewOOhXdvELirkzG5CCnFqsNMuRJ%2BI%3D"value="IgRYp85qgPjm6VA7%2BpxT5zBoF8llndiXBbUYMrlUszk%3D"
+			if(document.getElementById('checksum')!=null)
+			{
+				chksum="&checkSum="+document.getElementById('checksum').value;
+			}
+			var sessChk="";//$("#sessChk").val();
+			var isAdminEdit="N";//$("#isAdminEdit").val();
+			
+			pValidationServlet = "/EForms/ImageFileUpload?imgChkSum="+imgChkSum+"&fieldName="+fieldname+chksum+"&orgId="+orgId+"&formId="+formId+"&entityId="+entityId+"&sessChk="+sessChk+"&isAdminEdit="+isAdminEdit+"&token_img="+encodeURIComponent(token_img); 
+			client.open("post", pValidationServlet, true);
+			client.onreadystatechange = function() { fnGetUploadRespRawForNewUplaod(client,fieldname,crop,fieldType) }; 
+console.log("Sending data in request")	;		
+			client.send(formData);  /* Send to server */ 
+		}
+
+	}
+}
+
+function fnGetUploadRespRawForNewUplaod(client,fieldname,crop,fieldType){
+	if(client.readyState == 4){
+		if (client.status == 200){
+			if(client.responseText != null){
+				fnGetUploadRespNewUpload(fieldname,crop,fieldType,client.responseText);
+			}
+		}
+	}
+}
+
+function fnGetUploadRespNewUpload(fieldname,crop,fieldType,rawResp){
+	var obj=JSON.parse(rawResp);
+	var isAdminEdit="";
+	if(window.parent.document.getElementById("isAdminEdit")!=null)
+		isAdminEdit=window.parent.document.getElementById("isAdminEdit").value;
+	uploadwindow++;
+	var imageUploadInViewPage="";
+	if(document.getElementById("imageUploadInViewPage")!=null)
+		imageUploadInViewPage=window.parent.document.getElementById("imageUploadInViewPage").value;
+	//document.getElementById(fieldname+'_uploadSpan').style.display='';
+	//document.getElementById(fieldname+'_loaderSpan').style.display='none';
+	uploadedPath=obj.path==null?"":obj.path;
+	if(obj.validationFlag=='N')
+	{
+		/*field1=fieldname+'_error';
+		if($('#isFormMultilingualRequired').val()!=null && $('#isFormMultilingualRequired').val() == "Y"){
+			var message = obj.msg;
+			if($('[data-staticKey="'+message+'"]').length>0)
+				document.getElementById(field1).innerHTML=$('[data-staticKey="'+message+'"]').text();
+			else
+				document.getElementById(field1).innerHTML=obj.msg;
+			
+		}else
+		document.getElementById(field1).innerHTML=obj.msg;
+		*/
+		window.parent.document.getElementById("token_img").value=obj.secToken;
+	}else
+	{
+		//var field1=fieldname+'_success';
+		//var field2=fieldname+'_previewImg';
+		//var field3=fieldname+'_previewLink';
+		/*var field5=fieldname+'_delete';
+		$('#'+fieldname+'_delete').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a><a href="javascript: deleteUploadedFile();" data-staticKey="Delete"><u>Delete Uploaded File</u></a><br>');
+		*/
+		if(obj.successMessage==''){/*
+			if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y"))
+				window.parent.document.getElementById(field1).innerHTML='<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a><br><p data-staticKey="File uploaded successfully">File uploaded successfully</p>';
+			else
+				window.parent.document.getElementById(field1).innerHTML='<p data-staticKey="File uploaded successfully">File uploaded successfully</p>';
+		*/}
+		else
+		{/*
+			if(obj.successMessage.length>150){
+				if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y")){
+				$('#'+fieldname+'_success').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>'); 
+				$('#'+fieldname+'_success').append(obj.successMessage.substring(0, 150)+'<a href="#">......</a>').attr("title",obj.successMessage.substring(3,obj.successMessage.length-5)); 
+					}
+				else
+					{
+					$('#'+fieldname+'_success').html(obj.successMessage.substring(0, 150)+'<a href="#">......</a>').attr("title",obj.successMessage.substring(3,obj.successMessage.length-5)); 
+					}
+				}
+			else{
+				if(localStorage.getItem("isFileDeletionRequired_"+fieldname)=="Y" && (isAdminEdit=="Y" || imageUploadInViewPage=="Y")){
+				$('#'+fieldname+'_success').html('<a href="javascript: deleteUploadedFile();" data-staticKey="Delete">Delete</a>'); 
+				$('#'+fieldname+'_success').append(obj.successMessage); 
+				}
+				else
+					$('#'+fieldname+'_success').html(obj.successMessage); 
+				}
+		*/} 
+		document.getElementById('bg2').src=obj.path;
+		var id="img"+uploadwindow;
+		var photoname="photo"+uploadwindow;
+		var contid="imgcont"+uploadwindow;
+		document.getElementById(id).src=obj.path;
+		var tempDiv = document.createElement('div');
+		tempDiv.setAttribute('class', "client-overlay ");
+		tempDiv.setAttribute('onclick', "changeImage('"+obj.path+"')");
+		var span = document.getElementById(contid);
+		span.appendChild(tempDiv);
+		if(uploadwindow>=5){
+			$('#first3').removeClass();
+			$('#first2').removeClass();
+		}
+		/*if(fieldType.toLowerCase()=='image')
+
+		{  
+			document.getElementById(field2).style.display="";
+			//document.getElementById(field5).style.display="";
+			document.getElementById(field3).style.display="none";		 
+			document.getElementById(field2).src=obj.path;  
+		}*/
+	/*	else{ 
+			var span = document.getElementById(field3);
+			document.getElementById(field2).style.display="none";
+			document.getElementById(field3).style.display="";
+			//document.getElementById(field5).style.display="";
+			while( span.firstChild ) {
+				span.removeChild( span.firstChild );
+			}
+			var tempDiv = document.createElement('div');
+			tempDiv.setAttribute('style', 'display:inline');
+			//tempDiv.innerHTML = "<a href='"+obj.path+"' target='_blank'>Click Here to Download</a>";
+			var temp1 = document.createElement('span');
+  			temp1.innerHTML = $('#browseMessage3').text();
+			tempDiv.innerHTML = "<a href='"+obj.path+"' target='_blank' data-staticKey=\"Click Here to Download\">"+temp1.innerHTML+"</a>";
+			span.appendChild( tempDiv );
+		}*/
+		if(obj.ecVal !=null && obj.ecVal!="" && obj.isSecure!=null && obj.isSecure=='Y')
+			setFilePathNew(photoname,obj.relativeImagePath,obj.path);
+		else if(obj.ts !=null && obj.ts!="" && obj.isSecure!=null && obj.isSecure=='Y'){
+			//$("#previewImgTs").val(obj.ts);
+			setFilePathNew(photoname,obj.relativeImagePath,obj.path);
+		}else
+			setFilePathNew(photoname,obj.relativeImagePath,obj.path);
+
+		var mandChk=window.parent.document.getElementById('imgMandChk').value;
+		var mandChkArr=mandChk.split("||");
+		var newMandArr="";
+		for(var i=0;i<mandChkArr.length;i++)
+		{
+			if(mandChkArr[i]!='')
+			{
+				if(mandChkArr[i]==fieldname)
+				{  mandChkArr[i]=''; }
+				newMandArr=newMandArr+mandChkArr[i]+"||";
+			}
+		}
+		window.parent.document.getElementById('imgMandChk').value=newMandArr;
+		var chk=false;
+		var mandArr=newMandArr.split("||");
+		for(var i=0;i<mandArr.length;i++)
+		{
+			if(mandArr[i]!=''){ chk= false;}
+		}
+		/*if(chk==true)
+		{documenet.getElementById('txtPhotopath_hidden').value='Y';}
+		var span=document.getElementById(fieldname+"_success");
+		var tempDiv = document.createElement('input');
+		tempDiv.setAttribute('id', 'fieldName');
+		tempDiv.setAttribute('value',fieldname);
+		tempDiv.setAttribute('style','display:none');
+		span.appendChild(tempDiv);*/
+	}
+	if(obj.error!=null && obj.error=="sessionExpire"){
+		fnLogout(obj.msg);
+	}
+	/*if(crop.toLowerCase()=='y' && fieldType.toLowerCase()=='image')
+	{
+		var field3=fieldname+'_cropButt';
+		// var field4=fieldname+'_target';
+		document.getElementById(field3).style.display="inline";
+		// document.getElementById(field4).src=obj.path;
+	}*/
+	var secToken=obj.secToken;
+	window.parent.document.getElementById("token_img").value=secToken;
+
+	
+	
+}
+function setFilePathNew(fileName,filePath,fileWebUrl)
+{
+		var txtFileName=window.parent.document.getElementById('txtFileNameForModal').value;
+		var txtFilePath=window.parent.document.getElementById('txtFilePathForModal').value;
+		var txtFilePathEdit=window.parent.document.getElementById('txtFilePathEditForModal').value;
+
+	
+	var fileNameArr=txtFileName.split("||");
+	var filePathArr=txtFilePath.split("||");
+	var filePathEditArr=txtFilePathEdit.split("||");
+	var present='false';
+	var newTxtFileName="";
+	var newTxtFilePath="";
+	var newTxtFilePathEdit="";
+	for(var i=0;i<fileNameArr.length;i++)
+	{
+
+		if(fileNameArr[i]!=''){
+			if(fileNameArr[i]==(fileName))
+			{
+				present='true';
+				fileNameArr[i]=fileName;
+				filePathArr[i]=filePath;
+				filePathEditArr[i]=fileWebUrl;
+			}
+			newTxtFileName=newTxtFileName+fileNameArr[i]+"||";
+			newTxtFilePath=newTxtFilePath+filePathArr[i]+"||";
+			newTxtFilePathEdit=newTxtFilePathEdit+filePathEditArr[i]+"||";
+		}
+	}
+	if(present=='true')
+	{
+		txtFileName=newTxtFileName.substring(0,newTxtFileName.length-2);
+		txtFilePath=newTxtFilePath.substring(0,newTxtFilePath.length-2);
+		txtFilePathEdit=newTxtFilePathEdit.substring(0,newTxtFilePathEdit.length-2);
+
+	}else{
+		if(txtFileName=='' || txtFileName.substring(txtFileName.length-2,txtFileName.length)=='||')
+		{
+			txtFileName=txtFileName+fileName;
+		}else{
+			txtFileName=txtFileName+"||"+fileName;
+		}
+
+
+		if(txtFilePath=='' || txtFilePath.substring(txtFilePath.length-2,txtFilePath.length)=='||')
+		{
+			txtFilePath=txtFilePath+filePath;
+		}else{
+			txtFilePath=txtFilePath+"||"+filePath;
+		}
+		
+		if(txtFilePathEdit=='' || txtFilePathEdit.substring(txtFilePath.length-2,txtFilePath.length)=='||')
+		{
+			txtFilePathEdit=txtFilePathEdit+fileWebUrl;
+		}else{
+			txtFilePathEdit=txtFilePathEdit+"||"+fileWebUrl;
+		}
+
+	}
+	
+		window.parent.document.getElementById('txtFileNameForModal').value=txtFileName;
+		window.parent.document.getElementById('txtFilePathForModal').value=txtFilePath;
+		window.parent.document.getElementById('txtFilePathEditForModal').value=txtFilePathEdit;
+	
+
+}

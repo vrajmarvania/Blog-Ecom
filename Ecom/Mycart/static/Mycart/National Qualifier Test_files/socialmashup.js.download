@@ -1,0 +1,932 @@
+// j-query is required to use this JS
+window.iDH_form={
+	url:{
+		get:function(){
+			return "/iDH/com.tcs.iHUB.servlet/iHUB";
+		}
+	}
+};
+
+var isDynamicJSLoaded = false;
+
+var isRunningOnEnvDomain = true; // before code commite to env change this to true;
+
+var isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+
+
+var header = "Share on E-mail"; // if required create hidden fields for the same
+var content = "<div style='margin-bottom: 3%;'><input type='text' class='form-control' id='fName' placeholder = 'First Name'/></div>";
+	content += "<div style='margin-bottom: 3%;'><input type='text' class='form-control' id='lName' placeholder = 'Last Name'/></div>";
+    content+= "<div style='margin-bottom: 3%;'><input type='text' class='form-control' id='toEmail' placeholder = 'Email Id'/></div>";
+    content+= "<div class='alert alert-success postemailSuccess hide'><strong>Success!</strong> Link shared successfully.</div>";
+    content+= "<div class='alert alert-danger postemailFail hide'><strong>Failed!</strong> Link sharing failed.</div>"; 
+var strSubmitFunc = "shareonemail()";
+var btnText = "Share";
+var idMyModal = "shareonemaildiv";
+var idMyModalhorz = "shareonemaildivhorz";
+
+
+$(document).on("click",".opensharepopup",function(){
+	var shareurl = $(this).data("url");
+	$("#socialmediashare_path").remove();
+	$("#d11").remove();
+	/*$("#sharepath_twitter").remove();
+	$("#sharepath_fb").remove();
+	$("#sharepath_whatsapp").remove();*/
+	
+	var newTextBoxDiv1 = $(document.createElement('div')).attr("id", 'd11');
+	newTextBoxDiv1.after().html('<input type="hidden" name="socialmediashare_path" id="socialmediashare_path" value='+shareurl+' >');
+	newTextBoxDiv1.appendTo("body");
+	
+	sharesocialmediaoptioninpopup(idMyModalhorz);
+});
+
+function createhorizontalsocialsharing(){
+	var shareitem = $(".shareitem");
+	for(var i in shareitem){
+		if(i < shareitem.length){
+			var shareURL = shareitem[i].getAttribute("url");
+			shareitem[i].innerHTML = "<i class='fa fa-share-alt btn opensharepopup' style='color: #000000;font-size: 1em;' data-url="+shareURL+"></i>";
+		}
+	}
+	var modalDiv = document.createElement("div");
+	modalDiv.id = "shareonemaildivhorz";
+	$("body").prepend(modalDiv); 
+}
+
+function createverticalsocialsharing(){
+	var sharePathWhatsapp = document.getElementById("socialmediashare_path").value;
+	sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+	var newDiv = document.createElement("div");
+	newDiv.className  = "icon-bar";
+	/* newDiv.innerHTML  = '<a class="shareTile"><i class="fa fa-share-alt"></i></a>';*/
+	newDiv.innerHTML += '<a href="#" class="facebook" onclick="fbShare()"><i class="fa fa-facebook"></i></a>';
+	newDiv.innerHTML += '<a href="#" class="twitter" onclick="twitterShare()"><i class="fa fa-twitter"></i></a>';
+	newDiv.innerHTML += '<a href="#" class="google" onclick="launchModal()"><i class="fa fa-envelope"></i></a>';
+	newDiv.innerHTML += '<a href="#" class="linkedin" onclick="linkedInShare()"><i class="fa fa-linkedin"></i></a>';
+	newDiv.innerHTML += '<a href="whatsapp://send?text='+sharePathWhatsapp+'" class="whatsapp" ><i class="fa fa-whatsapp hidden-sm hidden-md hidden-lg"></i></a>';
+	newDiv.innerHTML += '<a href="sms://send?text='+sharePathWhatsapp+'" class="whatsapp" ><i class="fa fa-sms hidden-md hidden-lg"></i></a>'; //Comment this line post testing
+	
+	/*
+	if( isMobile.any() != null ){
+	var sharePathWhatsapp = document.getElementById("socialmediashare_path"); //create sharepath_fb field in html and give fb share url in that field
+	
+	if(sharePathWhatsapp == null){
+		
+		sharePathWhatsapp = "https://learning.tcsionhub.in";
+		
+	}else{
+		
+		sharePathWhatsapp = document.getElementById("socialmediashare_path").value;
+		sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+	}
+	newDiv.innerHTML += '<a href="whatsapp://send?text='+sharePathWhatsapp+'" class="whatsapp"><i class="fa fa-whatsapp"></i></a>'; 
+	} */
+	
+	$("body").append(newDiv); 
+	
+	$(".icon-bar").css({"position":"fixed","top":"50%","-webkit-transform":"translateY(-50%)","-ms-transform":"translateY(-50%)","transform":"translateY(-50%)"});
+	
+	$(".icon-bar a").css("display","block");
+	$(".icon-bar a").css("text-align","center");
+	$(".icon-bar a").css("padding","11px");
+	$(".icon-bar a").css("transition","all 0.3s ease");
+	$(".icon-bar a").css("color","white");
+	$(".icon-bar a").css("font-size","18px");
+	$(".icon-bar a:hover").css("background-color","#000");
+	
+	$(".shareTile").css({"display": "block","text-align": "center","padding": "11px","transition": "all 0.3s ease","color": "black","font-size": "18px","border": "1px #d2d2d2 solid"});
+	$(".facebook").css("background","#3B5998");
+	$(".facebook").css("color","white");
+	
+	$(".twitter").css("background","#55ACEE");
+	$(".twitter").css("color","white");
+	
+	$(".google").css("background","#dd4b39");
+	$(".google").css("color","white");
+	
+	$(".linkedin").css("background","#007bb5");
+	$(".linkedin").css("color","white");
+	
+	$(".whatsapp").css("background","#2cb742");
+	$(".whatsapp").css("color","white");
+}
+
+//Facebook Share Code
+
+function fbShare() {
+var url = document.getElementById("socialmediashare_path"); //create sharepath_fb field in html and give fb share url in that field
+var t=document.title;
+if(url == null){
+url = "https://learning.tcsionhub.in";
+}else{
+url = document.getElementById("socialmediashare_path").value;
+url=$("<div/>").append(url).text();
+}
+window.open('http://www.facebook.com/sharer.php?u='+url+'&t='+encodeURIComponent(t),'sharer','toolbar=0,status=0,width=700,height=500');
+return false;
+}
+//Twitter Share Code
+
+function twitterShare() {
+var url = document.getElementById("socialmediashare_path"); //create sharepath_twitter field in html and give twitter share url in that field
+
+//var t =document.title;
+if(url == null){
+url = "https://learning.tcsionhub.in";
+}else{
+url = document.getElementById("socialmediashare_path").value;
+url=$("<div/>").append(url).text();
+}
+window.open('http://twitter.com/share?url='+url+'','sharer','toolbar=0,status=0,width=700,height=500');
+return false;
+}
+//LinkedIn Share Code
+
+function linkedInShare() {
+
+var url = document.getElementById("socialmediashare_path"); //create sharepath_linkedIn field in html and give linkedin share url in that field
+
+//var t=document.title;
+if(url == null){
+url = "https://learning.tcsionhub.in/";
+}else{
+url = document.getElementById("socialmediashare_path").value;
+url=$("<div/>").append(url).text();
+}
+window.open('http://www.linkedin.com/shareArticle?mini=true&url='+url+'','sharer','toolbar=0,status=0,width=700,height=500');
+return false;
+}
+
+function sharesocialmediaoptioninpopup(popupmodalid){
+
+var innerHTML = '<span class="horzsocialicon"><a href="#" class="facebook horzsocialiconI" onclick="fbShare()"><i class="fa fa-facebook"></i></a>';
+innerHTML += '<a href="#" class="twitter horzsocialiconI" onclick="twitterShare()"><i class="fa fa-twitter"></i></a>';
+innerHTML += '<a href="#" class="google horzsocialiconI" onclick="launchModal()"><i class="fa fa-envelope"></i></a>';
+innerHTML += '<a href="#" class="linkedin horzsocialiconI" onclick="linkedInShare()"><i class="fa fa-linkedin"></i></a>';
+/* innerHTML += '<a href="whatsapp://send?text=https://facebook.com" class="whatsapp horzsocialiconI"><i class="fa fa-whatsapp"></i></a>'; */ 
+
+var applyMobCSS = false;
+
+if(isMobile.any()!= null){ 
+
+var sharePathWhatsapp = document.getElementById("socialmediashare_path"); //create sharepath_fb field in html and give fb share url in that field
+
+if(sharePathWhatsapp == null){
+
+	sharePathWhatsapp = "https://learning.tcsionhub.in";
+	
+}else{
+		
+		sharePathWhatsapp = document.getElementById("socialmediashare_path").value;
+		sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+	
+}
+innerHTML += '<a href="whatsapp://send?text='+sharePathWhatsapp+'" class="whatsapp horzsocialiconI"><i class="fa fa-whatsapp"></i></a></span>'; 
+
+applyMobCSS = true;
+
+}else{
+	
+innerHTML += '</span>';
+
+}
+
+    var html =  '<div id="modalWindowhrz" class="modal modal-dialog fade modal-sm" style="display:none;">';
+	html += '<div class="modal-content">';
+    html += '<div class="modal-header">';
+    html += '<a class="close" data-dismiss="modal">X</a>';
+    html += '<h4>Choose your option</h4>';
+    html += '</div>';
+    html += '<div class="modal-body">';
+    html += '<p>';
+    html += innerHTML; 
+    html += '</div>';
+    html += '</div>';  // modal-content
+    html += '</div>';  // modalWindow
+    $("#"+popupmodalid).html(html);
+	
+$(".horzsocialicon").css({"display":"inline-flex"});
+
+if(applyMobCSS){
+
+$(".horzsocialiconI").css({"display":"block","text-align":"center","padding":"11px 13px","transition":"all 0.3s ease","font-size":"18px","margin-right": "10%", "border-radius": "4px"});
+
+}else{
+$(".horzsocialiconI").css({"display":"block","text-align":"center","padding":"11px 20px","transition":"all 0.3s ease","font-size":"18px","margin-right": "7%", "border-radius": "4px"});
+
+}
+
+$(".facebook").css("background","#3B5998");
+$(".facebook").css("color","white");
+
+$(".twitter").css("background","#55ACEE");
+$(".twitter").css("color","white");
+
+$(".google").css("background","#dd4b39");
+$(".google").css("color","white");
+
+$(".linkedin").css("background","#007bb5");
+$(".linkedin").css("color","white");
+
+$(".whatsapp").css("background","#2cb742");
+$(".whatsapp").css("color","white");
+
+$("#modalWindowhrz").css("position","absolute");
+$("#modalWindowhrz").css("top","15%");
+
+$("#modalWindowhrz").modal();
+
+}
+
+function includeAddonJS(){
+	
+	if(isRunningOnEnvDomain){
+	
+		if(!isDynamicJSLoaded){
+			jQuery.get("/EForms/js/onlineAppForm/iHUB_marketing.js");
+			jQuery.get("/EForms/js/onlineAppForm/bootstrap-responsive-tabs.js");
+			
+			/*jQuery.get("/iDH/dashboard/js/jquery.min.js");
+			jQuery.get("/iDH/dashboard/js/wow.min.js");
+			jQuery.get("/iDH/js/ck/ckeditor.js");
+			jQuery.get("/iDH/js/popup.js");*/
+			
+			isDynamicJSLoaded = true;
+			
+			}
+		
+	}else{
+
+		if(!isDynamicJSLoaded){
+			jQuery.get("/EForms/js/onlineAppForm/iHUB_marketing.js");
+			jQuery.get("/EForms/js/onlineAppForm/bootstrap-responsive-tabs.js");
+		//	jQuery.get("/EForms/js/onlineAppForm/jquery.min.js");
+			//jQuery.get("/EForms/js/onlineAppForm/wow.min.js");
+			//jQuery.get("/iDH/js/ck/ckeditor.js");
+		/*	jQuery.get("/iHUB_test/js/popup.js");*/
+			
+			isDynamicJSLoaded = true;
+			
+			}
+		
+		
+	}
+	
+	
+}
+
+function shareemailpopup(placementId, heading, formContent, strSubmitFunc, btnText){
+
+	includeAddonJS();
+	$("#shareonemaildiv").html("");
+		
+    var html =  '<div id="modalWindow" class="modal modal-dialog fade modal-sm" style="display:none;">';
+	html += '<div class="modal-content">';
+    html += '<div class="modal-header">';
+    html += '<a class="close" data-dismiss="modal">X</a>';
+    html += '<h4>'+heading+'</h4>';
+    html += '</div>';
+    html += '<div class="modal-body">';
+    html += '<p>';
+    html += formContent;
+    html += '</div>';
+    html += '<div class="modal-footer">';
+    if (btnText!='') {
+        html += '<span class="btn btn-success"';
+        html += ' onClick="'+strSubmitFunc+'">'+btnText;
+        html += '</span>';
+    }
+    html += '<span class="btn" data-dismiss="modal">';
+    html += 'Close';
+    html += '</span>'; // close button
+    html += '</div>';  // footer
+    html += '</div>';  // modal-content
+    html += '</div>';  // modalWindow
+    $("#"+placementId).html(html);
+    
+    $("#modalWindow").css("position","absolute");
+    $("#modalWindow").css("top","2%");
+    
+    $("#modalWindow").modal();
+	//$('#modalWindow').modal('show').find('.modal-body').load("https://www.linkedin.com/");
+}
+
+function launchModal(){
+shareemailpopup(idMyModal, header, content, strSubmitFunc, btnText);
+}
+
+function hideModal()
+{
+    $('.modal.in').modal('hide');
+}
+
+function shareonemail(){
+
+	var lParamArray = new Array();
+	lParamArray[0] = "9518";//$('#appId').val();
+	lParamArray[1] = $('#orgId').val();
+	
+	if($('#app_seq_no').val() !=""){
+		
+		lParamArray[2] = $('#app_seq_no').val();
+		lParamArray[3] = "gifttofriend"; /*(e.g - "mentioned in marketing constants class") */
+		lParamArray[4] = $('#instanceId').val();	
+		lParamArray[5] = "sharewithfriend"; //$('#action').val();
+		
+		if($('#socialmediashare_path').val() !=""){
+		lParamArray[6] = $('#socialmediashare_path').val();
+		}else{			
+			alert("Sharing link is not present !!");
+			return false;
+		}
+		
+		if($('#fName').val() != ""){
+		 lParamArray[7] = $('#fName').val();	
+		}else{
+			alert("Please enter first name");
+			return false;
+		}
+		
+		if($('#lName').val() !=""){
+			lParamArray[8] = $('#lName').val();	
+		}else{
+			lParamArray[8] = "";
+		}
+		
+		if($('#toEmail').val()!=""){
+			
+			var regexEmail = /\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+			if (!regexEmail.test($('#toEmail').val())) {				
+			alert("Please provide correct email id");
+			return false;
+			}
+			
+			lParamArray[9] = $('#toEmail').val();	
+			
+		}else{
+			alert("Please enter email id");
+			return false;
+		}
+		
+		
+	}else{
+		alert("Please login !!");		
+		return false;
+	}
+	
+	var lResponse = getResponse_marketing(lParamArray);
+			
+		if(lResponse.status == "mail sent"){
+		$(".postemailSuccess").removeClass("hide");
+		}else{
+		$(".postemailFail").removeClass("hide");
+		}
+		setTimeout(function(){
+		hideModal();
+		},2000);
+
+}
+
+
+/*
+
+  Start :Changes for Gift to Friend |04-Oct-2018| RaviB 
+ 
+var giftheader = "Gift To Friend"; // if required create hidden fields for the same
+var giftcontent = "<div style='margin-bottom: 3%;'><input type='text' class='form-control' id='fName' placeholder = 'Friend's Name'/></div>";
+	giftcontent+= "<div style='margin-bottom: 3%;'><input type='text' class='form-control' id='toEmail' placeholder = 'Email Id'/></div>";
+	giftcontent += "<div style='margin-bottom: 3%;'><textarea name='giftComment' class='form-control' id='giftMsg' placeholder = 'Gift Message'/></div>";
+    giftcontent+= "<div class='alert alert-success postemailSuccess hide'><strong>Success!</strong> Sent successfully.</div>";
+    giftcontent+= "<div class='alert alert-danger postemailFail hide'><strong>Failed!</strong> Submission failed.</div>"; 
+var strGiftSubmitFunc = "onGiftSubmit(event)";
+var btnGiftText = "Submit";
+
+var idMyModalGift = "giftsharediv";
+
+function createGiftBtn(){
+	
+	var shareitem = $(".gifttofriend");
+	
+	if(shareitem.length>0){
+		
+		var a = shareitem[0].attributes;
+		var dataAttributes = "";
+		
+		for(var i in a){
+	
+			if(i>0){
+			if(a[i].name!="" || a[i].name!=undefined){
+	
+			dataAttributes +=a[i].name+"='"+a[i].value+"' ";	
+			}
+			
+			}
+	
+			}
+			var giftButtonHTML = "<div class='giftFrnd pull-left'  data-toggle='modal' data-target='#gifttofrnd' ";
+			giftButtonHTML += dataAttributes;
+			giftButtonHTML += "><span> </span>Gift To Friend </div>";
+	
+		shareitem[0].innerHTML = "";
+		 shareitem[0].innerHTML = giftButtonHTML;
+		   
+	    $(".giftFrnd span").css("display","inline-block");
+	    $(".giftFrnd span").css("background","url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDQ4MkZBQTdFQ0NGMTFFOEE1QjJENTYwQ0U3NEIyODIiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDQ4MkZBQTZFQ0NGMTFFOEE1QjJENTYwQ0U3NEIyODIiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo2QkFBRDM3M0VDQTIxMUU4OThFQ0IxQTU5OUQ2RURDRiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo2QkFBRDM3NEVDQTIxMUU4OThFQ0IxQTU5OUQ2RURDRiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PhZwE7oAAAhsSURBVHjaPFZ9cFXF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')");
+	    $(".giftFrnd span").css("width","32px");
+	    $(".giftFrnd span").css("height","32px");
+	    $(".giftFrnd span").css("vertical-align","middle");
+	    $(".giftFrnd span").css("margin-right","4px");
+	   
+		var giftModalDiv = document.createElement("div");
+		giftModalDiv.id = "giftsharediv";
+		$("body").prepend(giftModalDiv); 
+	}
+	
+}
+
+
+var dataAttrArr = "";
+
+$(document).on("click",".giftFrnd",function(){
+	
+	dataAttrArr = new Array($(this).data("orgid"),$(this).data("instanceid"),$(this).data("usertype"),$(this).data("purchasetype"),$(this).data("productid"),$(this).data("txtlearnerid"),$(this).data("txtorderbyid"),$(this).data("owneremail"),$(this).data("distributorid"),$(this).data("quantity"),$(this).data("payment_mode"),$(this).data("ordercurrentstatus"),$(this).data("txtphonenumber"),$(this).data("appid"),$(this).data("userid"),$(this).data("imgsrc"),$(this).data("productname"),$(this).data("offerby"));
+	
+	launchGiftBtnPopup(idMyModalGift, giftheader, giftcontent, strGiftSubmitFunc, btnGiftText, dataAttrArr);
+
+});
+ 
+
+function launchGiftBtnPopup(placementId, heading, formContent, strGiftSubmitFunc, btnGiftText, dataAttrArr){
+
+	includeAddonJS();
+	
+	$("#"+placementId).empty();
+	
+	var html=' <div class="modal fade  modal_common_class hubPopups giftpopup" id="gifttofrnd" role="dialog"> <div class="modal-dialog"> <div class="modal-content">';
+
+	html+= '<div class="modal-header" style="background:  none !important;">';
+    html+= '<div class="semibold couponhead"> Gift to friends</div>';
+    html+= '<button type="button" class="close" data-dismiss="modal" aria-label="Close" data-tooltip="tooltip" title="" data-trigger="hover" data-original-title="Close">';
+    html+= '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">';
+    html+= '<path d="M20.2 20.5c-0.2 0.2-0.6 0.2-0.8 0l-7.1-7.7 -7.1 7.7c-0.2 0.2-0.6 0.3-0.8 0 -0.2-0.2-0.3-0.6 0-0.9l7.2-7.8L4.5 4.4C4.2 4.1 4.2 3.8 4.5 3.5c0.2-0.2 0.6-0.2 0.8 0l6.9 7.4 6.9-7.4c0.2-0.2 0.6-0.3 0.8 0 0.2 0.2 0.3 0.6 0 0.9l-6.9 7.5 7.1 7.8C20.5 19.9 20.4 20.2 20.2 20.5z" fill="#333"></path>';
+    html+= '<path d="M19.8 21.1c-0.3 0-0.6-0.1-0.8-0.3l-6.7-7.3 -6.7 7.3c-0.4 0.4-1.1 0.5-1.6 0.1 -0.4-0.4-0.5-1.1-0.1-1.6l6.8-7.4 -6.7-7.1C3.7 4.3 3.7 3.6 4.1 3.2c0.4-0.4 1.2-0.4 1.6 0l6.6 7 6.5-7c0.4-0.4 1.1-0.5 1.6-0.1 0.4 0.4 0.5 1.1 0.1 1.6l-6.6 7.1 6.8 7.4c0.4 0.4 0.4 1.1-0.1 1.5C20.3 21 20.1 21.1 19.8 21.1zM4.8 3.9C4.8 3.9 4.8 4 4.8 4l7.3 7.8 -7.5 8.1c0 0 0 0.1 0 0.2l0.5 0.3 -0.4-0.3 7.5-8.1 7.5 8.1c0 0 0 0 0.1 0 0 0 0-0.1 0-0.1l-7.5-8.1 7.2-7.8c0 0 0-0.1 0-0.2l-0.1 0 -7.2 7.8L5 3.9 4.8 3.9z"></path>';
+    html+= '</svg> </button> </div>';
+        
+    html+= '<div class="modal-body ">';
+    html+= '<div class="subject_info_pop">';
+    
+    if(dataAttrArr[15]==""){
+    	html+= '<img src="../images/dashboard/coupon/adv_account.png" title="" alt="">';	
+    }else{
+    	html+= '<img src='+dataAttrArr[15]+' title="" alt="">';
+    }
+    
+
+    html+= '<div class="semibold fontsize18 color333 subname_pop">'+dataAttrArr[16]+'</div>';
+    html+= '<div class="ofr_info">';
+    html+= '<span>Offered by:</span>'+dataAttrArr[17]+'</div> </div>';
+
+    html+= '<br><br><div class="alert_div"></div>';
+
+    html+= '<br><div class="message_div">';
+    html+= '<div class="mail_blocks">';
+    html+= '<span class="toclass"> To</span>';
+    html+= '<div class="append_div" id="append1"></div>';
+    html+= '<input type="text" class="small_textbox" id="toEmail" aria-describedby="emailHelp"  placeholder="Enter email">';
+    html+= '<small id="emailHelp" class="form-text text-muted">We will never share your email with anyone else.</small>';
+    
+    
+    html+=	'<input type="hidden" class="small_textbox" id="orgId" value='+dataAttrArr[0]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="instanceId" value='+dataAttrArr[1]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="userType" value='+dataAttrArr[2]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="purchaseType" value='+dataAttrArr[3]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="productId" value='+dataAttrArr[4]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="txtLearnerId" value='+dataAttrArr[5]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="txtOrderById" value='+dataAttrArr[6]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="ownerEmail" value='+dataAttrArr[7]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="distributorId" value='+dataAttrArr[8]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="quantity" value='+dataAttrArr[9]+'>';       
+    html+=	'<input type="hidden" class="small_textbox" id="payment_mode" value='+dataAttrArr[10]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="orderCurrentStatus" value='+dataAttrArr[11]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="txtPhoneNumber" value='+dataAttrArr[12]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="appId" value='+dataAttrArr[13]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="userId" value='+dataAttrArr[14]+'>';
+    html+=	'<input type="hidden" class="small_textbox" id="action" value="gifttofriend">';
+
+    html+= '<div class="jscroll_custom">';
+    html+= '<ul class="comm-search-result">  </ul>';
+    html+= '</div> </div>';
+
+    html+= '<div class="mail_blocks">';
+    html+= '<span> Friend Name</span>';
+    html+= '<input type="text" class="small_textbox" placeholder="Friend Name" id="fName">';
+    html+= '</div>';
+
+    html+= '<div class="mail_blocks">';
+    html+= '<span> Gift Message</span>';
+    html+= '<textarea type="text" class="small_textbox textareagift" rows="5" id="editor1" name="editor1" style="visibility: hidden; display: none;"></textarea>';
+  
+    
+    html+= '</div> </div> </div>';
+    html+= '<div class="modal-footer">';
+    html+= '<input type="submit" class="btn btn-green" data-dismiss="modal" onClick="'+strGiftSubmitFunc+'" value ="Proceed to Buy">';
+    html+= '<button type="button" class="btn btn-default btn-cancel greycancel" data-dismiss="modal">Cancel</button>';
+    html+= '</div> </div> </div> </div>';
+	
+	
+    $("#"+placementId).html(html);
+    
+    
+    $(document).ready(function() {
+    	if(CKEDITOR.instances.editor1!= undefined){
+    	    CKEDITOR.instances.editor1.destroy();
+    	  }
+    	CKEDITOR.env.isCompatible = true;
+    	
+    	CKEDITOR.replace( 'editor1', {
+    		toolbar: [
+				{ name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+				{ name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ] },
+				{ name: 'forms', items: [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+				'/',
+				{ name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] },
+				{ name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
+				{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+				{ name: 'insert', items: [ 'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
+				'/',
+				{ name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+				{ name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+				{ name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
+				{ name: 'about', items: [ 'About' ] } 
+				]
+    	   }); 
+    	
+    })
+    
+
+	 $(document).ready(function() {
+         //Voucher / promocode functionality
+         $(".table .enterBefore").on("click", function() {
+             $(this).hide();
+             $(this).parent(".voucher").find(".enterAfter").show();
+         });
+         $(".table .enterAfter .cancelBtn").on("click", function() {
+             $(this).parent(".enterAfter").hide();
+             $(this).parents(".voucher").find(".enterBefore").show();
+         });
+         $(".table .enterAfter .applyBtn").on("click", function() {
+             $(this).parent(".enterAfter").hide();
+             $(this).parents(".voucher").find(".couponAdded").show();
+         });
+         //Header functionality
+         $(document).on("click", ".nav-toggle", function() {
+             $('html').removeClass('mm-right');
+         });
+
+         $(window).scroll(function() {
+             var scrollerTop = $(window).scrollTop();
+             if (scrollerTop >= 200) {
+                 $('.additionalbar_header').slideUp(300);
+             } else {
+                 $('.additionalbar_header').slideDown(300);
+             }
+
+         });
+         // Slimscroll functionality on coupon details popup
+         $(window).scroll(function() {
+        	 if(typeof  $('.modal_terms_content, .coupon_details_content').slimscroll == 'function'){
+        		 $('.modal_terms_content, .coupon_details_content').slimscroll({
+                     height: '400px',
+                     color: '#00abe1'
+                 });
+        	 }
+            
+             var scrollerTop = $(window).scrollTop();
+             if ($(window).width() < 603) {
+                 if (scrollerTop >= 200) {
+                     $('.new_header_mobile').slideUp();
+                 } else {
+                     $('.new_header_mobile').slideDown();
+                 }
+             }
+
+         });
+
+         $('.mmenu_Bordr').click(function() {
+             setTimeout(function() {
+                 if ($(".mm-panels .mm-opened").hasClass("mm-subopened")) {
+                     $(".mm-panels .mm-opened").addClass('mMenuHide');
+                     $('.userProfile, .back_menu').hide();
+                     $('.blogPage .nav-toggle.active').addClass('dNone');
+                     $('.mm-navbar').addClass('shwMmwnu');
+                 }
+             }, 100)
+
+         });
+
+         $(document).on('click', '.mm-navbar', function() {
+             if ($(".mm-panels .mm-opened").hasClass("mm-current")) {
+                 $(".mm-panels .mm-opened").removeClass('mMenuHide');
+                 $('.userProfile, .back_menu').show();
+                 $('.blogPage .nav-toggle.active').removeClass('dNone');
+                 $('.mm-navbar').removeClass('shwMmwnu');
+             }
+         });
+     });
+	 
+	 
+	 var nms = [];
+     var nms2 = [];
+     var menu1 = [
+
+         { "imgPath": "user-1.png", "label": "Abby ", "project": "iON | Learning Exchange", "email": "Abby@lx.com" },
+         { "imgPath": "user-1.png", "label": "Datsun ", "project": "iON | Learning Exchange", "email": "Datsun@lx.com" },
+         { "imgPath": "user-1.png", "label": "Shelby ", "project": "iON | Learning Exchange", "email": "shelby@lx.com" },
+
+         { "imgPath": "user-1.png", "label": "Datsun ", "project": "iON | Learning Exchange", "email": "Datsun@lx.com" },
+         { "imgPath": "user-1.png", "label": "Shelby ", "project": "iON | Learning Exchange", "email": "shelby@lx.com" },
+
+
+
+         { "imgPath": "user-1.png", "label": "Datsun ", "project": "iON | Learning Exchange", "email": "Datsun@lx.com" },
+         { "imgPath": "user-1.png", "label": "Shelby ", "project": "iON | Learning Exchange", "email": "shelby@lx.com" },
+
+         { "imgPath": "user-1.png", "label": "Datsun ", "project": "iON | Learning Exchange", "email": "Datsun@lx.com" },
+     ];
+
+     $(document).ready(function () {
+
+
+         $('#srchTo').val('');
+         $('#srchTo2').val('');
+
+
+         $('#srchTo').on('keyup', function () {
+             //alert(1);
+             var t = $('#srchTo').val().toLowerCase(); //input field value
+             $('.comm-search-result').html('');
+             //$(".mail_blocks .slimScrollDiv").show();
+             $('.jscroll_custom').hide();
+             if (t != '') {
+                 var length = Object.keys(menu1).length;// length of Json
+                 for (i = 0; i <= (length - 1); i++) {
+                     //alert(i);
+                     var str = (menu1[i].label).toLowerCase();//label
+                     var matchedStr = str.match(t, 'gi');
+                     if (matchedStr != null) {
+                         if (jQuery.inArray(i, nms) == '-1') {//check if the elemet exists in an array
+                             //alert(1);
+                             $('.jscroll_custom').show()
+                             //$('.jscroll_custom').show().slimscroll({ height: '150px', color: '#00abe1' });
+                             $('.comm-search-result').append("<li data-json1='" + i + "' class='srchBlock2 comm-search-result_li'><div class='search-result-box' data-json><email>" + menu1[i].email + "</email></div></li>");
+                         }
+                     }
+                 }
+             }
+         });
+
+
+
+         $('#srchTo2').on('keyup', function () {
+
+             var t = $('#srchTo2').val().toLowerCase(); //input field value
+             $('.comm-search-result').html('');
+
+             $('.jscroll_custom').hide();
+             if (t != '') {
+                 var length = Object.keys(menu1).length;// length of Json
+                 for (i = 0; i <= (length - 1); i++) {
+
+                     var str = (menu1[i].label).toLowerCase();//label
+                     var matchedStr = str.match(t, 'gi');
+                     if (matchedStr != null) {
+                         if (jQuery.inArray(i, nms2) == '-1') {//check if the elemet exists in an array
+                             //alert(1);
+                             $('.jscroll_custom').show()
+                             //$('.jscroll_custom').show().slimscroll({ height: '150px', color: '#00abe1' });
+                             $('.comm-search-result').append("<li data-json1='" + i + "' class='srchBlock2srch comm-search-result_li'><div class='search-result-box' data-json><email>" + menu1[i].email + "</email></div></li>");
+                         }
+                     }
+                 }
+             }
+         });
+
+
+
+         $(document).on('click', 'li.srchBlock2', function () {
+             //alert("Hello");
+             //if( AdminCount!=adminNo){
+             var q = $(this).data("json1");
+             nms.push(q);
+             //alert(menu1[q].label);
+             $(this).remove();
+             $('#append1').append("<div class='search-result-box'><div class='media-body'><email>" + menu1[q].email + "</email><div class='closeBX' title='Remove' data-num='" + q + "'></div></div></div>");
+
+
+
+
+             //$(".mail_blocks .slimScrollDiv").hide();
+             $('.jscroll_custom').hide();
+             $('#srchTo').val('');
+             $('#srchTo2').val('');
+         });
+
+
+         $(document).on('click', 'li.srchBlock2srch', function () {
+
+             var q = $(this).data("json1");
+             nms2.push(q);
+             $(this).remove();
+             $('#append2').append("<div class='search-result-box'><div class='media-body'><email>" + menu1[q].email + "</email><div class='closeBX' title='Remove' data-num='" + q + "'></div></div></div>");
+
+             $('.jscroll_custom').hide();
+
+             $('#srchTo2').val('');
+         });
+
+         $(document).on('click', '.closeBX', function () {
+             $(this).parents(".search-result-box").hide();
+
+             var g = $(this).data("num");
+             nms = jQuery.grep(nms, function (value) { return value != g; });
+             nms2 = jQuery.grep(nms2, function (value) { return value != g; });// remove item in an array
+             //$(this).parent().remove();
+             //	adminNo--;
+             //showAdminCount(adminNo);
+
+         })
+
+
+     })
+}
+
+
+
+
+	function onGiftSubmit(event){
+
+		
+		if( $('#toEmail').val() == "" && $('#fName').val() == ""){
+			
+			var alertitem = $(".alert_div");
+			alertitem[0].innerHTML = '<div class="alert alert-danger"><span class="semibold">Please enter email and your friend name</span></div>';
+			event.stopPropagation();
+			return false;
+		}
+
+		if($('#toEmail').val() == ""){
+			
+			var alertitem = $(".alert_div");
+			alertitem[0].innerHTML = '<div class="alert alert-danger"><span class="semibold">Please enter email id</span></div>';
+			event.stopPropagation();
+			return false;
+		}
+		if($('#fName').val() == ""){
+			
+			var alertitem = $(".alert_div");
+			alertitem[0].innerHTML = '<div class="alert alert-danger"><span class="semibold">Please enter your friend name</span></div>';
+			event.stopPropagation();
+			return false;
+		}
+		
+		// Email Validate on Submit click
+		var emailReturn = this.validateEmail($('#toEmail').val());
+		if(!emailReturn){
+			event.stopPropagation();
+			return false;
+		}
+		
+		var lParamArray = new Array();
+		lParamArray[0] = $('#appId').val();
+		lParamArray[1] = $('#orgId').val();
+		lParamArray[2] = $('#userId').val();
+		lParamArray[3] = "gifttofriend"; (e.g - "mentioned in marketing constants class") 
+		lParamArray[4] = $('#instanceId').val();
+		lParamArray[5] = $('#userType').val();
+		lParamArray[6] = $('#purchaseType').val();
+		lParamArray[7] = $('#productId').val();
+		lParamArray[8] = $('#txtLearnerId').val();
+		lParamArray[9] = $('#txtOrderById').val();
+		lParamArray[10] = $('#ownerEmail').val();
+		lParamArray[11] = $('#distributorId').val();
+		lParamArray[12] = $('#quantity').val();
+		lParamArray[13] = $('#payment_mode').val();
+		lParamArray[14] = $('#orderCurrentStatus').val();
+		lParamArray[15] = $('#txtPhoneNumber').val();
+		lParamArray[16] = $('#eventName').val();
+		lParamArray[17] = $('#action').val();
+		lParamArray[18] = $('#toEmail').val();
+		lParamArray[19] = $('#fName').val();
+		lParamArray[20] = $('#editor1').val();
+		
+
+		var lResponse = getResponse_marketing(lParamArray);
+		
+		var obj = JSON.parse(lResponse);
+		
+	
+		
+		if(obj.status == 'invalidSession'){
+			var alertitem = $(".alert_div");
+			alertitem[0].innerHTML = '<span class="semibold">Session is invalid. Please relogin again</span>';
+			event.stopPropagation();
+		
+			
+		}
+		
+		if(obj.status == ''||obj.msg == 'failure'){
+			var alertitem = $(".alert_div");
+			alertitem[0].innerHTML = '<span class="semibold">Your gift has not been processed. Please try again</span>';
+			event.stopPropagation();
+		
+		}
+		
+		if(obj.status == 'success'){
+			
+			var ECS = obj.ECS;
+			var openOrderWindow = window.open('',  'popup_window', 'height='+screen.height+',width='+screen.width+',scrollbars=yes,resizable=yes,dependent=yes');
+			openOrderWindow.location.href = openOrderWindow.location.href="/EForms/PaymentFlow?subAction=buildCheckout&ECS="+ ECS;
+			openOrderWindow.moveTo(0,0);
+			
+			
+		}
+		
+
+	}
+
+	function validateEmail(emailField){
+        var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+
+        if (reg.test(emailField) == false) 
+        {
+        	var alertitem = $(".alert_div");
+			alertitem[0].innerHTML = '<div class="alert alert-danger"><span class="semibold">Invalid Email Address</span></div>';
+			event.stopPropagation();
+			return false;
+        }
+
+        return true;
+
+	}
+	
+	  End :Changes for Gift to Friend |04-Oct-2018| RaviB 
+*/	
+	/*  Start :Changes for Social share options |05-Dec-2018| RaviB */
+	function createSocialShareOptions(){
+		
+		
+		/* Adding new Div in body*/
+
+		var modalDiv = document.createElement("div");
+		modalDiv.id = "shareonemaildiv";
+		$("body").prepend(modalDiv);
+		
+		var shareitem = $(".socialmedia-icons");
+		for(var i in shareitem){
+		if(i < shareitem.length){
+			var sharePathWhatsapp = document.getElementById("socialmediashare_path").value;
+			sharePathWhatsapp = $("<div/>").append(sharePathWhatsapp).text();
+			var shareURL = shareitem[i].getAttribute("url");
+			shareURL = $("<div/>").append(shareURL).text();
+			//shareitem[i].innerHTML = "<div class='giftFrnd pull-left' onClick='sendGift()' data-toggle='modal' data-target='#gifttofrnd'> <i class='fa fa-gift' style='border-radius: 3px 0 0 3px;display: inline-block;text-align: center;padding: 7px;vertical-align: middle;font-size: 1.6em;'></i>&nbsp;<span style='font-size: 16px;vertical-align: middle;'> Gift To Friend </span></div>";
+			shareitem[i].innerHTML = '<i class="fa fa-facebook" onclick="fbShare();" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;"></i>';
+			shareitem[i].innerHTML+= '<i class="fa fa-twitter" onclick="twitterShare();" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;"></i>';
+			shareitem[i].innerHTML+= '<i class="fa fa-linkedin" onclick="linkedInShare();" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;"></i>';
+			shareitem[i].innerHTML+= '<a href="whatsapp://send?text='+sharePathWhatsapp+'" class="whatsapp" ><i class="fa fa-whatsapp hidden-sm hidden-md hidden-lg" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp; color: #2de20e;"></i></a>'; //Comment this line post testing
+			}
+		}		
+		}
+	
+	/*  End :Changes for Social share options |05-Dec-2018| RaviB */
+	
+	function setProductDBData(productData){
+		
+	}
+	
+	setTimeout(function(){		
+		//createverticalsocialsharing();
+		//createhorizontalsocialsharing();
+	createSocialShareOptions(); 
+		//createGiftBtn();		
+	},1500);
+	

@@ -1,0 +1,293 @@
+/* @import url(reset.css);
+
+@font-face {
+	font-family: OpenSans-Light;
+	font-display: block;
+	src: url('../fonts/OpenSans-Light.ttf');
+}
+
+@font-face {
+	font-family: OpenSans-Bold;
+	font-display: block;
+	src: url('../fonts/OpenSans-Bold.ttf');
+}
+
+@font-face {
+	font-family: OpenSans-Regular;
+	font-display: block;
+	src: url('../fonts/OpenSans-Regular.ttf') format('opentype'), url('../fonts/OpenSans-Regular.eot?#iefix') format('embedded-opentype');
+}
+
+@font-face {
+	font-family: OpenSans-Semibold;
+	font-display: block;
+	src: url('../fonts/OpenSans-Semibold.ttf') format('opentype'), url('../fonts/OpenSans-Semibold.eot?#iefix') format('embedded-opentype');
+}
+
+@font-face {
+	font-family: OpenSans-SemiboldItalic;
+	font-display: block;
+	src: url('../fonts/OpenSans-SemiboldItalic.ttf');
+}
+ */
+/**Common CSS**/
+.OTPpopups .btn {
+	display: block;
+	color: #fff;
+	font-size: 12px;
+	border: none;
+	padding: 10px 15px;
+	background-color: #15cefd;
+	margin: 20px;
+	cursor: pointer;
+	outline: none;
+}
+
+.overlay {
+	position: fixed;
+	display: none;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 100000 !important;
+}
+
+/*Common CSS Ends*/
+
+/*OTP Popup*/
+
+.OTPpopups{
+	display: none;
+	width: 390px;
+	background-color: #fff;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 10px;
+	z-index: 1000000 !important;
+	height: auto;
+}
+
+.OTPpopups .popupHead {
+	background-color: #e7faff;
+	text-align: center;
+	padding: 30px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+#otpPopup .popupBody, #otpPopupFP .popupBody, #otpPopupLoginId .popupBody {
+	text-align: center;
+	padding: 45px;
+}
+
+#otpPopup .instruction, #otpPopupFP .instruction, #otpPopupLoginId .instruction {
+	color: #4c242e;
+	margin-bottom: 30px;
+}
+
+#otpPopup .verify p {
+	color: #1a2f36;
+	font-size: 16px;
+	margin-bottom: 20px;
+}
+
+#otpPopup .OTPVerificationBtn, #otpPopupFP .OTPVerificationBtn, #otpPopupLoginId .OTPVerificationBtn {
+	color: #fff;
+	font-size: 16px;
+	padding: 18px 45px;
+	background-color: #15cefd;
+	border: none;
+	border-radius: 5px;
+	margin-right: 12px;
+	cursor: pointer;
+}
+
+#otpPopup .OTPVerificationBtn:hover {
+	background-color: #35d5fd;
+}
+
+.OTPpopups .OTPVerificationBtn.disabled, .OTPpopups .OTPVerificationBtn.disabled:hover {
+	background-color: #dddddd !important;
+	cursor:not-allowed !important;
+}
+
+/*OTP Popup Ends*/
+
+/*OTP Phone popup*/
+
+#otpEmailPopup .popupBody, #changePasswordNew .popupBody, #otpPhonePopup .popupBody, #changePasswordNewBL .popupBody {
+	text-align: center;
+	padding: 45px;
+}
+
+#otpEmailPopup .emailDetails, #changePasswordNew .passwordDetails, #changePasswordNewBL .passwordDetails, #otpPhonePopup .phoneDetails, #otpPopupLoginId .loginIDDetails {
+	text-align: left;
+	margin-bottom: 40px;
+}
+
+#otpEmailPopup .emailDetails label, #changePasswordNew .passwordDetails label, #changePasswordNewBL .passwordDetails label, #otpPhonePopup .phoneDetails label, #otpPopupLoginId .loginIDDetails label {
+	font-size: 14px;
+	color: #333;
+	display: block;
+	margin-bottom: 5px;
+}
+
+#otpEmailPopup .emailDetails input, #changePasswordNew .passwordDetails input, #changePasswordNewBL .passwordDetails input, #otpPhonePopup .phoneDetails input::placeholder, #otpPopupLoginId .loginIDDetails input::placeholder {
+	font-size: 18px;
+	color: #ccc;
+}
+
+#otpEmailPopup .emailDetails input, #changePasswordNew .passwordDetails input, #changePasswordNewBL .passwordDetails input, #otpPhonePopup .phoneDetails input, #otpPopupLoginId .loginIDDetails input {
+	font-size: 18px;
+	padding: 20px 0;
+	border: 1px solid #ebebeb;
+	outline: none;
+	width: 100%;
+	border-left: none;
+	border-right: none;
+}
+
+#otpEmailPopup .OTPVerificationBtn, #otpPhonePopup .OTPVerificationBtn, #changePasswordNew .OTPVerificationBtn, #changePasswordNewBL .OTPVerificationBtn {
+	color: #fff;
+	font-size: 16px;
+	padding: 18px 65px;
+	background-color: #15cefd;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#otpEmailPopup .OTPVerificationBtn, #otpPhonePopup .OTPVerificationBtn:hover, #changePasswordNew .OTPVerificationBtn:hover , #changePasswordNewBL .OTPVerificationBtn:hover {
+	background-color: #35d5fd;
+}
+
+#otpEmailPopup .instruction, #otpPhonePopup .instruction {
+	color: #4c242e;
+	font-size: 12px;
+	margin-bottom: 10px;
+	opacity: 0.7;
+}
+
+/*OTP Phone popup Ends*/
+
+
+/*OTP Validate Popup*/
+
+#otpValidatePopup {
+	display: none;
+	width: 390px;
+	background-color: #fff;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: 10px;
+	/* z-index: 10000; */
+	height:auto;
+}
+
+#otpValidatePopup .popupBody {
+	text-align: center;
+	padding: 45px;
+}
+
+#otpValidatePopup .title, #changePasswordNew .title, #changePasswordNewBL .title {
+	font-family: OpenSans-Semibold;
+	color: #4c242e;
+	font-size: 18px;
+	line-height: 22px;
+	margin-bottom: 35px;
+}
+
+#otpValidatePopup .instruction{
+	color: #4c242e;
+	margin-bottom: 35px;
+	line-height: 20px;
+}
+
+#changePasswordNew .instruction, #changePasswordNewBL .instruction {
+	color: #4c242e;
+	margin-top: 20px;
+	line-height: 20px;
+}
+
+#otpValidatePopup input, #changePasswordNewBL input#OTPValueBL {
+	border: none;
+	border-radius: 5px;
+	background-color: #f6f6f6;
+	font-size: 28px;
+	color: #4c242e;
+	text-align: center;
+	padding: 10px 0;
+	width: 100%;
+	outline: none;
+	margin-bottom: 34px;
+}
+#otpValidatePopup .OTPVerificationBtn {
+	color: #fff;
+	width: 100%;
+	font-size: 16px;
+	padding: 18px 65px;
+	background-color: #15cefd;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+#otpValidatePopup .OTPVerificationBtn:hover {
+	background-color: #35d5fd;
+}
+
+#otpValidatePopup .enterOTP a, #changePasswordNewBL .enterOTP a{
+	display: inline-block;
+	color: #00aade;
+	font-size: 13px;
+	text-decoration: none;
+	margin: 20px 0px;
+	cursor:pointer;
+}
+
+#otpValidatePopup .enterOTP a:hover, #changePasswordNewBL .enterOTP a:hover {
+	text-decoration: underline;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 400px) {
+	.OTPpopups {/* #otpPopup */
+		width: 95% !important;
+	}
+
+	.OTPpopups .popupBody {/* #otpPopup */
+		padding: 35px 15px !important;
+	}
+
+	.OTPpopups .OTPVerificationBtn {/* #otpPopup */
+		padding: 15px 35px !important;
+	}
+
+	.OTPpopups .OTPVerificationBtn:last-child {/* #otpPopup */
+		margin: 0 !important;
+	}
+
+	.OTPpopups .instruction {/* #otpPopup */
+		margin-bottom: 20px !important;
+	}
+}
+
+.OTPpopups .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    z-index: 9;
+    outline: none;
+
+}
+.OTPpopups input {
+	/* font-size: 14px !important; */
+	color: #333 !important;
+}
+/*OTP Validate Popup Ends*/

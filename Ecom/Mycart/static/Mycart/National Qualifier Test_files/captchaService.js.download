@@ -1,0 +1,269 @@
+/*
+ * Public functions
+ * 
+ * setAppId(appId)
+ * To set the application id.
+ * This function should be called before calling createCaptcha()
+ *  
+ * setImageKey(imageKey)
+ * This is optional function. Use it only when solution is using session-id / user-id etc. as image key. 
+ * This function should be called before calling createCaptcha()
+ * 
+ * setImagePath(imagePath)
+ * This is optional function. Use it to set path of reload image.
+ * Default path is 'images'. Path is relative to current page.
+ * The new path should be mentioned without the trailing slash. 
+ * Example: if the new path is /solution/images/ then the function call should be setImagePath('solution/images');
+ * This function should be called before calling createCaptcha()
+ * 
+ * US_17340 : 2nd July, 2018 - Aman - Start
+ * 
+ * setCaptchaType(captchatype)
+ * This is optional function. Use it to set captcha type.
+ * It may take values 'numeric' or 'alphanumeric' as parameters.
+ * Default captcha type is 'alphanumeric'.
+ * Example: if you need numeric only captcha, then the function call should be setCaptchaType('numeric');
+ * This function should be called before calling createCaptcha()
+ * 
+ * setCaptchaLanguage(captchalanguage)
+ * This is optional function. Use it to set captcha language for labels in captcha.
+ * It may take values 'english' or 'japanese' as parameters.
+ * Default captcha type is 'english'.
+ * Example: if you need japanese labels on captcha, then the function call should be setCaptchaLanguage('japanese');
+ * This function should be called before calling createCaptcha()
+ * 
+ * US_17340 : 2nd July, 2018 - Aman - End
+ * 
+ * createCaptcha(divId)
+ * To show the CAPTCHA.
+ */
+ /*------------------------------------ Features/Bugs ------------------------------------
+ * SMB02 -1491 : 12 Aug,2014 : Nidhi Gupta - Improvements in Captcha UI    
+ * SMB02-1525 : 31 Oct,2014 : Nidhi Gupta - to clear answer in the text box when refreshing the captcha image  
+ * SMB02-1669 : 11 Jan 2016 : Chirag Lakhani : Captcha - Showing the Help contents as a callout
+ * US_17340 : 2nd July, 2018 - Aman - Configuration based on CaptchaType and CaptchLanguage
+ * US_22407 : 25th Oct, 2018 - Aman - Change in captcha help label for Japanese
+ * US_48417 : Pawan- Create multicolour captcha text and reduce the height of captcha image.
+ * US_50436 : Niteen- Scalability enhancement in captcha.
+ */
+ 
+function openCaptchaHelpWindow()
+{
+	captchahelpwindow = window.open("", "Instructions", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no,  width=300,height=218");
+	captchahelpwindow.document.write("<div style='font-family:Arial, Helvetica, sans-serif;font-size:12px;margin:0;padding:0;background:#D3ECF5;color:#000;'><p><h1 style='background:#1386BC;color:#fff;padding-left:10px;font-size:16px;'>Instructions</h1><ul style='padding-right:30px;padding-bottom:20px;'>	<li>	<p>Please enter the text you see in the image, in the provided textbox. Doing so helps prevent automated programs from abusing this service.</p>	</li>	<li>	<p>If you are not sure what the words are, either enter your best guess or click on the link 'Get New Image' placed beside the image.</p>	</li></ul></p></div>"); // FeatureID-1430: Change in captchaservice UI
+	captchahelpwindow.document.close();
+	captchahelpwindow.focus();
+}
+
+captchaService = function() {
+	/* US_17340 : 2nd July, 2018 - Aman - Start */
+	var texts = 
+	{
+	    english : 
+	    { 
+	    	refreshButtonLabel : "Get New Image", 
+	    	helpButtonLabel : "Help", 
+	    	inputboxHelpLabel : "Type 7 characters as shown in image", 
+	    	helpPopup : 
+	    	{ 
+	    		helpLine1 : "Please enter the text you see in the image, in the provided textbox. Doing so helps prevent automated programs from abusing this service.", 
+	    		helpLine2 : "If you are not sure what the words are, either enter your best guess or click on the link \'Get New Image\' placed beside the image."
+	    	}
+	    },
+	    japanese :
+	    { 
+	    	refreshButtonLabel : "別の画像を表示", 
+	    	helpButtonLabel : "ヘルプ", 
+	    	inputboxHelpLabel : "画像に示すように7文字を入力します", //US_22407 : Previous help label was "上の画像に表示されている文字を入力してください。（全7文字で空白、特殊記号を含みません）"
+	    	helpPopup : 
+	    	{ 
+	    		helpLine1 : "不正な登録を防ぐために、画像に表示されている文字を入力してください。 ", 
+	    		helpLine2 : "画像に表示されている文字がわからない場合は、推測で入力するか、画像の横にある「別の画像を表示」をクリックしてください"
+	    	}
+	    }
+	};
+	/* US_17340 : 2nd July, 2018 - Aman - End */
+	var autoImageKey = true;
+	var autoImagePath = true;
+	var baseURL = "/captchaservice/getImageChallenge";
+	function createImageURL(serviceObj) {
+		var urlStr = baseURL;
+		urlStr += ("?appId=" + encodeURIComponent(serviceObj.appId));
+		urlStr += ("&imageKey=" + encodeURIComponent(serviceObj.imageKey));
+		urlStr += ("&captchaType=" + encodeURIComponent(serviceObj.captchaType)); /* US_17340 : Aman - Added */
+		// Using the full strength of Math.random() for dummy
+		// urlStr += ("&dummy=" + encodeURIComponent(Math.round(10000000 * Math.random())));
+		urlStr += ("&dummy=" + encodeURIComponent(Math.random()));
+		return urlStr;
+	}
+	
+	
+	function createInnerHtml(serviceObj) {
+		var str_arr = new Array();
+		/* US_17340 : 2nd July, 2018 - Aman - Start */
+		if( !(captchaService.captchaLanguage in texts) )
+		{
+			captchaService.setCaptchaLanguage("english");
+		}
+		/* US_17340 : 2nd July, 2018 - Aman - End */
+		
+		//US_48417 : Start
+		str_arr.push('<div class="captcha_vertical">');
+		str_arr.push('<div class="captcha_txt">');
+		str_arr.push('<img id="captchaService_image" alt="Captcha Image" src=""/>');
+		str_arr.push('<a href="javascript:void(0)" class="captcha_refresh" title= "');
+		str_arr.push(texts[captchaService.captchaLanguage].refreshButtonLabel);
+		str_arr.push('" onClick="captchaService.refreshImage(true);"></a>');
+		str_arr.push('</div>');
+		str_arr.push('<div class="captcha_field">');
+		str_arr.push('<input type="text" id="captchaService_answer" name="captchaService_answer" placeholder="');
+		str_arr.push(texts[captchaService.captchaLanguage].inputboxHelpLabel);
+		str_arr.push('">');
+		str_arr.push('<input type="hidden" id="captchaService_imageKey" name="captchaService_imageKey" value=""/>');
+		str_arr.push('<a href="javascript:void(0)" class="captcha_help" title="');
+		str_arr.push(texts[captchaService.captchaLanguage].helpButtonLabel);
+		str_arr.push('">');
+		str_arr.push('<div class="help_pophover">');
+		str_arr.push('<span class="closeCaptcha" title="Close">×</span>');
+		str_arr.push('<ol>');
+		str_arr.push('<li>');
+		str_arr.push(texts[captchaService.captchaLanguage].helpPopup.helpLine1);
+		str_arr.push('</li>');
+		str_arr.push('<li>');
+		str_arr.push(texts[captchaService.captchaLanguage].helpPopup.helpLine2);
+		str_arr.push('</li>');
+		str_arr.push('</ol>');
+		str_arr.push('</div>');
+		str_arr.push('</a>');
+		str_arr.push('</div>');
+		str_arr.push('</div>');
+		return str_arr.join("");
+		//US_48417 : End
+	}
+	function setFieldValue(fieldId, value) {
+		document.getElementById(fieldId).value = value;
+	}
+	
+	return {
+		appId : 0,
+		divId : null,
+		imageKey : 0,
+		imagePath : '',
+		captchaType : 'alphanumeric', /* US_17340 : Aman - Added */
+		captchaLanguage : 'english', /* US_17340 : Aman - Added */
+		interSectObserver : null,
+		setAppId : function(aAppId) {
+			this.appId = aAppId;
+		},
+		setImageKey : function(aImageKey) {
+			this.imageKey = aImageKey;
+			autoImageKey = false;
+		},
+		setImagePath : function(aImagePath) {
+			this.imagePath = aImagePath;
+			autoImagePath = false;
+		},
+		/* US_17340 : Aman - Start */
+		setCaptchaType : function(aCaptchaType) {
+			this.captchaType = aCaptchaType;
+		},
+		setCaptchaLanguage : function(aCaptchaLanguage) {
+			this.captchaLanguage = aCaptchaLanguage;
+			try{
+				if( !(captchaService.captchaLanguage in texts) )
+				{
+					throw "Unsupported Language - " + captchaService.captchaLanguage;
+				}
+			}
+			catch(err)
+			{
+				console.log("CaptchaException : " + err);
+			}
+		},
+		/* US_17340 : Aman - End */
+		createCaptcha : function(aDivId) {
+			this.divId = aDivId;
+			// create image key if required
+			if(autoImageKey)
+				// Using the full strength of Math.random() for imageKey
+				// this.imageKey = Math.round(10000000 * Math.random());
+				this.imageKey = Math.random();
+			// default image path
+			if(autoImagePath)
+				this.imagePath = 'images';
+			var div_ele = document.getElementById(this.divId);
+			div_ele.innerHTML = createInnerHtml(this);
+			setFieldValue("captchaService_imageKey", this.imageKey);
+			// first field is created in DOM and then value is set. so escaping is not required.
+			//US_48417 : Start
+		   $('.captcha_help').click(function () {
+		        $('.help_pophover').hide();
+		        $(this).addClass('opacity');
+		        $(this).find('.help_pophover').show();
+		    });
+
+		    $(document).on('click', '.closeCaptcha', function () {
+		        $(this).parent().hide();
+		        $('.captcha_help').removeClass('opacity');
+		    });
+
+		    $("body").click(function (e) {
+		        if (!$(".captcha_help").is(e.target) && $(".captcha_help").has(e.target).length === 0) {
+		            $(".help_pophover").hide();
+		            $('.captcha_help').removeClass('opacity');
+		        }
+		    });
+		    //US_48417 : End
+			// If IntersectionObserver is available, get the image when user scrolls there
+		    //US_50436 : Start
+			try
+			{
+				this.interSectObserver = new IntersectionObserver(function(entries, observer) {
+						var len = entries.length;
+						var i;
+						var entry;
+						for(i = 0; i < len; i++)
+						{
+							entry = entries[i];
+							if(entry.isIntersecting == true)
+							{
+								//console.log("Div visible - entry.intersectionRatio = " + entry.intersectionRatio);
+								captchaService.refreshImage(false);
+							}
+							/*else
+							{
+								console.log("Div not visible");
+							}*/
+						}
+					},
+					{ root : null, rootMargin : "0px", threshold : 0 }
+				);
+				var target = document.getElementById(this.divId);
+				this.interSectObserver.observe(target);
+			}
+			catch(err)
+			{
+				//console.log("IntersectionObserver feature not available.");
+				// if it is not available, get captcha now.
+				captchaService.refreshImage(true);
+			}
+		//str_arr.push(createImageURL(serviceObj));
+		//US_50436 : End
+		 
+		},
+		refreshImage : function(forceFlag) {	// flag false will refresh image only if there is no image initially.
+			var image_ele = document.getElementById("captchaService_image");
+			//console.log("before load   image_ele.src= -->" + image_ele.src + "<--");
+			if(forceFlag == false && (image_ele.src.indexOf(baseURL) >= 0) )
+			{
+				//console.log("Captcha load skipped.");
+				return;
+			}
+			if(autoImageKey)					//SMB02-1445 to create new image key in distributed mode.
+				this.imageKey = Math.random();	//SMB02-1445 to create new image key in distributed mode.
+			document.getElementById('captchaService_answer').value = "";     //SMB02-1525 to clear answer in the text box when refreshing the captcha image
+			image_ele.src = createImageURL(this);
+			setFieldValue("captchaService_imageKey", this.imageKey);
+		}
+	};
+}();

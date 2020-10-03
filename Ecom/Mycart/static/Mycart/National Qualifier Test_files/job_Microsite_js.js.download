@@ -1,0 +1,582 @@
+var globalResumefileForCatalogue;
+
+$(window).resize(function () {
+	if($(window).width() > 1023){
+		$(".jobListing .filtercont").show();
+	}
+	else{
+		$(".jobListing .filtercont").hide();
+	}
+});
+
+function loadJobMicrositeJs(){ 
+	$('#accordion a').click(function(e){
+		e.preventDefault();	
+	});
+	$('#accordion').on('show.bs.collapse', function (e) {
+		$(e.target).prev('.panel-heading').addClass('ss')
+		$(e.target).prev('.panel-heading').find('.fa-minus').show()
+		$(e.target).prev('.panel-heading').find('.fa-plus').hide()
+	});
+	$('#accordion').on('hidden.bs.collapse', function (e) {
+		$(e.target).prev('.panel-heading').find('.fa-minus').hide()
+		$(e.target).prev('.panel-heading').find('.fa-plus').show()
+	});
+	$(".closeFilter, .floatingBtns .cancelBtn, .floatingBtns .saveBtn").on("click", function () {
+        $("body, html").removeClass("ovf");
+        $(".jobListing .filtercont").hide();
+    });
+    $(".delete_crs").on("click", function () {
+        $(this).parent().hide();
+    });
+    $(".filterBtn").on("click", function () {
+        $("body, html").addClass("ovf");
+        $(".jobListing .filtercont").show();
+    });
+    
+	$('[data-tooltip="tooltip"]').tooltip()  
+
+	$('.modal').on('shown.bs.modal', function (e) {
+		$('body').css('overflow','hidden');
+	});
+	$('.modal').on('hidden.bs.modal', function (e) {
+		$('body').css('overflow','auto');
+	});
+
+    $(document).on('click', '.ss_ul li', function () {
+      $(".ss_text").css('color', '#333333')
+    })
+
+    $(document).on('click', '.chosen-container', function () {
+      $(this).parents(".ChosenSelt").find(".selName").addClass("in");
+    })
+
+    $(document).on('click', '.chosen-container ul li', function () {
+      $(this).parents(".ChosenSelt").find(".selName").addClass("in");
+    })
+
+    $(document).on("click", function () {
+      if (!$(".chosen-choices li").hasClass("search-choice")) {
+
+        $("#applyforjob").find(".ChosenSelt").find(".selName").removeClass("in");
+      }
+
+    });
+
+    $("body").tooltip({
+      selector: ".search-choice a"
+    });
+
+ $('#collapse7 .companyTab').slimscroll({
+                height: '145px',
+                color: '#00abe1',
+                wheelStep: 10,
+                touchScrollStep: 50,
+                alwaysVisible: true,
+                railVisible: true,
+                railOpacity: 0.3,
+                allowPageScroll: false,
+                disableFadeOut: false
+            });
+
+	$("#radio-1").on('click', function () {
+	    $(".radio").removeClass("selected_radio");
+	    $(".radio_1_content").show();
+	    $(".radio_2_content").hide();
+	    $(this).parents(".radio").addClass("selected_radio")
+	  })
+
+	  $("#radio-2").on('click', function () {
+	    $(".radio").removeClass("selected_radio");
+	    $(".radio_2_content").show();
+	    $(".radio_1_content").hide();
+	    $(this).parents(".radio").addClass("selected_radio")
+	  })
+	  
+	   $('.chosen-select').chosen({
+	      display_selected_options: false
+	    }).change(function (obj, result) {
+
+	      if ($('.chosen-select option:selected').length === $('.chosen-select option').length) {
+	        $('.select').hide();
+	        $('.deselect').show();
+	      } else {
+	        $('.select').show();
+	        $('.deselect').hide();
+	      }
+
+	    });
+
+	    Dropzone.autoDiscover = false;
+	    try{
+	    	 var myDropzone = new Dropzone("#addexpdz", {acceptedFiles: ".doc,.docx,.rtf,.pdf",maxFilesize: 2});
+	    	      myDropzone.on("addedfile", function(file) {
+	    	    	  globalResumefileForCatalogue=file;
+	    	      }); 
+	    	 myDropzone.on("removedfile", function(file) {
+	    		 globalResumefileForCatalogue="";
+	    	      });
+	    }
+	    catch(error){
+	    }
+	    $('.container_radio').css("cursor","pointer")
+	    
+}
+
+function applyPopup(e,JobId,JobcompanyId,ccm_id){
+	$('[data-dz-remove=""]').click()
+	if(checkIfSessionAvailable()){
+		
+		$('.add_resume').css('margin-top','40px')//40px
+		$('#applyforjob .modal-body').css("min-height","170px");//170px
+		$('#applyforjob .modal-body').css("padding","20px 0px 0px");//20px 0px px
+		
+		$(".jobs .applyNowBtn").on("click", function () {
+			jobsCounter = $(this).parents(".jobs").index() + 1;
+		});
+	var location=e.getAttribute("data-location");
+	var isResume=e.getAttribute("data-resume");//DurationType
+	var locIds=e.getAttribute("data-locationid");
+	var DurationType=e.getAttribute("DurationType");
+	var applylink=e.getAttribute("applylink");
+	$('#jobApplyBtn').attr("jobid",JobId);
+	$('#jobApplyBtn').attr("applylink",applylink);
+	$('#jobApplyBtn').attr("companyId",JobcompanyId);
+	$('#jobApplyBtn').attr("ccm_id",ccm_id);
+	$('#jobApplyBtn').attr("data-resume",isResume);
+	
+	var displaytext='';
+	if(DurationType!='Internship'){
+		displaytext=multilingualKeyValue('494','34');
+		$('#applyheadertxt').html(''+multilingualKeyValue('497','34')+'');
+	}
+	else{
+		displaytext=multilingualKeyValue('495','34');
+		$('#applyheadertxt').html(''+multilingualKeyValue('480','34')+'');
+	}
+	
+	var locRequire="N";
+	
+	var m="n";
+
+	$('#loclist').empty();
+	if(location.indexOf('<br>')>0){
+		locRequire="Y";
+		m="y"
+			$('#locationBody').show();
+		var array = location.split('<br>');
+		var array1 = locIds.split(',');
+
+		for(i in array){
+			$('#loclist').append('<option value="'+array1[i]+'">'+array[i]+'</option>');	
+			}
+		$('#loclist').chosen('destroy');
+		$('#loclist').chosen({
+			display_selected_options: false
+		});
+	   $("#applyforjob .chosen-drop").on("click", function (e) {
+	        var cities = $("#applyforjob .chosen-container .chosen-drop ul li").length;
+	        var cities2 = $(this).find('li').index() + 1;
+	        if (cities == cities2) {
+	            $("#applyforjob .chosen-container").removeClass("chosen-container-active");
+	            $("#applyforjob .chosen-container").removeClass("chosen-with-drop");
+	            $('#applyforjob .chosen-search-input').hide();
+	        } else {
+	            cities = "";
+	            cities2 = "";
+	            $('#applyforjob .chosen-search-input').show();
+	        }
+	    });
+	}
+	else{
+		$('#jobApplyBtn').attr("locationid",locIds);
+		$('#locationBody').hide();
+		$('.add_resume').css('margin-top','0px')//40px
+		$('#applyforjob .modal-body').css("min-height","0px");//170px
+		$('#applyforjob .modal-body').css("padding","0px 0px 0px");//20px 0px px
+	}
+	if(isResume.toLowerCase()=="y"){
+		m="y"
+			//$("#add_resume").css("margin-top", "0px");
+		$('#add_resume').show();
+	}
+	else{
+		$('#add_resume').hide();
+	}
+	if(m.toLowerCase()=="n"){
+		$('#job-modal-body').css("min-height","0px");
+	}
+	else{
+		$('#job-modal-body').css("min-height","170px");
+	}
+	$('#popuptext').text('');
+
+	if(locRequire=="Y" && isResume.toLowerCase()=="y"){
+		$('#applyjobtext').html(''+multilingualKeyValue('481','34')+' '+displaytext+' '+multilingualKeyValue('482','34')+'');
+	}
+	else if(locRequire=="Y" && isResume.toLowerCase()!="y"){
+		$('#applyjobtext').html(''+multilingualKeyValue('481','34')+' '+displaytext+' '+multilingualKeyValue('483','34')+'');
+	}
+	else if(locRequire=="N" && isResume.toLowerCase()=="y"){
+		$('#applyjobtext').html(''+multilingualKeyValue('484','34')+' '+location+'');
+	}
+	else if(locRequire=="N" && isResume.toLowerCase()!="y"){
+		$('#applyjobtext').html(''+multilingualKeyValue('485','34')+' '+displaytext+' '+multilingualKeyValue('486','34')+' '+location+'');
+	}
+	else{
+	$('#applyjobtext').html(''+multilingualKeyValue('481','34')+' '+displaytext+' '+multilingualKeyValue('482','34')+'');
+	}
+	
+	$('#applyforjob').modal()
+
+}
+}
+
+function onCancel(){
+	$('#jobApplyBtn').attr("locationid","0");
+}
+
+
+function applyJobOnClick(e){
+	$('.cj_error_message').addClass('hidden')
+	$('.job_desc').css("display","block")
+	var Status="Apply";
+	/*if($.trim($('#preminumUser').val())==1){
+		Status="appliedPremium";
+	}
+	else{
+		Status="Apply";
+	}*/
+	var loc=0;
+	var locationid=$('#jobApplyBtn').attr("locationid");
+	var ccm_id=$('#jobApplyBtn').attr("ccm_id");
+	var applylink=$.trim($('#applyButton').attr("applylink"));
+	if(locationid==0 || locationid==undefined){
+		$('#jobApplyBtn').attr("locationid",$('#loclist').val());
+	}
+	loc=e.getAttribute("locationid");
+	var type='';
+	if(globalResumefileForCatalogue!=undefined && globalResumefileForCatalogue!="")
+		type=globalResumefileForCatalogue.name.substr(globalResumefileForCatalogue.name.lastIndexOf('.')+1)
+	if(loc==0 || loc==null){
+		$('.cj_error_message').removeClass('hidden')
+		$('.job_desc').css("display","none")
+	}
+	else if($('#jobApplyBtn').attr("haveResume")=="no" && $("#radio-1").is(":checked") && e.getAttribute("data-resume").toLowerCase()=="y"){
+		$('#warning_msg').html(''+multilingualKeyValue('487','34')+'');
+		$('#warning_pop').modal();
+	}
+	else if($("#radio-2").is(":checked") && e.getAttribute("data-resume").toLowerCase()=="y" && type!="" && !(type.toLowerCase()=="pdf" || type.toLowerCase()=="doc" || type.toLowerCase()=="docx" || type.toLowerCase()=="rtf")){
+		$('#warning_msg').html(''+multilingualKeyValue('488','34')+'');
+		$('#warning_pop').modal();
+	}
+	else if($("#radio-2").is(":checked") && e.getAttribute("data-resume").toLowerCase()=="y" && type!="" && !(globalResumefileForCatalogue.size<=2097152)){
+		$('#warning_msg').html(''+multilingualKeyValue('489','34')+'');
+		$('#warning_pop').modal();
+	}
+	else{
+			var JobId=e.getAttribute("jobid");
+			var CompanyId=e.getAttribute("companyId");
+			var isResume=e.getAttribute("data-resume");
+			var formData = new FormData();
+			var newRes='';
+			if ($("#radio-1").is(":checked") && isResume.toLowerCase()=="y") {
+				newRes='no';
+				}
+			if ($("#radio-2").is(":checked") && isResume.toLowerCase()=="y") {
+				formData.append("file",globalResumefileForCatalogue);
+				 newRes='yes';
+				
+				}	
+			if((globalResumefileForCatalogue=="" || globalResumefileForCatalogue==undefined) && newRes=="yes"){
+				$('#warning_msg').html(''+multilingualKeyValue('490','34')+'');
+				$('#warning_pop').modal();
+					}
+				 else{
+						formData.append("isNewResume",newRes);
+						formData.append("JobId",JobId);
+						formData.append("CompanyId",CompanyId);
+						formData.append("Status","Apply");//ccm_id
+						formData.append("ccm_id",ccm_id);
+						formData.append("locationId",loc);	
+					    formData.append('subAction',"userjobmappingresume");
+						
+						$.ajax({
+						url: iHUB.url.job()+'&subAction=userjobmappingresume',
+						type: 'POST',	 	
+						data: formData,
+						async: false,
+						cache: false,
+						contentType: false,
+						enctype: 'multipart/form-data',
+						processData: false,
+						success: function(result){
+							var condn = iHUB.checkSessionOrTokeniDH(result);
+							if (eval(condn)) {
+								$('#jobApplyBtn').attr("locationid","0");
+								var newResponse=JSON.stringify(result);
+								var responseDetails1 = JSON.parse(newResponse);
+								if(responseDetails1.responseDetails.toLowerCase()=="successful" && JobId==$('#jobid').val()){
+									$('#applyFooter'+JobId+'').find(".added").css("display", "block");
+									$('#applyFooter'+JobId+'').find(".applyNowBtn").css("display", "none");	
+									$('#jobApplyBtn').modal('hide')
+									$(".job_action a.apply_now .applyNow").hide();
+									$(".job_action a.apply_now .applied").show();
+									$('#saveButton').remove();
+									$('#applyButton').attr('onclick',"");
+									if(applylink!="" && applylink!="null")
+										 window.open(applylink,"_blank")
+								}
+								else if(($('#jobcontainer .jobs').length>0 || $('#jobcontainercompanyprofile .jobs').length>0)&& responseDetails1.responseDetails.toLowerCase()=="successful"){
+									$('#applyFooter'+JobId+'').find(".added").css("display", "block");
+									$('#applyFooter'+JobId+'').find(".applyNowBtn").css("display", "none");	
+									$('#jobApplyBtn').modal('hide')
+									if(applylink!="" && applylink!="null")
+										 window.open(applylink,"_blank")
+								}
+								else if($('#jobcontainer1 .jobs').length>0 && responseDetails1.responseDetails.toLowerCase()=="successful"){
+									$('#applyFooter'+JobId+'').find(".added").css("display", "block");
+									$('#applyFooter'+JobId+'').find(".applyNowBtn").css("display", "none");	
+									$('#jobApplyBtn').modal('hide')
+									$('#appliedJobCotainer').empty()
+									applyJobCatalogue(1,"");
+									if(applylink!="" && applylink!="null")
+										 window.open(applylink,"_blank")
+								}
+								else if(responseDetails1.responseDetails.toLowerCase()=="successful"){
+									$(".job_action a.apply_now .applyNow").hide();
+									$(".job_action a.apply_now .applied").show();
+									$('#saveButton').remove();
+									$('#applyButton').attr('onclick',"");
+									if(applylink!="" && applylink!="null")
+										 window.open(applylink,"_blank")
+								}
+								else{
+									$('#warning_msg').html(responseDetails1.responseDetails.toLowerCase());
+									$('#warning_pop').modal();
+								}
+							}
+						},
+						error: function(x, e){
+							
+						}
+					}); 
+						$('#applyforjob').modal('hide');
+						$('#applyforjob').modal('hide');
+					}
+				}
+		}
+
+function saveJobFromMicrosite(e){
+	if(checkIfSessionAvailable() && (e.getAttribute("SavedJob")==null || e.getAttribute("SavedJob")=='no')){
+	var jobid=e.getAttribute("jobid");
+	var companyId=e.getAttribute("companyId");
+	var ujs_company_corp_mapping_id=e.getAttribute("ccm_id");
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.job(),
+			data: {
+				ujs_orgid:$('#orgID').val(),
+				ujs_JobId:jobid,
+				ujs_company_corp_mapping_id:ujs_company_corp_mapping_id,
+				ujs_CompanyId:companyId,
+				subAction:"insertuserjobsave"
+				},
+			dataType:"json",
+			success: function(result){
+				var condn = iHUB.checkSessionOrTokeniDH(result);
+				if (eval(condn)) {
+					var newResponse=JSON.stringify(result);
+					var responseDetails1 = JSON.parse(newResponse);
+					 if($('#saveButton').attr("jobid")!=undefined && responseDetails1.responseDetails=="User has already saved the job "){
+					        $('.saveJobNotifyDiv').fadeIn().delay(3000).fadeOut();
+						$('#saveButton').remove();
+					}
+					else if($('#saveButton').attr("jobid")!=undefined){
+				        $('.saveJobNotifyDiv').fadeIn().delay(3000).fadeOut();
+						$('#saveButton').remove();
+					}
+					else if(responseDetails1.responseDetails=="Successfully Saved"){
+						if(e.childElementCount!=0)
+						e.firstChild.className='tickMark active';
+						e.setAttribute("SavedJob","yes")
+					}
+					else if(responseDetails1.responseDetails=="User has already saved the job "){
+						if(e.childElementCount!=0)
+						e.firstChild.className='tickMark active';
+						e.setAttribute("SavedJob","yes")
+					}
+				}
+			},
+		error: function(x, e){
+			
+				}
+			});	
+}
+}
+
+
+function checkResume(){
+	
+	if($('#jobApplyBtn').attr("haveResume")!=undefined && $('#jobApplyBtn').attr("haveResume")!=""){
+		
+	}
+	else{
+		$.ajax({
+			type: "post",	
+			url: iHUB.url.job(),
+			data: {	
+				subAction:"getuserresume"
+				},
+			dataType:"json",
+			success: function(response){
+				var condn = iHUB.checkSessionOrTokeniDH(response);
+				if (eval(condn)) {
+					var newResponse=JSON.stringify(response);
+					var responseDetails1 = JSON.parse(newResponse);
+					var count=responseDetails1.responseDetails.resultCount.resultCount;
+					if(count==0){
+						$('#resumetxt').html(''+multilingualKeyValue('491','34')+'');
+						$('#jobApplyBtn').attr("haveResume","no");
+						$('#resumetxt').next().remove()
+					}
+					else{
+						$('#jobApplyBtn').attr("haveResume","yes");
+					}
+				}
+				
+				},
+				error: function(x, e){
+					}
+			});
+	}
+	
+}
+function downloadUserResume(){
+	 window.open(downloadUserResumeTab(),"\"_blank\"");
+			  
+}
+function downloadUserResumeTab(){
+	 return iHUB.url.job()+"&subAction=selectuserresume";
+}
+function certificateModal(result){
+	var stamp='';
+	var newResponse=JSON.stringify(result);
+	var responseDetails1 = JSON.parse(newResponse);
+	var count=0;
+	for(x in responseDetails1.Response){
+		if(x!="resultCount"){
+		var CertificateMasterName=responseDetails1.Response[x].CertificateMasterName;
+		var ProductURL='';
+		var Acquired=responseDetails1.Response[x].Acquired;
+		var ProductName=responseDetails1.Response[x].ProductName;
+		var microsite_iframe=$.trim(responseDetails1.Response[x].microsite_iframe);
+		if(microsite_iframe=='0' || microsite_iframe=='3'){
+			ProductURL=responseDetails1.Response[x].ProductURL;
+		}
+		else if(microsite_iframe==1)
+			ProductURL=responseDetails1.Response[x].txtProductMicrositeLink;
+		
+		count++;
+		stamp+='<div class="modal_contBox"><div class="roundTitle"><span class="modalChckbox"><i class="checkBoxSelection"></i></span><span>'+multilingualKeyValue('493','34')+' '+count+'</span></div><h3>'+CertificateMasterName+'</h3><div class="contestAction"><a target="_blank" href="'+ProductURL+'" class="pendinglable">'+multilingualKeyValue('492','34')+'</a></div></div>'	
+		}
+		}
+	$('#certData').html(stamp);
+	$('#jobCertification').modal();
+}
+
+function checkIfSessionAvailable(){
+	if($.trim($('#app_seq_no').val())==""){
+		/* window.open('/iDH','_self'); */
+		$('#loginmodal').modal();
+		return false;
+	}	
+	return true;
+}
+
+function getJobMicrositeLink(JobId,JobName){
+    /*if($('#instanceId').val()=='1')
+	    return '/jobs/'+JobId+'/'+JobName.trim().replace(/ /g,"-")+'';
+    else */
+	    return '/per/'+$('#group_id').val()+'/pub/'+$('#orgId').val()+'/iDH/instance/'+$('#instanceId').val()+'/jobs/'+JobId+'/'+JobName.trim().replace(/ /g,"-")+'';	
+	}
+function checkforCertificates(e,JobId,JobcompanyId,ccm_id){	
+	
+	if(checkIfSessionAvailable()){
+		$.ajax({
+	        type: "POST",
+	        url: iHUB.url.job(),
+	        data: {
+	                jobId:JobId,
+	                subAction:"checkjobcriteria"   
+	        },
+	        dataType: "json",
+	        success: function(result){
+	            var condn = iHUB.checkSessionOrTokeniDH(result);
+	            if (eval(condn)) {
+	                var newResponse=JSON.stringify(result);
+	                var responseDetails1 = JSON.parse(newResponse);
+	                if(responseDetails1.responseDetails.toLowerCase()=="eligible"){
+	                	openCertificate(e,JobId,JobcompanyId,ccm_id)
+					 }
+					 else{
+						 var DurationType=e.getAttribute("DurationType");
+						 var displaytext='';
+							if(DurationType!='Internship'){
+								displaytext=multilingualKeyValue('494','34');
+							}
+							else{
+								displaytext=multilingualKeyValue('495','34');
+							}
+							
+						 $('#warning_msg').html(''+multilingualKeyValue('496','34')+' '+displaytext+'');
+						 $('#warning_pop').modal();
+					 }
+	            }
+	        },
+	        error: function(x, e){
+	           
+	        }
+	    });
+	}		
+}
+
+function openCertificate(e,JobId,JobcompanyId,ccm_id){
+	
+	$('[data-dz-remove=""]').click();
+	var certificateId=$.trim(e.getAttribute("certificateId"));	
+	if(certificateId!="" && certificateId!=null && certificateId!=undefined){	
+		$.ajax({	
+		type: "POST",	
+		url: iHUB.url.job(),  	
+		data: {		
+			
+			jobId:JobId,	
+			cert_type:"Internal",	
+			subAction:"checkuseracquiredcertificate",	
+			
+			},	
+		dataType:"json",	
+			success: function(result){	
+				var condn = iHUB.checkSessionOrTokeniDH(result);	
+				if (eval(condn)) {	
+					var newResponse=JSON.stringify(result);	
+					var responseDetails1 = JSON.parse(newResponse);	
+					if(responseDetails1.Response.resultCount.Acquired.toLowerCase()=='acquired' || certificateId==""){	
+						applyPopup(e,JobId,JobcompanyId,ccm_id)	
+					}	
+					else{	
+						certificateModal(result);	
+					}	
+				}	
+			},	
+		error: function(x, e){	
+			
+		},		
+	});	
+	} 	
+	else{	
+		applyPopup(e,JobId,JobcompanyId,ccm_id)	
+	}	
+}
+
